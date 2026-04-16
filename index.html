@@ -89,6 +89,12 @@
       box-shadow: 0 6px 18px rgba(255, 235, 59, 0.2);
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .search-bar {
       display: flex;
       max-width: 320px;
@@ -129,6 +135,81 @@
       background-color: var(--primary-hover);
     }
 
+    .avatar-wrapper {
+      position: relative;
+    }
+
+    .avatar-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary);
+      color: #000;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(255, 235, 59, 0.25);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .avatar-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .avatar-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 210px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      display: none;
+      z-index: 50;
+    }
+
+    .avatar-dropdown.show {
+      display: block;
+    }
+
+    .dropdown-user {
+      padding: 8px 10px 10px;
+      border-bottom: 1px solid rgba(255,235,59,0.15);
+      margin-bottom: 8px;
+    }
+
+    .dropdown-user strong {
+      color: var(--primary);
+      display: block;
+      line-height: 1.2;
+    }
+
+    .dropdown-user small {
+      color: var(--muted);
+      word-break: break-word;
+    }
+
+    .dropdown-item {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+      background: var(--card);
+    }
+
     main {
       max-width: 1100px;
       margin: 36px auto;
@@ -163,8 +244,7 @@
       border: 1px solid var(--border);
     }
 
-    .ads-title,
-    .section-title {
+    .ads-title {
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--primary);
@@ -223,8 +303,7 @@
       color: #fff59d;
     }
 
-    .buy-btn,
-    .primary-btn {
+    .buy-btn {
       background-color: var(--primary);
       color: #000000;
       border: none;
@@ -236,212 +315,12 @@
       width: 100%;
     }
 
-    .buy-btn:hover,
-    .primary-btn:hover {
+    .buy-btn:hover {
       background-color: var(--primary-hover);
       transform: translateY(-1px);
-    }
-
-    .accounts-container,
-    #supportForm {
-      max-width: 460px;
-      margin: 10px auto 0;
-      background-color: var(--surface);
-      padding: 22px;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      color: var(--text);
-      position: relative;
-      border: 1px solid var(--border);
-    }
-
-    .accounts-container h2,
-    #supportForm h2 {
-      color: var(--primary);
-      margin-bottom: 20px;
-    }
-
-    .accounts-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .accounts-tabs button {
-      flex: 1;
-      min-width: 100px;
-      padding: 10px;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: 0.25s ease;
-    }
-
-    .accounts-tabs .active {
-      background-color: var(--primary);
-      color: #000;
-    }
-
-    .accounts-tabs button:not(.active) {
-      background-color: var(--card);
-      color: var(--text);
-    }
-
-    .accounts-form label,
-    #supportForm label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    .accounts-form input,
-    #supportForm input,
-    #supportForm textarea,
-    #chatInput {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: #0f0f00;
-      color: var(--text);
-      outline: none;
-    }
-
-    .accounts-form input:focus,
-    #supportForm input:focus,
-    #supportForm textarea:focus,
-    #chatInput:focus,
-    .search-bar input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(255, 235, 59, 0.12);
-    }
-
-    .accounts-form button,
-    #supportForm button,
-    #chatForm button,
-    #chatToggleBtn,
-    #logoutBtn {
-      width: 100%;
-      padding: 10px;
-      background-color: var(--primary);
-      border: none;
-      color: #000;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: background-color 0.25s ease;
-    }
-
-    .accounts-form button:hover,
-    #supportForm button:hover,
-    #chatForm button:hover,
-    #chatToggleBtn:hover,
-    #logoutBtn:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .message {
-      margin-top: 10px;
-      min-height: 22px;
-      font-size: 0.95rem;
-    }
-
-    .account-menu-wrapper {
-      position: relative;
-    }
-
-    .account-header-btn {
-      min-width: 46px;
-      height: 46px;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 999px;
-      background: var(--primary);
-      color: #000;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(255, 235, 59, 0.22);
-      transition: transform 0.2s ease, background-color 0.25s ease;
-    }
-
-    .account-header-btn:hover {
-      background: var(--primary-hover);
-      transform: translateY(-1px);
-    }
-
-    .account-dropdown {
-      position: absolute;
-      top: calc(100% + 10px);
-      right: 0;
-      width: 250px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      padding: 10px;
-      z-index: 40;
-    }
-
-    .account-dropdown button {
-      width: 100%;
-      background: var(--card);
-      color: var(--text);
-      border: none;
-      border-radius: 10px;
-      padding: 10px 12px;
-      text-align: left;
-      font-weight: 700;
-      cursor: pointer;
-      margin-bottom: 8px;
-      transition: 0.25s ease;
-    }
-
-    .account-dropdown button:hover {
-      background: var(--primary);
-      color: #000;
-    }
-
-    .account-dropdown button:last-child {
-      margin-bottom: 0;
-    }
-
-    .account-user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-
-    .account-user-info small {
-      color: var(--muted);
-    }
-
-    .dropdown-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 1.1rem;
-      flex-shrink: 0;
     }
 
     .hidden {
-      display: none !important;
-    }
-
-
       display: none !important;
     }
 
@@ -547,10 +426,90 @@
       align-items: center;
     }
 
+    #chatInput,
+    .accounts-form input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: #0f0f00;
+      color: var(--text);
+      outline: none;
+    }
+
     #chatForm button {
       width: auto;
       padding: 10px 14px;
       flex-shrink: 0;
+      background-color: var(--primary);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .auth-modal-box {
+      max-width: 460px;
+    }
+
+    .accounts-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .accounts-tabs button {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: 0.25s ease;
+    }
+
+    .accounts-tabs .active {
+      background-color: var(--primary);
+      color: #000;
+    }
+
+    .accounts-tabs button:not(.active) {
+      background-color: var(--card);
+      color: var(--text);
+    }
+
+    .accounts-form label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .accounts-form button,
+    #logoutBtn {
+      width: 100%;
+      padding: 10px;
+      background-color: var(--primary);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.25s ease;
+    }
+
+    .accounts-form button:hover,
+    #logoutBtn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .message {
+      margin-top: 10px;
+      min-height: 22px;
+      font-size: 0.95rem;
     }
 
     footer {
@@ -561,23 +520,11 @@
       margin-top: 40px;
     }
 
-    @media (max-width: 900px) {
-      main {
-        max-width: 100%;
-        padding: 0 12px 24px;
-      }
-
-      header {
-        padding-left: 66px;
-      }
-    }
-
     @media (max-width: 600px) {
       header {
         justify-content: center;
         gap: 10px;
-        padding: 16px 16px 16px 60px;
-        position: sticky;
+        padding: 16px;
       }
 
       nav {
@@ -590,33 +537,13 @@
         flex-wrap: wrap;
       }
 
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+
       .search-bar {
-        order: 1;
         max-width: 100%;
-      }
-
-      .hero h1 {
-        font-size: 1.6rem;
-      }
-
-      .ad-item {
-        min-width: 100%;
-      }
-
-      .modal-content {
-        margin-top: 20px;
-        padding: 18px;
-      }
-
-      .account-header-btn {
-        min-width: 44px;
-        height: 44px;
-        padding: 10px 12px;
-      }
-
-      .account-dropdown {
-        right: 0;
-        width: min(250px, calc(100vw - 32px));
       }
 
       #chatForm {
@@ -631,44 +558,37 @@
 </head>
 <body>
   <header>
-    
     <div class="logo">TyF Blox</div>
 
     <nav>
       <ul class="tabs">
         <li class="active" data-tab="home">Início</li>
-        
-        
       </ul>
     </nav>
 
-    <div style="display:flex; align-items:center; gap:10px; position:relative;">
-    <form class="search-bar" id="searchForm">
-      <input type="text" id="searchInput" placeholder="Pesquisar jogo ou item..." />
-      <button type="submit">Buscar</button>
-    </form>
-    <div class="account-menu-wrapper">
-      <button id="accountHeaderBtn" class="account-header-btn" type="button">Conta</button>
-      <div id="accountDropdown" class="account-dropdown hidden">
-        <div id="guestMenu">
-          <button type="button" id="dropdownLoginBtn">Entrar</button>
-          <button type="button" id="dropdownRegisterBtn">Cadastrar</button>
-        </div>
-        <div id="userMenu" class="hidden">
-          <div class="account-user-info">
-            <div id="dropdownAvatar" class="dropdown-avatar">U</div>
-            <div>
-              <strong id="dropdownUsername">Usuário</strong><br />
-              <small id="dropdownEmail">email@exemplo.com</small>
-            </div>
+    <div class="header-actions">
+      <form class="search-bar" id="searchForm">
+        <input type="text" id="searchInput" placeholder="Pesquisar jogo ou item..." />
+        <button type="submit">Buscar</button>
+      </form>
+
+      <div class="avatar-wrapper">
+        <button id="avatarBtn" class="avatar-btn" type="button" title="Conta">C</button>
+
+        <div id="avatarDropdown" class="avatar-dropdown">
+          <div id="dropdownUserInfo" class="dropdown-user hidden">
+            <strong id="dropdownUsername"></strong>
+            <small id="dropdownEmail"></small>
           </div>
-          <button type="button" id="dropdownProfileBtn">Perfil</button>
-          <button type="button" id="dropdownLogoutBtn">Sair</button>
+
+          <button id="dropdownLogin" class="dropdown-item" type="button">Entrar</button>
+          <button id="dropdownRegister" class="dropdown-item" type="button">Registrar</button>
+          <button id="dropdownProfile" class="dropdown-item hidden" type="button">Meu perfil</button>
+          <button id="dropdownLogout" class="dropdown-item hidden" type="button">Sair</button>
         </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
   <main>
     <section id="home" class="tab-content">
@@ -709,59 +629,9 @@
         </div>
       </div>
     </section>
-
-    <section id="accounts" class="tab-content hidden">
-      <div class="accounts-container">
-        <h2>Conta de usuário</h2>
-        <div class="accounts-tabs" id="accountsTabs">
-          <button id="showLogin" class="active" type="button">Login</button>
-          <button id="showRegister" type="button">Registrar</button>
-          <button id="showProfile" type="button" style="display:none;">Perfil</button>
-        </div>
-
-        <form id="loginForm" class="accounts-form" autocomplete="on">
-          <label for="loginUsername">Usuário</label>
-          <input type="text" id="loginUsername" name="username" required autocomplete="username" />
-          <label for="loginPassword">Senha</label>
-          <input type="password" id="loginPassword" name="password" required autocomplete="current-password" />
-          <button type="submit">Entrar</button>
-          <p id="loginMessage" class="message"></p>
-        </form>
-
-        <form id="registerForm" class="accounts-form hidden" autocomplete="on">
-          <div style="background:#1b1b00; border:1px solid rgba(255,235,59,0.35); border-radius:10px; padding:12px; margin-bottom:14px; color:#f5f5f5;">
-            <strong style="color:#ffeb3b; display:block; margin-bottom:6px;">Requisitos para cadastro</strong>
-            <div style="font-size:0.95rem; color:#d8d8d8;">
-              • Usuário com pelo menos 3 caracteres<br>
-              • Senha com no mínimo 8 caracteres<br>
-              • Informe um e-mail válido<br>
-              • Não use dados de outra pessoa
-            </div>
-          </div>
-          <label for="registerUsername">Usuário</label>
-          <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Escolha um nome único para entrar na sua conta.</small>
-          <input type="text" id="registerUsername" name="username" required minlength="3" autocomplete="username" />
-          <label for="registerPassword">Senha</label>
-          <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Use uma senha forte com letras e números para mais segurança.</small>
-          <input type="password" id="registerPassword" name="password" required minlength="8" autocomplete="new-password" />
-          <label for="registerEmail">E-mail</label>
-          <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Esse e-mail será usado para identificação da conta.</small>
-          <input type="email" id="registerEmail" name="email" required autocomplete="email" />
-          <button type="submit">Registrar</button>
-          <p id="registerMessage" class="message"></p>
-        </form>
-
-        <div id="profileView" class="hidden">
-          <h3>Bem-vindo, <span id="profileUsername"></span>!</h3>
-          <p><strong>E-mail:</strong> <span id="profileEmail"></span></p>
-          <br />
-          <button id="logoutBtn" type="button">Sair</button>
-        </div>
-      </div>
-    </section>
-
   </main>
 
+  <!-- Modal de compra -->
   <div id="buyModal" class="modal" aria-hidden="true">
     <div class="modal-content">
       <span class="close-btn" id="closeModal">&times;</span>
@@ -769,7 +639,7 @@
       <h3 id="modalTitle"></h3>
       <p id="modalDesc"></p>
 
-      <button id="chatToggleBtn" type="button">Atendimento</button>
+      <button id="chatToggleBtn" type="button" class="buy-btn">Atendimento</button>
 
       <div id="chatBox">
         <div id="chatMessages">
@@ -785,56 +655,70 @@
     </div>
   </div>
 
+  <!-- Modal de autenticação -->
+  <div id="authModal" class="modal" aria-hidden="true">
+    <div class="modal-content auth-modal-box">
+      <span class="close-btn" id="closeAuthModal">&times;</span>
+
+      <div class="accounts-tabs">
+        <button id="showLogin" class="active" type="button">Login</button>
+        <button id="showRegister" type="button">Registrar</button>
+        <button id="showProfile" type="button" class="hidden">Perfil</button>
+      </div>
+
+      <form id="loginForm" class="accounts-form" autocomplete="on">
+        <label for="loginUsername">Usuário</label>
+        <input type="text" id="loginUsername" name="username" required autocomplete="username" />
+
+        <label for="loginPassword">Senha</label>
+        <input type="password" id="loginPassword" name="password" required autocomplete="current-password" />
+
+        <button type="submit">Entrar</button>
+        <p id="loginMessage" class="message"></p>
+      </form>
+
+      <form id="registerForm" class="accounts-form hidden" autocomplete="on">
+        <div style="background:#1b1b00; border:1px solid rgba(255,235,59,0.35); border-radius:10px; padding:12px; margin-bottom:14px; color:#f5f5f5;">
+          <strong style="color:#ffeb3b; display:block; margin-bottom:6px;">Requisitos para cadastro</strong>
+          <div style="font-size:0.95rem; color:#d8d8d8;">
+            • Usuário com pelo menos 3 caracteres<br>
+            • Senha com no mínimo 8 caracteres<br>
+            • Informe um e-mail válido<br>
+            • Não use dados de outra pessoa
+          </div>
+        </div>
+
+        <label for="registerUsername">Usuário</label>
+        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Escolha um nome único para entrar na sua conta.</small>
+        <input type="text" id="registerUsername" name="username" required minlength="3" autocomplete="username" />
+
+        <label for="registerPassword">Senha</label>
+        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Use uma senha forte com letras e números para mais segurança.</small>
+        <input type="password" id="registerPassword" name="password" required minlength="8" autocomplete="new-password" />
+
+        <label for="registerEmail">E-mail</label>
+        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Esse e-mail será usado para identificação da conta.</small>
+        <input type="email" id="registerEmail" name="email" required autocomplete="email" />
+
+        <button type="submit">Registrar</button>
+        <p id="registerMessage" class="message"></p>
+      </form>
+
+      <div id="profileView" class="hidden">
+        <h3>Bem-vindo, <span id="profileUsername"></span>!</h3>
+        <p><strong>E-mail:</strong> <span id="profileEmail"></span></p>
+        <br />
+        <button id="logoutBtn" type="button">Sair</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
     &copy; 2026 TyF Blox — Todos os direitos reservados.
   </footer>
 
   <script>
     const tabs = document.querySelectorAll('.tabs li');
-const accountHeaderBtn = document.getElementById('accountHeaderBtn');
-const accountDropdown = document.getElementById('accountDropdown');
-const guestMenu = document.getElementById('guestMenu');
-const userMenu = document.getElementById('userMenu');
-const dropdownLoginBtn = document.getElementById('dropdownLoginBtn');
-const dropdownRegisterBtn = document.getElementById('dropdownRegisterBtn');
-const dropdownProfileBtn = document.getElementById('dropdownProfileBtn');
-const dropdownLogoutBtn = document.getElementById('dropdownLogoutBtn');
-const dropdownAvatar = document.getElementById('dropdownAvatar');
-const dropdownUsername = document.getElementById('dropdownUsername');
-const dropdownEmail = document.getElementById('dropdownEmail');
-
-function openAccountsTab(section = 'login') {
-  tabs.forEach(t => t.classList.remove('active'));
-  tabContents.forEach(tc => tc.classList.add('hidden'));
-  document.getElementById('accounts').classList.remove('hidden');
-  showSection(section);
-}
-
-accountHeaderBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  accountDropdown.classList.toggle('hidden');
-});
-
-accountDropdown.addEventListener('click', (e) => e.stopPropagation());
-
-document.addEventListener('click', () => {
-  accountDropdown.classList.add('hidden');
-});
-
-dropdownLoginBtn.addEventListener('click', () => {
-  accountDropdown.classList.add('hidden');
-  openAccountsTab('login');
-});
-
-dropdownRegisterBtn.addEventListener('click', () => {
-  accountDropdown.classList.add('hidden');
-  openAccountsTab('register');
-});
-
-dropdownProfileBtn.addEventListener('click', () => {
-  accountDropdown.classList.add('hidden');
-  openAccountsTab('profile');
-});
     const tabContents = document.querySelectorAll('.tab-content');
 
     tabs.forEach(tab => {
@@ -886,13 +770,16 @@ dropdownProfileBtn.addEventListener('click', () => {
 
     window.addEventListener('click', event => {
       if (event.target === modal) closeModal();
+      if (event.target === authModal) closeAuthModalFn();
     });
 
     document.querySelectorAll('.buy-btn').forEach(button => {
-      button.addEventListener('click', e => {
-        const adItem = e.target.closest('.ad-item');
-        openModal(adItem);
-      });
+      if (button.id !== 'chatToggleBtn') {
+        button.addEventListener('click', e => {
+          const adItem = e.target.closest('.ad-item');
+          openModal(adItem);
+        });
+      }
     });
 
     chatToggleBtn.addEventListener('click', () => {
@@ -924,6 +811,22 @@ dropdownProfileBtn.addEventListener('click', () => {
       }, 700);
     });
 
+    // AUTENTICAÇÃO / AVATAR
+    const authModal = document.getElementById('authModal');
+    const closeAuthModal = document.getElementById('closeAuthModal');
+
+    const avatarBtn = document.getElementById('avatarBtn');
+    const avatarDropdown = document.getElementById('avatarDropdown');
+
+    const dropdownUserInfo = document.getElementById('dropdownUserInfo');
+    const dropdownUsername = document.getElementById('dropdownUsername');
+    const dropdownEmail = document.getElementById('dropdownEmail');
+
+    const dropdownLogin = document.getElementById('dropdownLogin');
+    const dropdownRegister = document.getElementById('dropdownRegister');
+    const dropdownProfile = document.getElementById('dropdownProfile');
+    const dropdownLogout = document.getElementById('dropdownLogout');
+
     const showLoginBtn = document.getElementById('showLogin');
     const showRegisterBtn = document.getElementById('showRegister');
     const showProfileBtn = document.getElementById('showProfile');
@@ -938,6 +841,18 @@ dropdownProfileBtn.addEventListener('click', () => {
     const profileUsername = document.getElementById('profileUsername');
     const profileEmail = document.getElementById('profileEmail');
     const logoutBtn = document.getElementById('logoutBtn');
+
+    function openAuthModal() {
+      authModal.style.display = 'block';
+      authModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeAuthModalFn() {
+      authModal.style.display = 'none';
+      authModal.setAttribute('aria-hidden', 'true');
+    }
+
+    closeAuthModal.addEventListener('click', closeAuthModalFn);
 
     function setMessage(target, text, type) {
       target.textContent = text;
@@ -968,29 +883,89 @@ dropdownProfileBtn.addEventListener('click', () => {
       registerMessage.textContent = '';
     }
 
-    function updateUIForLoggedIn(loggedIn) {
-      if (loggedIn) {
-        showProfileBtn.style.display = 'inline-block';
-        showLoginBtn.style.display = 'none';
-        showRegisterBtn.style.display = 'none';
-        guestMenu.classList.add('hidden');
-        userMenu.classList.remove('hidden');
+    function setSession(user) {
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+    }
+
+    function getSession() {
+      const session = localStorage.getItem('loggedInUser');
+      return session ? JSON.parse(session) : null;
+    }
+
+    function clearSession() {
+      localStorage.removeItem('loggedInUser');
+    }
+
+    function updateProfileView(user) {
+      if (!user) return;
+
+      profileUsername.textContent = user.username;
+      profileEmail.textContent = user.email;
+
+      dropdownUsername.textContent = user.username;
+      dropdownEmail.textContent = user.email;
+
+      avatarBtn.textContent = user.username.charAt(0).toUpperCase();
+      avatarBtn.title = `Conta de ${user.username}`;
+    }
+
+    function updateUIForLoggedIn(loggedIn, user = null) {
+      if (loggedIn && user) {
+        dropdownUserInfo.classList.remove('hidden');
+        dropdownLogin.classList.add('hidden');
+        dropdownRegister.classList.add('hidden');
+        dropdownProfile.classList.remove('hidden');
+        dropdownLogout.classList.remove('hidden');
+
+        showProfileBtn.classList.remove('hidden');
+        showLoginBtn.classList.add('hidden');
+        showRegisterBtn.classList.add('hidden');
+
+        updateProfileView(user);
       } else {
-        showProfileBtn.style.display = 'none';
-        showLoginBtn.style.display = 'inline-block';
-        showRegisterBtn.style.display = 'inline-block';
-        guestMenu.classList.remove('hidden');
-        userMenu.classList.add('hidden');
-        accountHeaderBtn.textContent = 'Conta';
-        accountHeaderBtn.setAttribute('title', 'Conta');
-      }
-    } else {
-        showProfileBtn.style.display = 'none';
-        showLoginBtn.style.display = 'inline-block';
-        showRegisterBtn.style.display = 'inline-block';
-        profileIcon.style.display = 'none';
+        dropdownUserInfo.classList.add('hidden');
+        dropdownLogin.classList.remove('hidden');
+        dropdownRegister.classList.remove('hidden');
+        dropdownProfile.classList.add('hidden');
+        dropdownLogout.classList.add('hidden');
+
+        showProfileBtn.classList.add('hidden');
+        showLoginBtn.classList.remove('hidden');
+        showRegisterBtn.classList.remove('hidden');
+
+        avatarBtn.textContent = 'C';
+        avatarBtn.title = 'Conta';
       }
     }
+
+    avatarBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      avatarDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.avatar-wrapper')) {
+        avatarDropdown.classList.remove('show');
+      }
+    });
+
+    dropdownLogin.addEventListener('click', () => {
+      avatarDropdown.classList.remove('show');
+      openAuthModal();
+      showSection('login');
+    });
+
+    dropdownRegister.addEventListener('click', () => {
+      avatarDropdown.classList.remove('show');
+      openAuthModal();
+      showSection('register');
+    });
+
+    dropdownProfile.addEventListener('click', () => {
+      avatarDropdown.classList.remove('show');
+      openAuthModal();
+      showSection('profile');
+    });
 
     showLoginBtn.addEventListener('click', () => showSection('login'));
     showRegisterBtn.addEventListener('click', () => showSection('register'));
@@ -1015,34 +990,9 @@ dropdownProfileBtn.addEventListener('click', () => {
       return data;
     }
 
-    function setSession(user) {
-      localStorage.setItem('loggedInUser', JSON.stringify(user));
-    }
-
-    function getSession() {
-      const session = localStorage.getItem('loggedInUser');
-      return session ? JSON.parse(session) : null;
-    }
-
-    function clearSession() {
-      localStorage.removeItem('loggedInUser');
-    }
-
-    function updateProfileView(user) {
-      if (!user) return;
-
-      const initial = user.username.charAt(0).toUpperCase();
-      profileUsername.textContent = user.username;
-      profileEmail.textContent = user.email;
-      accountHeaderBtn.textContent = initial;
-      accountHeaderBtn.setAttribute('title', `Perfil: ${user.username}`);
-      dropdownAvatar.textContent = initial;
-      dropdownUsername.textContent = user.username;
-      dropdownEmail.textContent = user.email;
-    }
-
     registerForm.addEventListener('submit', async e => {
       e.preventDefault();
+
       const username = document.getElementById('registerUsername').value.trim();
       const password = document.getElementById('registerPassword').value.trim();
       const email = document.getElementById('registerEmail').value.trim();
@@ -1069,16 +1019,16 @@ dropdownProfileBtn.addEventListener('click', () => {
 
     loginForm.addEventListener('submit', async e => {
       e.preventDefault();
+
       const username = document.getElementById('loginUsername').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
 
       try {
         const data = await apiRequest('/api/login', 'POST', { username, password });
         setSession(data.user);
+        updateUIForLoggedIn(true, data.user);
         setMessage(loginMessage, `Bem-vindo, ${data.user.username}!`, 'success');
         loginForm.reset();
-        updateProfileView(data.user);
-        updateUIForLoggedIn(true);
         showSection('profile');
       } catch (error) {
         setMessage(loginMessage, error.message, 'error');
@@ -1097,14 +1047,15 @@ dropdownProfileBtn.addEventListener('click', () => {
 
       clearSession();
       updateUIForLoggedIn(false);
-      accountDropdown.classList.add('hidden');
+      closeAuthModalFn();
       showSection('login');
     }
 
     logoutBtn.addEventListener('click', performLogout);
-    dropdownLogoutBtn.addEventListener('click', performLogout);
-
-    
+    dropdownLogout.addEventListener('click', async () => {
+      avatarDropdown.classList.remove('show');
+      await performLogout();
+    });
 
     window.addEventListener('load', async () => {
       try {
@@ -1117,8 +1068,7 @@ dropdownProfileBtn.addEventListener('click', () => {
 
         const data = await response.json();
         setSession(data.user);
-        updateProfileView(data.user);
-        updateUIForLoggedIn(true);
+        updateUIForLoggedIn(true, data.user);
         showSection('profile');
       } catch (error) {
         clearSession();
@@ -1126,8 +1076,6 @@ dropdownProfileBtn.addEventListener('click', () => {
         showSection('login');
       }
     });
-
-    
 
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
@@ -1150,125 +1098,6 @@ dropdownProfileBtn.addEventListener('click', () => {
     });
 
     searchInput.addEventListener('input', () => filterAds(searchInput.value));
-
-    // Frontend preparado para backend real.
-    // Exemplo de backend seguro em Node.js/Express:
-    /*
-    // server.js
-    const express = require('express');
-    const bcrypt = require('bcryptjs');
-    const jwt = require('jsonwebtoken');
-    const cookieParser = require('cookie-parser');
-    const cors = require('cors');
-
-    const app = express();
-    const users = [];
-    const JWT_SECRET = process.env.JWT_SECRET || 'troque-esta-chave-por-uma-forte';
-
-    app.use(express.json());
-    app.use(cookieParser());
-    app.use(cors({ origin: true, credentials: true }));
-
-    function authMiddleware(req, res, next) {
-      const token = req.cookies.token;
-      if (!token) return res.status(401).json({ message: 'Não autenticado.' });
-
-      try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = decoded;
-        next();
-      } catch {
-        return res.status(401).json({ message: 'Token inválido.' });
-      }
-    }
-
-    app.post('/api/register', async (req, res) => {
-      const { username, email, password } = req.body;
-
-      if (!username || !email || !password) {
-        return res.status(400).json({ message: 'Preencha todos os campos.' });
-      }
-
-      if (password.length < 8) {
-        return res.status(400).json({ message: 'A senha deve ter pelo menos 8 caracteres.' });
-      }
-
-      const existingUser = users.find(
-        user => user.username.toLowerCase() === username.toLowerCase() || user.email.toLowerCase() === email.toLowerCase()
-      );
-
-      if (existingUser) {
-        return res.status(409).json({ message: 'Usuário ou e-mail já cadastrado.' });
-      }
-
-      const passwordHash = await bcrypt.hash(password, 12);
-      const user = {
-        id: crypto.randomUUID(),
-        username,
-        email,
-        passwordHash
-      };
-
-      users.push(user);
-      return res.status(201).json({ message: 'Conta criada com sucesso.' });
-    });
-
-    app.post('/api/login', async (req, res) => {
-      const { username, password } = req.body;
-      const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
-
-      if (!user) {
-        return res.status(401).json({ message: 'Usuário ou senha incorretos.' });
-      }
-
-      const validPassword = await bcrypt.compare(password, user.passwordHash);
-      if (!validPassword) {
-        return res.status(401).json({ message: 'Usuário ou senha incorretos.' });
-      }
-
-      const token = jwt.sign(
-        { id: user.id, username: user.username, email: user.email },
-        JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000
-      });
-
-      return res.json({
-        message: 'Login realizado com sucesso.',
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email
-        }
-      });
-    });
-
-    app.get('/api/me', authMiddleware, (req, res) => {
-      return res.json({ user: req.user });
-    });
-
-    app.post('/api/logout', (req, res) => {
-      res.clearCookie('token', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict'
-      });
-      return res.json({ message: 'Logout realizado com sucesso.' });
-    });
-
-    app.listen(3000, () => {
-      console.log('Servidor rodando na porta 3000');
-    });
-
-    // package.json dependencies:
-    // express, bcryptjs, jsonwebtoken, cookie-parser, cors
-    */
   </script>
 </body>
 </html>
