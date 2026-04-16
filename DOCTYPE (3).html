@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TyF Blox</title>
+<style>
+  /* Reset básico */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #000000; /* Fundo preto */
+    color: #f0f0f0; /* Branco suave para texto */
+    line-height: 1.6;
+  }
+
+  header {
+    background-color: #000000; /* Fundo preto */
+    padding: 15px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    font-weight: 900;
+    font-size: 1.8rem;
+    color: transparent; /* invisível */
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  nav {
+    flex-grow: 1;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+  }
+
+  .tabs li {
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: #333300;
+    color: #f0f0f0;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+
+  .tabs li:hover,
+  .tabs li.active {
+    background-color: #ffeb3b;
+    color: #000000;
+  }
+
+  .search-bar {
+    display: flex;
+    max-width: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px #ffeb3baa;
+    flex-shrink: 0;
+  }
+
+  .search-bar input[type="text"] {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    font-size: 1rem;
+    background-color: #111100;
+    color: #f0f0f0;
+  }
+
+  .search-bar input[type="text"]::placeholder {
+    color: #bdb76b;
+  }
+
+  .search-bar button {
+    background-color: #ffeb3b;
+    border: none;
+    color: #000000;
+    font-weight: 700;
+    padding: 0 15px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .search-bar button:hover {
+    background-color: #fdd835;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  .ads-container {
+    background-color: #111100;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 0 20px #ffeb3baa;
+  }
+
+  .ads-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffeb3b;
+    margin-bottom: 20px;
+  }
+
+  .ads-list {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+  .ad-item {
+    min-width: 200px;
+    background-color: #333300;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ffeb3baa;
+    padding: 15px;
+    color: #f0f0f0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ad-item img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    object-fit: cover;
+    height: 140px;
+  }
+
+  .ad-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+
+  .ad-item p {
+    font-size: 0.9rem;
+    color: #dcdcdc;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .buy-btn {
+    background-color: #ffeb3b;
+    color: #000000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+
+  .buy-btn:hover {
+    background-color: #fdd835;
+  }
+
+  /* Modal */
+  .modal {
+    display: none; /* hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+  }
+
+  .modal-content {
+    background-color: #111100;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 500px;
+    color: #f0f0f0;
+    position: relative;
+  }
+
+  .modal-content img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+
+  .modal-content h3 {
+    margin-bottom: 10px;
+    color: #ffeb3b;
+  }
+
+  .modal-content p {
+    margin-bottom: 15px;
+    min-height: 40px; /* espaço para descrição vazia */
+  }
+
+  .product-list {
+    min-height: 60px; /* espaço para lista vazia */
+    border: 1px solid #ffeb3b;
+    border-radius: 8px;
+    padding: 10px;
+    color: #f0f0f0;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffeb3b;
+    cursor: pointer;
+  }
+
+  footer {
+    margin-top: 100px;
+    text-align: center;
+    color: #bdb76b;
+    font-size: 0.9rem;
+  }
+
+  /* Responsividade */
+  @media (max-width: 900px) {
+    main {
+      max-width: 100%;
+      padding: 0 10px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    header {
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 20px;
+    }
+    nav {
+      order: 2;
+      width: 100%;
+    }
+    .tabs {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .search-bar {
+      order: 1;
+      max-width: 100%;
+      margin-bottom: 10px;
+    }
+    .ads-list {
+      gap: 10px;
+      padding-bottom: 15px;
+    }
+    .ad-item {
+      min-width: 150px;
+      padding: 10px;
+    }
+    .ad-item h3 {
+      font-size: 1rem;
+    }
+    .ad-item p {
+      font-size: 0.85rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">TyF Blox</div>
+  <nav>
+    <ul class="tabs">
+      <li class="active">Home</li>
+      <li>Accounts</li>
+      <li>Pricing</li>
+      <li>Contact</li>
+    </ul>
+  </nav>
+  <form class="search-bar" onsubmit="event.preventDefault();">
+    <input type="text" placeholder="Search" />
+    <button type="submit">Search</button>
+  </form>
+</header>
+
+<main>
+
+  <section class="ads-container">
+    <h2 class="ads-title">Roblox Game Ads</h2>
+    <div class="ads-list">
+      <!-- Primeiro anúncio com botão comprar -->
+      <div class="ad-item" data-title="Game Title 1" data-desc="" data-img="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg">
+        <img src="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg" alt="Tio Patinhas" />
+        <h3>Game Title 1</h3>
+        <p>Short description of the game or promotion.</p>
+        <button class="buy-btn">Comprar</button>
+      </div>
+      <!-- Segundo anúncio exemplo -->
+      <div class="ad-item" data-title="Game Title 2" data-desc="" data-img="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png">
+        <img src="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png" alt="Game 2" />
+        <h3>Game Title 2</h3>
+        <p>Short description of the game or promotion.</p>
+        <button class="buy-btn">Comprar</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Modal -->
+<div id="buyModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <img id="modalImg" src="" alt="Product Image" />
+    <h3 id="modalTitle"></h3>
+    <p id="modalDesc"></p>
+    <div class="product-list" id="modalProductList">
+      <!-- Lista de produtos vazia por enquanto -->
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 TyF Blox
+</footer>
+
+<script>
+  // Seleciona elementos
+  const modal = document.getElementById('buyModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDesc = document.getElementById('modalDesc');
+  const modalProductList = document.getElementById('modalProductList');
+  const closeModalBtn = document.getElementById('closeModal');
+
+  // Função para abrir modal com dados do anúncio
+  function openModal(adItem) {
+    modalImg.src = adItem.dataset.img;
+    modalTitle.textContent = adItem.dataset.title;
+    modalDesc.textContent = adItem.dataset.desc || "Descrição do produto não disponível.";
+    modalProductList.innerHTML = ""; // Lista vazia por enquanto
+    modal.style.display = "block";
+  }
+
+  // Fecha modal
+  closeModalBtn.onclick = function() {
+    modal.style.display = "none";
+  }
+
+  // Fecha modal ao clicar fora do conteúdo
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+
+  // Adiciona evento aos botões comprar
+  document.querySelectorAll('.buy-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const adItem = e.target.closest('.ad-item');
+      openModal(adItem);
+    });
+  });
+</script>
+
+</body>
+</html>
