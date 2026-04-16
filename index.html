@@ -233,11 +233,35 @@
     cursor: pointer;
   }
 
-  footer {
-    margin-top: 100px;
-    text-align: center;
-    color: #bdb76b;
+  /* Chat box dentro do modal */
+  #chatBox {
+    display: none;
+    background-color: #222200;
+    border: 1px solid #ffeb3b;
+    border-radius: 8px;
+    padding: 10px;
+    height: 150px;
+    overflow-y: auto;
+    color: #f0f0f0;
     font-size: 0.9rem;
+    margin-top: 10px;
+  }
+
+  #chatToggleBtn {
+    background-color: #ffeb3b;
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  #chatToggleBtn:hover {
+    background-color: #fdd835;
   }
 
   /* Responsividade */
@@ -333,6 +357,16 @@
     <img id="modalImg" src="" alt="Product Image" />
     <h3 id="modalTitle"></h3>
     <p id="modalDesc"></p>
+
+    <!-- Botão Atendimento -->
+    <button id="chatToggleBtn">Atendimento</button>
+
+    <!-- Aba de conversa (inicialmente oculta) -->
+    <div id="chatBox">
+      <p><strong>Atendente:</strong> Olá! Como posso ajudar você?</p>
+      <!-- Você pode adicionar aqui inputs, mensagens dinâmicas, etc -->
+    </div>
+
     <div class="product-list" id="modalProductList">
       <!-- Lista de produtos vazia por enquanto -->
     </div>
@@ -344,7 +378,7 @@
 </footer>
 
 <script>
-  // Seleciona elementos
+  // Seleciona elementos do modal
   const modal = document.getElementById('buyModal');
   const modalImg = document.getElementById('modalImg');
   const modalTitle = document.getElementById('modalTitle');
@@ -352,12 +386,21 @@
   const modalProductList = document.getElementById('modalProductList');
   const closeModalBtn = document.getElementById('closeModal');
 
+  // Elementos do chat
+  const chatToggleBtn = document.getElementById('chatToggleBtn');
+  const chatBox = document.getElementById('chatBox');
+
   // Função para abrir modal com dados do anúncio
   function openModal(adItem) {
     modalImg.src = adItem.dataset.img;
     modalTitle.textContent = adItem.dataset.title;
     modalDesc.textContent = adItem.dataset.desc || "Descrição do produto não disponível.";
     modalProductList.innerHTML = ""; // Lista vazia por enquanto
+
+    // Esconde o chat e reseta o botão ao abrir modal
+    chatBox.style.display = 'none';
+    chatToggleBtn.textContent = 'Atendimento';
+
     modal.style.display = "block";
   }
 
@@ -373,12 +416,23 @@
     }
   }
 
-  // Adiciona evento aos botões comprar
+  // Adiciona evento aos botões comprar para abrir modal
   document.querySelectorAll('.buy-btn').forEach(button => {
     button.addEventListener('click', (e) => {
       const adItem = e.target.closest('.ad-item');
       openModal(adItem);
     });
+  });
+
+  // Alterna visibilidade da aba de conversa
+  chatToggleBtn.addEventListener('click', () => {
+    if (chatBox.style.display === 'none' || chatBox.style.display === '') {
+      chatBox.style.display = 'block';
+      chatToggleBtn.textContent = 'Fechar Atendimento';
+    } else {
+      chatBox.style.display = 'none';
+      chatToggleBtn.textContent = 'Atendimento';
+    }
   });
 </script>
 
