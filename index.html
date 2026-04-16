@@ -600,7 +600,7 @@
         <input type="text" id="supportName" required />
         <label for="supportEmail">Email:</label>
         <input type="email" id="supportEmail" required />
-        <label for="supportMessage">Mensagem:</label>
+        <label for="supportMessageInput">Mensagem:</label>
         <textarea id="supportMessageInput" rows="5" required></textarea>
         <button type="submit">Enviar</button>
       </form>
@@ -641,19 +641,20 @@
   &copy; 2026 TyF Blox
 </footer>
 
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
+  (function(){
+    emailjs.init("SEU_USER_ID_AQUI"); // Substitua pelo seu user_id do EmailJS
+  })();
+
   // Controle das abas do menu
   const tabs = document.querySelectorAll('.tabs li');
   const tabContents = document.querySelectorAll('.tab-content');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      // Remove active de todas as tabs
       tabs.forEach(t => t.classList.remove('active'));
-      // Esconde todos os conteúdos
       tabContents.forEach(tc => tc.style.display = 'none');
-
-      // Ativa a tab clicada
       tab.classList.add('active');
       const tabId = tab.getAttribute('data-tab');
       document.getElementById(tabId).style.display = 'block';
@@ -679,10 +680,8 @@
     modalTitle.textContent = adItem.dataset.title;
     modalDesc.textContent = adItem.dataset.desc || "Descrição do produto não disponível.";
     modalProductList.innerHTML = "";
-
     chatBox.style.display = 'none';
     chatToggleBtn.textContent = 'Atendimento';
-
     modal.style.display = "block";
   }
 
@@ -717,14 +716,11 @@
     e.preventDefault();
     const userMessage = chatInput.value.trim();
     if (!userMessage) return;
-
     const userMsgElem = document.createElement('p');
     userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
     chatMessages.appendChild(userMsgElem);
-
     chatInput.value = '';
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
     setTimeout(() => {
       const botMsgElem = document.createElement('p');
       botMsgElem.innerHTML = `<strong>Atendente:</strong> Obrigado pela sua pergunta! Em breve responderemos.`;
@@ -824,13 +820,11 @@
 
   function updateUIForLoggedIn(loggedIn) {
     if (loggedIn) {
-      // Mostrar só perfil e esconder login/registro
       showProfileBtn.style.display = 'inline-block';
       showLoginBtn.style.display = 'none';
       showRegisterBtn.style.display = 'none';
       profileIcon.style.display = 'flex';
     } else {
-      // Mostrar login/registro e esconder perfil
       showProfileBtn.style.display = 'none';
       showLoginBtn.style.display = 'inline-block';
       showRegisterBtn.style.display = 'inline-block';
@@ -891,7 +885,6 @@
   });
 
   profileIcon.addEventListener('click', () => {
-    // Ao clicar no ícone, abre a aba Accounts na seção Perfil
     tabs.forEach(t => t.classList.remove('active'));
     tabContents.forEach(tc => tc.style.display = 'none');
     document.querySelector('li[data-tab="accounts"]').classList.add('active');
@@ -911,12 +904,12 @@
     }
   });
 
-  // Support form functionality
+  // EmailJS Support Form Integration
   const supportForm = document.getElementById('contactSupportForm');
   const supportMessage = document.getElementById('supportMessage');
 
-  supportForm.addEventListener('submit', e => {
-    e.preventDefault();
+  supportForm.addEventListener('submit', function(event) {
+    event.preventDefault();
 
     const name = document.getElementById('supportName').value.trim();
     const email = document.getElementById('supportEmail').value.trim();
@@ -928,13 +921,30 @@
       return;
     }
 
-    // Aqui você pode integrar com backend, API, ou enviar email via serviço externo
-    // Por enquanto, só simula envio e limpa o formulário
+    const templateParams = {
+      from_name: name,
+      from_email: email,
+      message: message,
+      to_email: 'timoteofernandes54@gmail.com'
+    };
 
-    supportMessage.style.color = 'lightgreen';
-    supportMessage.textContent = 'Mensagem enviada com sucesso! Entraremos em contato em breve.';
-    supportForm.reset();
+    emailjs.send('SEU_SERVICE_ID', 'SEU_TEMPLATE_ID', templateParams)
+      .then(function(response) {
+        supportMessage.style.color = 'lightgreen';
+        supportMessage.textContent = 'Mensagem enviada com sucesso! Entraremos em contato em breve.';
+        supportForm.reset();
+      }, function(error) {
+        supportMessage.style.color = 'lightcoral';
+        supportMessage.textContent = 'Erro ao enviar a mensagem. Tente novamente mais tarde.';
+        console.error('EmailJS error:', error);
+      });
   });
+</script>
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  (function(){
+    emailjs.init("Timóteo"); // Substitua pelo seu user_id do EmailJS
+  })();
 </script>
 
 </body>
