@@ -155,9 +155,7 @@
       max-width: 760px;
     }
 
-    .ads-container,
-    .pricing-wrapper,
-    .contact-card {
+    .ads-container {
       background-color: var(--surface);
       border-radius: 16px;
       padding: 22px;
@@ -372,37 +370,11 @@
       border: 2px solid rgba(0, 0, 0, 0.25);
     }
 
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-
-    .pricing-card {
-      background: var(--card);
-      border: 1px solid rgba(255, 235, 59, 0.14);
-      border-radius: 14px;
-      padding: 18px;
-    }
-
-    .pricing-card h3 {
-      color: var(--primary);
-      margin-bottom: 8px;
-    }
-
-    .pricing-value {
-      font-size: 1.6rem;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-
-    .pricing-card ul {
-      padding-left: 18px;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-
     .hidden {
+      display: none !important;
+    }
+
+
       display: none !important;
     }
 
@@ -594,8 +566,7 @@
       <ul class="tabs">
         <li class="active" data-tab="home">Início</li>
         <li data-tab="accounts">Conta</li>
-        <li data-tab="pricing">Planos</li>
-        <li data-tab="contact">Contato</li>
+        
       </ul>
     </nav>
 
@@ -654,22 +625,22 @@
           <button id="showProfile" type="button" style="display:none;">Perfil</button>
         </div>
 
-        <form id="loginForm" class="accounts-form">
+        <form id="loginForm" class="accounts-form" autocomplete="on">
           <label for="loginUsername">Usuário</label>
-          <input type="text" id="loginUsername" required />
+          <input type="text" id="loginUsername" name="username" required autocomplete="username" />
           <label for="loginPassword">Senha</label>
-          <input type="password" id="loginPassword" required />
+          <input type="password" id="loginPassword" name="password" required autocomplete="current-password" />
           <button type="submit">Entrar</button>
           <p id="loginMessage" class="message"></p>
         </form>
 
-        <form id="registerForm" class="accounts-form hidden">
+        <form id="registerForm" class="accounts-form hidden" autocomplete="on">
           <label for="registerUsername">Usuário</label>
-          <input type="text" id="registerUsername" required minlength="3" />
+          <input type="text" id="registerUsername" name="username" required minlength="3" autocomplete="username" />
           <label for="registerPassword">Senha</label>
-          <input type="password" id="registerPassword" required minlength="4" />
+          <input type="password" id="registerPassword" name="password" required minlength="8" autocomplete="new-password" />
           <label for="registerEmail">E-mail</label>
-          <input type="email" id="registerEmail" required />
+          <input type="email" id="registerEmail" name="email" required autocomplete="email" />
           <button type="submit">Registrar</button>
           <p id="registerMessage" class="message"></p>
         </form>
@@ -683,61 +654,6 @@
       </div>
     </section>
 
-    <section id="pricing" class="tab-content hidden">
-      <div class="pricing-wrapper">
-        <h2 class="section-title">Planos</h2>
-        <div class="pricing-grid">
-          <div class="pricing-card">
-            <h3>Básico</h3>
-            <div class="pricing-value">R$ 14,90</div>
-            <ul>
-              <li>1 anúncio em destaque</li>
-              <li>Suporte básico</li>
-              <li>Validade de 7 dias</li>
-            </ul>
-            <button class="primary-btn" type="button">Escolher plano</button>
-          </div>
-
-          <div class="pricing-card">
-            <h3>Pro</h3>
-            <div class="pricing-value">R$ 29,90</div>
-            <ul>
-              <li>3 anúncios simultâneos</li>
-              <li>Maior visibilidade</li>
-              <li>Suporte prioritário</li>
-            </ul>
-            <button class="primary-btn" type="button">Escolher plano</button>
-          </div>
-
-          <div class="pricing-card">
-            <h3>Premium</h3>
-            <div class="pricing-value">R$ 49,90</div>
-            <ul>
-              <li>Anúncios ilimitados</li>
-              <li>Destaque superior</li>
-              <li>Atendimento exclusivo</li>
-            </ul>
-            <button class="primary-btn" type="button">Escolher plano</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="tab-content hidden">
-      <div id="supportForm" class="contact-card">
-        <h2>Suporte</h2>
-        <form id="contactSupportForm">
-          <label for="supportName">Nome</label>
-          <input type="text" id="supportName" required />
-          <label for="supportEmail">E-mail</label>
-          <input type="email" id="supportEmail" required />
-          <label for="supportMessageInput">Mensagem</label>
-          <textarea id="supportMessageInput" rows="5" required></textarea>
-          <button type="submit">Enviar</button>
-        </form>
-        <p id="supportMessage" class="message"></p>
-      </div>
-    </section>
   </main>
 
   <div id="buyModal" class="modal" aria-hidden="true">
@@ -904,63 +820,6 @@
       registerMessage.textContent = '';
     }
 
-    function getUsers() {
-      return JSON.parse(localStorage.getItem('users')) || {};
-    }
-
-    function saveUsers(users) {
-      localStorage.setItem('users', JSON.stringify(users));
-    }
-
-    function createUser(username, password, email) {
-      const users = getUsers();
-      const normalizedUsername = username.toLowerCase();
-
-      if (users[normalizedUsername]) return false;
-
-      users[normalizedUsername] = {
-        usernameOriginal: username,
-        password,
-        email
-      };
-
-      saveUsers(users);
-      return true;
-    }
-
-    function validateUser(username, password) {
-      const users = getUsers();
-      const user = users[username.toLowerCase()];
-      return user && user.password === password;
-    }
-
-    function getUserProfile(username) {
-      const users = getUsers();
-      return users[username.toLowerCase()] || null;
-    }
-
-    function setSession(username) {
-      localStorage.setItem('loggedInUser', username.toLowerCase());
-    }
-
-    function getSession() {
-      return localStorage.getItem('loggedInUser');
-    }
-
-    function clearSession() {
-      localStorage.removeItem('loggedInUser');
-    }
-
-    function updateProfileView(username) {
-      const profile = getUserProfile(username);
-      if (!profile) return;
-
-      profileUsername.textContent = profile.usernameOriginal;
-      profileEmail.textContent = profile.email;
-      profileIcon.textContent = profile.usernameOriginal.charAt(0).toUpperCase();
-      profileIcon.title = `Perfil: ${profile.usernameOriginal}`;
-    }
-
     function updateUIForLoggedIn(loggedIn) {
       if (loggedIn) {
         showProfileBtn.style.display = 'inline-block';
@@ -979,7 +838,48 @@
     showRegisterBtn.addEventListener('click', () => showSection('register'));
     showProfileBtn.addEventListener('click', () => showSection('profile'));
 
-    registerForm.addEventListener('submit', e => {
+    async function apiRequest(url, method, body) {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(body)
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro na requisição.');
+      }
+
+      return data;
+    }
+
+    function setSession(user) {
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+    }
+
+    function getSession() {
+      const session = localStorage.getItem('loggedInUser');
+      return session ? JSON.parse(session) : null;
+    }
+
+    function clearSession() {
+      localStorage.removeItem('loggedInUser');
+    }
+
+    function updateProfileView(user) {
+      if (!user) return;
+
+      profileUsername.textContent = user.username;
+      profileEmail.textContent = user.email;
+      profileIcon.textContent = user.username.charAt(0).toUpperCase();
+      profileIcon.title = `Perfil: ${user.username}`;
+    }
+
+    registerForm.addEventListener('submit', async e => {
       e.preventDefault();
       const username = document.getElementById('registerUsername').value.trim();
       const password = document.getElementById('registerPassword').value.trim();
@@ -990,38 +890,49 @@
         return;
       }
 
-      if (password.length < 4) {
-        setMessage(registerMessage, 'A senha deve ter pelo menos 4 caracteres.', 'error');
+      if (password.length < 8) {
+        setMessage(registerMessage, 'A senha deve ter pelo menos 8 caracteres.', 'error');
         return;
       }
 
-      if (createUser(username, password, email)) {
+      try {
+        await apiRequest('/api/register', 'POST', { username, email, password });
         setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
         registerForm.reset();
         setTimeout(() => showSection('login'), 400);
-      } else {
-        setMessage(registerMessage, 'Esse usuário já existe. Escolha outro nome.', 'error');
+      } catch (error) {
+        setMessage(registerMessage, error.message, 'error');
       }
     });
 
-    loginForm.addEventListener('submit', e => {
+    loginForm.addEventListener('submit', async e => {
       e.preventDefault();
       const username = document.getElementById('loginUsername').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
 
-      if (validateUser(username, password)) {
-        setSession(username);
-        setMessage(loginMessage, `Bem-vindo, ${username}!`, 'success');
+      try {
+        const data = await apiRequest('/api/login', 'POST', { username, password });
+        setSession(data.user);
+        setMessage(loginMessage, `Bem-vindo, ${data.user.username}!`, 'success');
         loginForm.reset();
-        updateProfileView(username);
+        updateProfileView(data.user);
         updateUIForLoggedIn(true);
         showSection('profile');
-      } else {
-        setMessage(loginMessage, 'Usuário ou senha incorretos.', 'error');
+      } catch (error) {
+        setMessage(loginMessage, error.message, 'error');
       }
     });
 
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch('/api/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+
       clearSession();
       updateUIForLoggedIn(false);
       showSection('login');
@@ -1035,36 +946,28 @@
       showSection('profile');
     });
 
-    window.addEventListener('load', () => {
-      const loggedUser = getSession();
-      if (loggedUser) {
-        updateProfileView(loggedUser);
+    window.addEventListener('load', async () => {
+      try {
+        const response = await fetch('/api/me', {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (!response.ok) throw new Error('Sessão não encontrada');
+
+        const data = await response.json();
+        setSession(data.user);
+        updateProfileView(data.user);
         updateUIForLoggedIn(true);
         showSection('profile');
-      } else {
+      } catch (error) {
+        clearSession();
         updateUIForLoggedIn(false);
         showSection('login');
       }
     });
 
-    const supportForm = document.getElementById('contactSupportForm');
-    const supportMessage = document.getElementById('supportMessage');
-
-    supportForm.addEventListener('submit', e => {
-      e.preventDefault();
-
-      const name = document.getElementById('supportName').value.trim();
-      const email = document.getElementById('supportEmail').value.trim();
-      const message = document.getElementById('supportMessageInput').value.trim();
-
-      if (!name || !email || !message) {
-        setMessage(supportMessage, 'Por favor, preencha todos os campos.', 'error');
-        return;
-      }
-
-      setMessage(supportMessage, 'Mensagem enviada com sucesso! Entraremos em contato em breve.', 'success');
-      supportForm.reset();
-    });
+    
 
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
@@ -1088,8 +991,124 @@
 
     searchInput.addEventListener('input', () => filterAds(searchInput.value));
 
-    // Observação: este sistema de login usa localStorage e serve apenas para demonstração visual.
-    // Para produção, o ideal é usar backend com autenticação segura.
+    // Frontend preparado para backend real.
+    // Exemplo de backend seguro em Node.js/Express:
+    /*
+    // server.js
+    const express = require('express');
+    const bcrypt = require('bcryptjs');
+    const jwt = require('jsonwebtoken');
+    const cookieParser = require('cookie-parser');
+    const cors = require('cors');
+
+    const app = express();
+    const users = [];
+    const JWT_SECRET = process.env.JWT_SECRET || 'troque-esta-chave-por-uma-forte';
+
+    app.use(express.json());
+    app.use(cookieParser());
+    app.use(cors({ origin: true, credentials: true }));
+
+    function authMiddleware(req, res, next) {
+      const token = req.cookies.token;
+      if (!token) return res.status(401).json({ message: 'Não autenticado.' });
+
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+      } catch {
+        return res.status(401).json({ message: 'Token inválido.' });
+      }
+    }
+
+    app.post('/api/register', async (req, res) => {
+      const { username, email, password } = req.body;
+
+      if (!username || !email || !password) {
+        return res.status(400).json({ message: 'Preencha todos os campos.' });
+      }
+
+      if (password.length < 8) {
+        return res.status(400).json({ message: 'A senha deve ter pelo menos 8 caracteres.' });
+      }
+
+      const existingUser = users.find(
+        user => user.username.toLowerCase() === username.toLowerCase() || user.email.toLowerCase() === email.toLowerCase()
+      );
+
+      if (existingUser) {
+        return res.status(409).json({ message: 'Usuário ou e-mail já cadastrado.' });
+      }
+
+      const passwordHash = await bcrypt.hash(password, 12);
+      const user = {
+        id: crypto.randomUUID(),
+        username,
+        email,
+        passwordHash
+      };
+
+      users.push(user);
+      return res.status(201).json({ message: 'Conta criada com sucesso.' });
+    });
+
+    app.post('/api/login', async (req, res) => {
+      const { username, password } = req.body;
+      const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+      if (!user) {
+        return res.status(401).json({ message: 'Usuário ou senha incorretos.' });
+      }
+
+      const validPassword = await bcrypt.compare(password, user.passwordHash);
+      if (!validPassword) {
+        return res.status(401).json({ message: 'Usuário ou senha incorretos.' });
+      }
+
+      const token = jwt.sign(
+        { id: user.id, username: user.username, email: user.email },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
+
+      return res.json({
+        message: 'Login realizado com sucesso.',
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email
+        }
+      });
+    });
+
+    app.get('/api/me', authMiddleware, (req, res) => {
+      return res.json({ user: req.user });
+    });
+
+    app.post('/api/logout', (req, res) => {
+      res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict'
+      });
+      return res.json({ message: 'Logout realizado com sucesso.' });
+    });
+
+    app.listen(3000, () => {
+      console.log('Servidor rodando na porta 3000');
+    });
+
+    // package.json dependencies:
+    // express, bcryptjs, jsonwebtoken, cookie-parser, cors
+    */
   </script>
 </body>
 </html>
