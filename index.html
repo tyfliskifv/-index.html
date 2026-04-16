@@ -349,25 +349,92 @@
       font-size: 0.95rem;
     }
 
-    #profileIcon {
+    .account-menu-wrapper {
+      position: relative;
+    }
+
+    .account-header-btn {
+      min-width: 46px;
+      height: 46px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #000;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 235, 59, 0.22);
+      transition: transform 0.2s ease, background-color 0.25s ease;
+    }
+
+    .account-header-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .account-dropdown {
       position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
+      top: calc(100% + 10px);
+      right: 0;
+      width: 250px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      z-index: 40;
+    }
+
+    .account-dropdown button {
+      width: 100%;
+      background: var(--card);
+      color: var(--text);
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: 0.25s ease;
+    }
+
+    .account-dropdown button:hover {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .account-dropdown button:last-child {
+      margin-bottom: 0;
+    }
+
+    .account-user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .account-user-info small {
+      color: var(--muted);
+    }
+
+    .dropdown-avatar {
       width: 42px;
       height: 42px;
       border-radius: 50%;
-      background-color: var(--primary);
+      background: var(--primary);
       color: #000;
-      font-weight: 700;
-      font-size: 1.1rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      user-select: none;
-      box-shadow: 0 0 10px rgba(255, 235, 59, 0.3);
-      border: 2px solid rgba(0, 0, 0, 0.25);
+      font-weight: 900;
+      font-size: 1.1rem;
+      flex-shrink: 0;
     }
 
     .hidden {
@@ -541,10 +608,15 @@
         padding: 18px;
       }
 
-      #profileIcon {
-        left: 10px;
-        top: 16px;
-        transform: none;
+      .account-header-btn {
+        min-width: 44px;
+        height: 44px;
+        padding: 10px 12px;
+      }
+
+      .account-dropdown {
+        right: 0;
+        width: min(250px, calc(100vw - 32px));
       }
 
       #chatForm {
@@ -559,7 +631,7 @@
 </head>
 <body>
   <header>
-    <div id="profileIcon" title="Perfil" style="display:none;"></div>
+    
     <div class="logo">TyF Blox</div>
 
     <nav>
@@ -570,12 +642,31 @@
       </ul>
     </nav>
 
-    <div style="display:flex; align-items:center; gap:10px;">
+    <div style="display:flex; align-items:center; gap:10px; position:relative;">
     <form class="search-bar" id="searchForm">
       <input type="text" id="searchInput" placeholder="Pesquisar jogo ou item..." />
       <button type="submit">Buscar</button>
     </form>
-    <button id="accountHeaderBtn" style="background:#ffeb3b; border:none; padding:10px 14px; border-radius:10px; font-weight:700; cursor:pointer;">Conta</button>
+    <div class="account-menu-wrapper">
+      <button id="accountHeaderBtn" class="account-header-btn" type="button">Conta</button>
+      <div id="accountDropdown" class="account-dropdown hidden">
+        <div id="guestMenu">
+          <button type="button" id="dropdownLoginBtn">Entrar</button>
+          <button type="button" id="dropdownRegisterBtn">Cadastrar</button>
+        </div>
+        <div id="userMenu" class="hidden">
+          <div class="account-user-info">
+            <div id="dropdownAvatar" class="dropdown-avatar">U</div>
+            <div>
+              <strong id="dropdownUsername">Usuário</strong><br />
+              <small id="dropdownEmail">email@exemplo.com</small>
+            </div>
+          </div>
+          <button type="button" id="dropdownProfileBtn">Perfil</button>
+          <button type="button" id="dropdownLogoutBtn">Sair</button>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -701,12 +792,48 @@
   <script>
     const tabs = document.querySelectorAll('.tabs li');
 const accountHeaderBtn = document.getElementById('accountHeaderBtn');
+const accountDropdown = document.getElementById('accountDropdown');
+const guestMenu = document.getElementById('guestMenu');
+const userMenu = document.getElementById('userMenu');
+const dropdownLoginBtn = document.getElementById('dropdownLoginBtn');
+const dropdownRegisterBtn = document.getElementById('dropdownRegisterBtn');
+const dropdownProfileBtn = document.getElementById('dropdownProfileBtn');
+const dropdownLogoutBtn = document.getElementById('dropdownLogoutBtn');
+const dropdownAvatar = document.getElementById('dropdownAvatar');
+const dropdownUsername = document.getElementById('dropdownUsername');
+const dropdownEmail = document.getElementById('dropdownEmail');
 
-accountHeaderBtn.addEventListener('click', () => {
+function openAccountsTab(section = 'login') {
   tabs.forEach(t => t.classList.remove('active'));
   tabContents.forEach(tc => tc.classList.add('hidden'));
-  document.querySelector('li[data-tab="accounts"]').classList.add('active');
   document.getElementById('accounts').classList.remove('hidden');
+  showSection(section);
+}
+
+accountHeaderBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  accountDropdown.classList.toggle('hidden');
+});
+
+accountDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+document.addEventListener('click', () => {
+  accountDropdown.classList.add('hidden');
+});
+
+dropdownLoginBtn.addEventListener('click', () => {
+  accountDropdown.classList.add('hidden');
+  openAccountsTab('login');
+});
+
+dropdownRegisterBtn.addEventListener('click', () => {
+  accountDropdown.classList.add('hidden');
+  openAccountsTab('register');
+});
+
+dropdownProfileBtn.addEventListener('click', () => {
+  accountDropdown.classList.add('hidden');
+  openAccountsTab('profile');
 });
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -812,8 +939,6 @@ accountHeaderBtn.addEventListener('click', () => {
     const profileEmail = document.getElementById('profileEmail');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    const profileIcon = document.getElementById('profileIcon');
-
     function setMessage(target, text, type) {
       target.textContent = text;
       target.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
@@ -848,8 +973,18 @@ accountHeaderBtn.addEventListener('click', () => {
         showProfileBtn.style.display = 'inline-block';
         showLoginBtn.style.display = 'none';
         showRegisterBtn.style.display = 'none';
-        profileIcon.style.display = 'flex';
+        guestMenu.classList.add('hidden');
+        userMenu.classList.remove('hidden');
       } else {
+        showProfileBtn.style.display = 'none';
+        showLoginBtn.style.display = 'inline-block';
+        showRegisterBtn.style.display = 'inline-block';
+        guestMenu.classList.remove('hidden');
+        userMenu.classList.add('hidden');
+        accountHeaderBtn.textContent = 'Conta';
+        accountHeaderBtn.setAttribute('title', 'Conta');
+      }
+    } else {
         showProfileBtn.style.display = 'none';
         showLoginBtn.style.display = 'inline-block';
         showRegisterBtn.style.display = 'inline-block';
@@ -896,10 +1031,14 @@ accountHeaderBtn.addEventListener('click', () => {
     function updateProfileView(user) {
       if (!user) return;
 
+      const initial = user.username.charAt(0).toUpperCase();
       profileUsername.textContent = user.username;
       profileEmail.textContent = user.email;
-      profileIcon.textContent = user.username.charAt(0).toUpperCase();
-      profileIcon.title = `Perfil: ${user.username}`;
+      accountHeaderBtn.textContent = initial;
+      accountHeaderBtn.setAttribute('title', `Perfil: ${user.username}`);
+      dropdownAvatar.textContent = initial;
+      dropdownUsername.textContent = user.username;
+      dropdownEmail.textContent = user.email;
     }
 
     registerForm.addEventListener('submit', async e => {
@@ -946,7 +1085,7 @@ accountHeaderBtn.addEventListener('click', () => {
       }
     });
 
-    logoutBtn.addEventListener('click', async () => {
+    async function performLogout() {
       try {
         await fetch('/api/logout', {
           method: 'POST',
@@ -958,16 +1097,14 @@ accountHeaderBtn.addEventListener('click', () => {
 
       clearSession();
       updateUIForLoggedIn(false);
+      accountDropdown.classList.add('hidden');
       showSection('login');
-    });
+    }
 
-    profileIcon.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tabContents.forEach(tc => tc.classList.add('hidden'));
-      document.querySelector('li[data-tab="accounts"]').classList.add('active');
-      document.getElementById('accounts').classList.remove('hidden');
-      showSection('profile');
-    });
+    logoutBtn.addEventListener('click', performLogout);
+    dropdownLogoutBtn.addEventListener('click', performLogout);
+
+    
 
     window.addEventListener('load', async () => {
       try {
