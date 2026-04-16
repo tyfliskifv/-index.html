@@ -11,16 +11,16 @@
     padding: 0;
     box-sizing: border-box;
   }
+
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #000000;
-    color: #f0f0f0;
+    background-color: #000000; /* Fundo preto */
+    color: #f0f0f0; /* Branco suave para texto */
     line-height: 1.6;
-    height: 100vh;
-    overflow: hidden;
   }
+
   header {
-    background-color: #000000;
+    background-color: #000000; /* Fundo preto */
     padding: 15px 40px;
     display: flex;
     align-items: center;
@@ -28,23 +28,26 @@
     gap: 20px;
     flex-wrap: wrap;
     position: relative;
-    z-index: 10;
   }
+
   .logo {
     font-weight: 900;
     font-size: 1.8rem;
-    color: transparent;
+    color: transparent; /* invisível */
     user-select: none;
     flex-shrink: 0;
   }
+
   nav {
     flex-grow: 1;
   }
+
   .tabs {
     display: flex;
     gap: 15px;
     list-style: none;
   }
+
   .tabs li {
     cursor: pointer;
     padding: 8px 16px;
@@ -54,11 +57,13 @@
     font-weight: 600;
     transition: background-color 0.3s ease;
   }
+
   .tabs li:hover,
   .tabs li.active {
     background-color: #ffeb3b;
     color: #000000;
   }
+
   .search-bar {
     display: flex;
     max-width: 300px;
@@ -67,6 +72,7 @@
     box-shadow: 0 0 10px #ffeb3baa;
     flex-shrink: 0;
   }
+
   .search-bar input[type="text"] {
     flex: 1;
     padding: 10px 15px;
@@ -75,9 +81,11 @@
     background-color: #111100;
     color: #f0f0f0;
   }
+
   .search-bar input[type="text"]::placeholder {
     color: #bdb76b;
   }
+
   .search-bar button {
     background-color: #ffeb3b;
     border: none;
@@ -88,32 +96,38 @@
     font-size: 1rem;
     transition: background-color 0.3s ease;
   }
+
   .search-bar button:hover {
     background-color: #fdd835;
   }
+
   main {
     max-width: 900px;
     margin: 40px auto;
     padding: 0 20px;
   }
+
   .ads-container {
     background-color: #111100;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 0 20px #ffeb3baa;
   }
+
   .ads-title {
     font-size: 1.5rem;
     font-weight: 700;
     color: #ffeb3b;
     margin-bottom: 20px;
   }
+
   .ads-list {
     display: flex;
     gap: 20px;
     overflow-x: auto;
     padding-bottom: 10px;
   }
+
   .ad-item {
     min-width: 200px;
     background-color: #333300;
@@ -126,6 +140,7 @@
     flex-direction: column;
     align-items: center;
   }
+
   .ad-item img {
     width: 100%;
     border-radius: 8px;
@@ -133,16 +148,19 @@
     object-fit: cover;
     height: 140px;
   }
+
   .ad-item h3 {
     font-size: 1.1rem;
     margin-bottom: 6px;
   }
+
   .ad-item p {
     font-size: 0.9rem;
     color: #dcdcdc;
     margin-bottom: 12px;
     text-align: center;
   }
+
   .buy-btn {
     background-color: #ffeb3b;
     color: #000000;
@@ -154,19 +172,24 @@
     transition: background-color 0.3s ease;
     width: 100%;
   }
+
   .buy-btn:hover {
     background-color: #fdd835;
   }
+
   /* Modal */
   .modal {
-    display: none;
+    display: none; /* hidden by default */
     position: fixed;
     z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.8);
   }
+
   .modal-content {
     background-color: #111100;
     margin: 10% auto;
@@ -178,34 +201,41 @@
     display: flex;
     flex-direction: column;
   }
+
   .modal-content img {
     width: 100%;
     border-radius: 8px;
     margin-bottom: 15px;
   }
+
   .modal-content h3 {
     margin-bottom: 10px;
     color: #ffeb3b;
   }
+
   .modal-content p {
     margin-bottom: 15px;
-    min-height: 40px;
+    min-height: 40px; /* espaço para descrição vazia */
   }
+
   .product-list {
-    min-height: 60px;
+    min-height: 60px; /* espaço para lista vazia */
     border: 1px solid #ffeb3b;
     border-radius: 8px;
     padding: 10px;
     color: #f0f0f0;
   }
+
   .close-btn {
     position: absolute;
-    top: 10px; right: 15px;
+    top: 10px;
+    right: 15px;
     font-size: 24px;
     font-weight: bold;
     color: #ffeb3b;
     cursor: pointer;
   }
+
   /* Chat box dentro do modal */
   #chatBox {
     display: none;
@@ -221,11 +251,13 @@
     display: flex;
     flex-direction: column;
   }
+
   #chatMessages {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 10px;
   }
+
   #chatToggleBtn {
     background-color: #ffeb3b;
     color: #000;
@@ -238,9 +270,11 @@
     margin-bottom: 10px;
     transition: background-color 0.3s ease;
   }
+
   #chatToggleBtn:hover {
     background-color: #fdd835;
   }
+
   #chatInput {
     flex: 1;
     padding: 8px;
@@ -249,10 +283,12 @@
     background-color: #111100;
     color: #f0f0f0;
   }
+
   #chatForm {
     display: flex;
     gap: 5px;
   }
+
   #chatForm button {
     background-color: #ffeb3b;
     border: none;
@@ -261,9 +297,88 @@
     font-weight: 700;
     cursor: pointer;
   }
+
   #chatForm button:hover {
     background-color: #fdd835;
   }
+
+  /* Contas - Login e Registro */
+  .accounts-container {
+    max-width: 400px;
+    margin: 40px auto;
+    background-color: #111100;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #ffeb3baa;
+    color: #f0f0f0;
+    position: relative;
+  }
+
+  .accounts-container h2 {
+    color: #ffeb3b;
+    margin-bottom: 20px;
+  }
+
+  .accounts-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .accounts-tabs button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .accounts-tabs .active {
+    background-color: #ffeb3b;
+    color: #000;
+  }
+
+  .accounts-tabs button:not(.active) {
+    background-color: #333300;
+    color: #f0f0f0;
+  }
+
+  .accounts-form label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .accounts-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ffeb3b;
+    background-color: #111100;
+    color: #f0f0f0;
+  }
+
+  .accounts-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffeb3b;
+    border: none;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .accounts-form button:hover {
+    background-color: #fdd835;
+  }
+
+  .message {
+    margin-top: 10px;
+    min-height: 20px;
+  }
+
   /* Perfil Icon no header */
   #profileIcon {
     position: absolute;
@@ -283,61 +398,40 @@
     cursor: pointer;
     user-select: none;
     box-shadow: 0 0 10px #ffeb3baa;
-    z-index: 1100;
   }
-  /* Painel de conta dentro da bolinha */
-  #accountPanel {
-    position: fixed;
-    top: 60px;
-    left: 10px;
-    width: 320px;
+
+  /* Support form styles */
+  #supportForm {
+    max-width: 400px;
+    margin: 40px auto;
     background-color: #111100;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 0 20px #ffeb3baa;
-    padding: 20px;
     color: #f0f0f0;
-    z-index: 1101;
-    display: none;
-    flex-direction: column;
   }
-  #accountPanel h2 {
+
+  #supportForm h2 {
     color: #ffeb3b;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
-  .accounts-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-  .accounts-tabs button {
-    flex: 1;
-    padding: 8px;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    border-radius: 8px;
-    background-color: #333300;
-    color: #f0f0f0;
-    transition: background-color 0.3s ease;
-  }
-  .accounts-tabs button.active {
-    background-color: #ffeb3b;
-    color: #000;
-  }
-  .accounts-form label {
+
+  #supportForm label {
     display: block;
     margin-bottom: 5px;
   }
-  .accounts-form input {
+
+  #supportForm input, #supportForm textarea {
     width: 100%;
     padding: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     border-radius: 6px;
     border: 1px solid #ffeb3b;
     background-color: #111100;
     color: #f0f0f0;
   }
-  .accounts-form button {
+
+  #supportForm button {
     width: 100%;
     padding: 10px;
     background-color: #ffeb3b;
@@ -346,80 +440,63 @@
     font-weight: 700;
     cursor: pointer;
     border-radius: 8px;
-    transition: background-color 0.3s ease;
   }
-  .accounts-form button:hover {
+
+  #supportForm button:hover {
     background-color: #fdd835;
   }
-  .message {
+
+  #supportMessage {
     margin-top: 10px;
     min-height: 20px;
   }
-  #profileView p {
-    margin-bottom: 15px;
-  }
-  #logoutBtn {
-    width: auto;
-    padding: 8px 16px;
-  }
-  /* Modal de login/registro centralizado */
-  #loginRegisterModal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #111100;
-    border-radius: 12px;
-    box-shadow: 0 0 30px #ffeb3baa;
-    padding: 30px;
-    width: 360px;
-    z-index: 1200;
-    display: none;
-    flex-direction: column;
-  }
-  #loginRegisterModal h2 {
-    color: #ffeb3b;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  #loginRegisterModal .accounts-tabs {
-    justify-content: center;
-  }
-  #loginRegisterModal .accounts-tabs button {
-    width: 120px;
-  }
-  #loginRegisterModal .accounts-form {
-    margin-top: 10px;
-  }
-  #loginRegisterModal .accounts-form input {
-    font-size: 1rem;
-  }
-  #loginRegisterModal .accounts-form button {
-    font-size: 1rem;
-  }
-  #loginRegisterModal .message {
-    text-align: center;
-  }
-  /* Overlay para modal */
-  #modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 1100;
-    display: none;
-  }
+
   /* Responsividade */
-  @media (max-width: 400px) {
-    #loginRegisterModal {
-      width: 90vw;
-      padding: 20px;
+  @media (max-width: 900px) {
+    main {
+      max-width: 100%;
+      padding: 0 10px;
     }
-    #loginRegisterModal .accounts-tabs button {
-      width: 100px;
-      font-size: 0.9rem;
+  }
+
+  @media (max-width: 600px) {
+    header {
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 20px;
+      position: relative;
+    }
+    nav {
+      order: 2;
+      width: 100%;
+    }
+    .tabs {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .search-bar {
+      order: 1;
+      max-width: 100%;
+      margin-bottom: 10px;
+    }
+    .ads-list {
+      gap: 10px;
+      padding-bottom: 15px;
+    }
+    .ad-item {
+      min-width: 150px;
+      padding: 10px;
+    }
+    .ad-item h3 {
+      font-size: 1rem;
+    }
+    .ad-item p {
+      font-size: 0.85rem;
+    }
+    #profileIcon {
+      left: 10px;
+      top: 10px;
+      transform: none;
     }
   }
 </style>
@@ -427,7 +504,7 @@
 <body>
 
 <header>
-  <div id="profileIcon" title="Perfil"></div>
+  <div id="profileIcon" title="Perfil" style="display:none;"></div>
   <div class="logo">TyF Blox</div>
   <nav>
     <ul class="tabs">
@@ -443,52 +520,20 @@
   </form>
 </header>
 
-<!-- Overlay para modal login/registro -->
-<div id="modalOverlay"></div>
-
-<!-- Modal centralizado para login/registro -->
-<div id="loginRegisterModal">
-  <h2>Conta de Usuário</h2>
-  <div class="accounts-tabs">
-    <button id="modalTabLogin" class="active">Login</button>
-    <button id="modalTabRegister">Registrar</button>
-  </div>
-
-  <!-- Formulário Login -->
-  <form id="modalLoginForm" class="accounts-form">
-    <label for="modalLoginUsername">Usuário:</label>
-    <input type="text" id="modalLoginUsername" required />
-    <label for="modalLoginPassword">Senha:</label>
-    <input type="password" id="modalLoginPassword" required />
-    <button type="submit">Entrar</button>
-    <p id="modalLoginMessage" class="message"></p>
-  </form>
-
-  <!-- Formulário Registro -->
-  <form id="modalRegisterForm" class="accounts-form" style="display:none;">
-    <label for="modalRegisterUsername">Usuário:</label>
-    <input type="text" id="modalRegisterUsername" required />
-    <label for="modalRegisterPassword">Senha:</label>
-    <input type="password" id="modalRegisterPassword" required />
-    <label for="modalRegisterEmail">Email:</label>
-    <input type="email" id="modalRegisterEmail" required />
-    <button type="submit">Registrar</button>
-    <p id="modalRegisterMessage" class="message"></p>
-  </form>
-</div>
-
 <main>
-  <!-- Conteúdos das abas -->
+  <!-- Home Tab Content -->
   <section id="home" class="tab-content">
     <div class="ads-container">
       <h2 class="ads-title">Roblox Game Ads</h2>
       <div class="ads-list">
+        <!-- Primeiro anúncio com botão comprar -->
         <div class="ad-item" data-title="Game Title 1" data-desc="" data-img="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg">
           <img src="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg" alt="Tio Patinhas" />
           <h3>Game Title 1</h3>
           <p>Short description of the game or promotion.</p>
           <button class="buy-btn">Comprar</button>
         </div>
+        <!-- Segundo anúncio exemplo -->
         <div class="ad-item" data-title="Game Title 2" data-desc="" data-img="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png">
           <img src="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png" alt="Game 2" />
           <h3>Game Title 2</h3>
@@ -499,18 +544,54 @@
     </div>
   </section>
 
+  <!-- Accounts Tab Content -->
   <section id="accounts" class="tab-content" style="display:none;">
     <div class="accounts-container">
       <h2>Conta de Usuário</h2>
-      <p>Use a bolinha amarela no canto superior esquerdo para gerenciar sua conta.</p>
+      <div class="accounts-tabs" id="accountsTabs">
+        <button id="showLogin" class="active">Login</button>
+        <button id="showRegister">Registrar</button>
+        <button id="showProfile" style="display:none;">Perfil</button>
+      </div>
+
+      <!-- Formulário Login -->
+      <form id="loginForm" class="accounts-form" style="display: block;">
+        <label for="loginUsername">Usuário:</label>
+        <input type="text" id="loginUsername" required />
+        <label for="loginPassword">Senha:</label>
+        <input type="password" id="loginPassword" required />
+        <button type="submit">Entrar</button>
+        <p id="loginMessage" class="message"></p>
+      </form>
+
+      <!-- Formulário Registro -->
+      <form id="registerForm" class="accounts-form" style="display: none;">
+        <label for="registerUsername">Usuário:</label>
+        <input type="text" id="registerUsername" required />
+        <label for="registerPassword">Senha:</label>
+        <input type="password" id="registerPassword" required />
+        <label for="registerEmail">Email:</label>
+        <input type="email" id="registerEmail" required />
+        <button type="submit">Registrar</button>
+        <p id="registerMessage" class="message"></p>
+      </form>
+
+      <!-- Perfil do Usuário -->
+      <div id="profileView" style="display:none; color:#f0f0f0;">
+        <h3>Bem-vindo, <span id="profileUsername"></span>!</h3>
+        <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+        <button id="logoutBtn" style="background-color:#ffeb3b; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">Sair</button>
+      </div>
     </div>
   </section>
 
+  <!-- Pricing Tab Content -->
   <section id="pricing" class="tab-content" style="display:none;">
     <h2 style="color:#ffeb3b;">Pricing</h2>
     <p>Informações sobre preços aqui.</p>
   </section>
 
+  <!-- Contact Tab Content -->
   <section id="contact" class="tab-content" style="display:none;">
     <div id="supportForm">
       <h2>Suporte</h2>
@@ -519,7 +600,7 @@
         <input type="text" id="supportName" required />
         <label for="supportEmail">Email:</label>
         <input type="email" id="supportEmail" required />
-        <label for="supportMessageInput">Mensagem:</label>
+        <label for="supportMessage">Mensagem:</label>
         <textarea id="supportMessageInput" rows="5" required></textarea>
         <button type="submit">Enviar</button>
       </form>
@@ -536,8 +617,10 @@
     <h3 id="modalTitle"></h3>
     <p id="modalDesc"></p>
 
+    <!-- Botão Atendimento -->
     <button id="chatToggleBtn">Atendimento</button>
 
+    <!-- Aba de dúvidas com chat simples -->
     <div id="chatBox">
       <div id="chatMessages">
         <p><strong>Atendente:</strong> Olá! Como posso ajudar você?</p>
@@ -548,7 +631,9 @@
       </form>
     </div>
 
-    <div class="product-list" id="modalProductList"></div>
+    <div class="product-list" id="modalProductList">
+      <!-- Lista de produtos vazia por enquanto -->
+    </div>
   </div>
 </div>
 
@@ -556,20 +641,19 @@
   &copy; 2026 TyF Blox
 </footer>
 
-<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
-  (function(){
-    emailjs.init("SEU_USER_ID_AQUI"); // Substitua pelo seu user_id do EmailJS
-  })();
-
   // Controle das abas do menu
   const tabs = document.querySelectorAll('.tabs li');
   const tabContents = document.querySelectorAll('.tab-content');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
+      // Remove active de todas as tabs
       tabs.forEach(t => t.classList.remove('active'));
+      // Esconde todos os conteúdos
       tabContents.forEach(tc => tc.style.display = 'none');
+
+      // Ativa a tab clicada
       tab.classList.add('active');
       const tabId = tab.getAttribute('data-tab');
       document.getElementById(tabId).style.display = 'block';
@@ -595,8 +679,10 @@
     modalTitle.textContent = adItem.dataset.title;
     modalDesc.textContent = adItem.dataset.desc || "Descrição do produto não disponível.";
     modalProductList.innerHTML = "";
+
     chatBox.style.display = 'none';
     chatToggleBtn.textContent = 'Atendimento';
+
     modal.style.display = "block";
   }
 
@@ -631,11 +717,14 @@
     e.preventDefault();
     const userMessage = chatInput.value.trim();
     if (!userMessage) return;
+
     const userMsgElem = document.createElement('p');
     userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
     chatMessages.appendChild(userMsgElem);
+
     chatInput.value = '';
     chatMessages.scrollTop = chatMessages.scrollHeight;
+
     setTimeout(() => {
       const botMsgElem = document.createElement('p');
       botMsgElem.innerHTML = `<strong>Atendente:</strong> Obrigado pela sua pergunta! Em breve responderemos.`;
@@ -644,13 +733,10 @@
     }, 1000);
   });
 
-  // Sistema de conta dentro da bolinha amarela
-  const profileIcon = document.getElementById('profileIcon');
-  const accountPanel = document.getElementById('accountPanel');
-
-  const tabLogin = document.getElementById('tabLogin');
-  const tabRegister = document.getElementById('tabRegister');
-  const tabProfile = document.getElementById('tabProfile');
+  // Contas - Login e Registro com perfil, sessão e ícone no header
+  const showLoginBtn = document.getElementById('showLogin');
+  const showRegisterBtn = document.getElementById('showRegister');
+  const showProfileBtn = document.getElementById('showProfile');
 
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
@@ -663,32 +749,32 @@
   const profileEmail = document.getElementById('profileEmail');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  // Alterna abas no painel de conta
-  function showAccountTab(tab) {
-    tabLogin.classList.remove('active');
-    tabRegister.classList.remove('active');
-    tabProfile.classList.remove('active');
+  const profileIcon = document.getElementById('profileIcon');
+  const accountsTabs = document.getElementById('accountsTabs');
 
+  function showSection(section) {
     loginForm.style.display = 'none';
     registerForm.style.display = 'none';
     profileView.style.display = 'none';
 
-    if (tab === 'login') {
-      tabLogin.classList.add('active');
-      loginForm.style.display = 'block';
-    } else if (tab === 'register') {
-      tabRegister.classList.add('active');
-      registerForm.style.display = 'block';
-    } else if (tab === 'profile') {
-      tabProfile.classList.add('active');
-      profileView.style.display = 'block';
-    }
+    showLoginBtn.classList.remove('active');
+    showRegisterBtn.classList.remove('active');
+    showProfileBtn.classList.remove('active');
 
+    if (section === 'login') {
+      loginForm.style.display = 'block';
+      showLoginBtn.classList.add('active');
+    } else if (section === 'register') {
+      registerForm.style.display = 'block';
+      showRegisterBtn.classList.add('active');
+    } else if (section === 'profile') {
+      profileView.style.display = 'block';
+      showProfileBtn.classList.add('active');
+    }
     loginMessage.textContent = '';
     registerMessage.textContent = '';
   }
 
-  // Gerenciamento de usuários no localStorage
   function getUsers() {
     return JSON.parse(localStorage.getItem('users')) || {};
   }
@@ -738,28 +824,24 @@
 
   function updateUIForLoggedIn(loggedIn) {
     if (loggedIn) {
-      tabProfile.style.display = 'inline-block';
-      tabLogin.style.display = 'none';
-      tabRegister.style.display = 'none';
+      // Mostrar só perfil e esconder login/registro
+      showProfileBtn.style.display = 'inline-block';
+      showLoginBtn.style.display = 'none';
+      showRegisterBtn.style.display = 'none';
       profileIcon.style.display = 'flex';
-      loginRegisterModal.style.display = 'none';
-      modalOverlay.style.display = 'none';
     } else {
-      tabProfile.style.display = 'none';
-      tabLogin.style.display = 'inline-block';
-      tabRegister.style.display = 'inline-block';
+      // Mostrar login/registro e esconder perfil
+      showProfileBtn.style.display = 'none';
+      showLoginBtn.style.display = 'inline-block';
+      showRegisterBtn.style.display = 'inline-block';
       profileIcon.style.display = 'none';
-      loginRegisterModal.style.display = 'flex';
-      modalOverlay.style.display = 'block';
     }
   }
 
-  // Eventos para troca de abas
-  tabLogin.addEventListener('click', () => showAccountTab('login'));
-  tabRegister.addEventListener('click', () => showAccountTab('register'));
-  tabProfile.addEventListener('click', () => showAccountTab('profile'));
+  showLoginBtn.addEventListener('click', () => showSection('login'));
+  showRegisterBtn.addEventListener('click', () => showSection('register'));
+  showProfileBtn.addEventListener('click', () => showSection('profile'));
 
-  // Eventos dos formulários
   registerForm.addEventListener('submit', e => {
     e.preventDefault();
     const username = document.getElementById('registerUsername').value.trim();
@@ -776,7 +858,7 @@
       registerMessage.style.color = 'lightgreen';
       registerMessage.textContent = 'Conta criada com sucesso! Faça login.';
       registerForm.reset();
-      showAccountTab('login');
+      showSection('login');
     } else {
       registerMessage.style.color = 'lightcoral';
       registerMessage.textContent = 'Usuário já existe. Escolha outro nome.';
@@ -795,7 +877,7 @@
       loginForm.reset();
       updateProfileView(username);
       updateUIForLoggedIn(true);
-      showAccountTab('profile');
+      showSection('profile');
     } else {
       loginMessage.style.color = 'lightcoral';
       loginMessage.textContent = 'Usuário ou senha incorretos.';
@@ -805,39 +887,53 @@
   logoutBtn.addEventListener('click', () => {
     clearSession();
     updateUIForLoggedIn(false);
-    showAccountTab('login');
+    showSection('login');
   });
 
-  // Mostrar/ocultar painel ao clicar na bolinha
   profileIcon.addEventListener('click', () => {
-    if (accountPanel.style.display === 'flex') {
-      accountPanel.style.display = 'none';
-    } else {
-      accountPanel.style.display = 'flex';
-    }
+    // Ao clicar no ícone, abre a aba Accounts na seção Perfil
+    tabs.forEach(t => t.classList.remove('active'));
+    tabContents.forEach(tc => tc.style.display = 'none');
+    document.querySelector('li[data-tab="accounts"]').classList.add('active');
+    document.getElementById('accounts').style.display = 'block';
+    showSection('profile');
   });
 
-  // Modal login/registro centralizado
-  const loginRegisterModal = document.getElementById('loginRegisterModal');
-  const modalOverlay = document.getElementById('modalOverlay');
-
-  // Fechar modal ao clicar fora
-  modalOverlay.addEventListener('click', () => {
-    loginRegisterModal.style.display = 'none';
-    modalOverlay.style.display = 'none';
-  });
-
-  // Inicialização ao carregar página
   window.addEventListener('load', () => {
     const loggedUser = getSession();
     if (loggedUser) {
       updateProfileView(loggedUser);
       updateUIForLoggedIn(true);
-      showAccountTab('profile');
+      showSection('profile');
     } else {
       updateUIForLoggedIn(false);
-      showAccountTab('login');
+      showSection('login');
     }
+  });
+
+  // Support form functionality
+  const supportForm = document.getElementById('contactSupportForm');
+  const supportMessage = document.getElementById('supportMessage');
+
+  supportForm.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const name = document.getElementById('supportName').value.trim();
+    const email = document.getElementById('supportEmail').value.trim();
+    const message = document.getElementById('supportMessageInput').value.trim();
+
+    if (!name || !email || !message) {
+      supportMessage.style.color = 'lightcoral';
+      supportMessage.textContent = 'Por favor, preencha todos os campos.';
+      return;
+    }
+
+    // Aqui você pode integrar com backend, API, ou enviar email via serviço externo
+    // Por enquanto, só simula envio e limpa o formulário
+
+    supportMessage.style.color = 'lightgreen';
+    supportMessage.textContent = 'Mensagem enviada com sucesso! Entraremos em contato em breve.';
+    supportForm.reset();
   });
 </script>
 
