@@ -197,6 +197,8 @@
     max-width: 500px;
     color: #f0f0f0;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   .modal-content img {
@@ -240,11 +242,19 @@
     border: 1px solid #ffeb3b;
     border-radius: 8px;
     padding: 10px;
-    height: 150px;
+    height: 250px;
     overflow-y: auto;
     color: #f0f0f0;
     font-size: 0.9rem;
     margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #chatMessages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
   }
 
   #chatToggleBtn {
@@ -261,6 +271,33 @@
   }
 
   #chatToggleBtn:hover {
+    background-color: #fdd835;
+  }
+
+  #chatInput {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ffeb3b;
+    background-color: #111100;
+    color: #f0f0f0;
+  }
+
+  #chatForm {
+    display: flex;
+    gap: 5px;
+  }
+
+  #chatForm button {
+    background-color: #ffeb3b;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  #chatForm button:hover {
     background-color: #fdd835;
   }
 
@@ -361,10 +398,15 @@
     <!-- Botão Atendimento -->
     <button id="chatToggleBtn">Atendimento</button>
 
-    <!-- Aba de conversa (inicialmente oculta) -->
+    <!-- Aba de dúvidas com chat simples -->
     <div id="chatBox">
-      <p><strong>Atendente:</strong> Olá! Como posso ajudar você?</p>
-      <!-- Você pode adicionar aqui inputs, mensagens dinâmicas, etc -->
+      <div id="chatMessages">
+        <p><strong>Atendente:</strong> Olá! Como posso ajudar você?</p>
+      </div>
+      <form id="chatForm">
+        <input type="text" id="chatInput" placeholder="Digite sua dúvida..." required />
+        <button type="submit">Enviar</button>
+      </form>
     </div>
 
     <div class="product-list" id="modalProductList">
@@ -389,6 +431,9 @@
   // Elementos do chat
   const chatToggleBtn = document.getElementById('chatToggleBtn');
   const chatBox = document.getElementById('chatBox');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
 
   // Função para abrir modal com dados do anúncio
   function openModal(adItem) {
@@ -424,15 +469,39 @@
     });
   });
 
-  // Alterna visibilidade da aba de conversa
+  // Alterna visibilidade da aba de dúvidas
   chatToggleBtn.addEventListener('click', () => {
     if (chatBox.style.display === 'none' || chatBox.style.display === '') {
-      chatBox.style.display = 'block';
+      chatBox.style.display = 'flex';
       chatToggleBtn.textContent = 'Fechar Atendimento';
     } else {
       chatBox.style.display = 'none';
       chatToggleBtn.textContent = 'Atendimento';
     }
+  });
+
+  // Envia mensagem do usuário e simula resposta automática
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const userMessage = chatInput.value.trim();
+    if (!userMessage) return;
+
+    // Adiciona mensagem do usuário
+    const userMsgElem = document.createElement('p');
+    userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
+    chatMessages.appendChild(userMsgElem);
+
+    // Limpa input
+    chatInput.value = '';
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Simula resposta automática (substitua por integração real)
+    setTimeout(() => {
+      const botMsgElem = document.createElement('p');
+      botMsgElem.innerHTML = `<strong>Atendente:</strong> Obrigado pela sua pergunta! Em breve responderemos.`;
+      chatMessages.appendChild(botMsgElem);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 1000);
   });
 </script>
 
