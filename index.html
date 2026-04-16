@@ -635,11 +635,23 @@
         </form>
 
         <form id="registerForm" class="accounts-form hidden" autocomplete="on">
+          <div style="background:#1b1b00; border:1px solid rgba(255,235,59,0.35); border-radius:10px; padding:12px; margin-bottom:14px; color:#f5f5f5;">
+            <strong style="color:#ffeb3b; display:block; margin-bottom:6px;">Requisitos para cadastro</strong>
+            <div style="font-size:0.95rem; color:#d8d8d8;">
+              • Usuário com pelo menos 3 caracteres<br>
+              • Senha com no mínimo 8 caracteres<br>
+              • Informe um e-mail válido<br>
+              • Não use dados de outra pessoa
+            </div>
+          </div>
           <label for="registerUsername">Usuário</label>
+          <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Escolha um nome único para entrar na sua conta.</small>
           <input type="text" id="registerUsername" name="username" required minlength="3" autocomplete="username" />
           <label for="registerPassword">Senha</label>
+          <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Use uma senha forte com letras e números para mais segurança.</small>
           <input type="password" id="registerPassword" name="password" required minlength="8" autocomplete="new-password" />
           <label for="registerEmail">E-mail</label>
+          <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Esse e-mail será usado para identificação da conta.</small>
           <input type="email" id="registerEmail" name="email" required autocomplete="email" />
           <button type="submit">Registrar</button>
           <p id="registerMessage" class="message"></p>
