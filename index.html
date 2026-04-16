@@ -301,6 +301,82 @@
     background-color: #fdd835;
   }
 
+  /* Contas - Login e Registro */
+  .accounts-container {
+    max-width: 400px;
+    margin: 40px auto;
+    background-color: #111100;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #ffeb3baa;
+    color: #f0f0f0;
+  }
+
+  .accounts-container h2 {
+    color: #ffeb3b;
+    margin-bottom: 20px;
+  }
+
+  .accounts-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .accounts-tabs button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .accounts-tabs .active {
+    background-color: #ffeb3b;
+    color: #000;
+  }
+
+  .accounts-tabs button:not(.active) {
+    background-color: #333300;
+    color: #f0f0f0;
+  }
+
+  .accounts-form label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .accounts-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ffeb3b;
+    background-color: #111100;
+    color: #f0f0f0;
+  }
+
+  .accounts-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffeb3b;
+    border: none;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .accounts-form button:hover {
+    background-color: #fdd835;
+  }
+
+  .message {
+    margin-top: 10px;
+    min-height: 20px;
+  }
+
   /* Responsividade */
   @media (max-width: 900px) {
     main {
@@ -351,10 +427,10 @@
   <div class="logo">TyF Blox</div>
   <nav>
     <ul class="tabs">
-      <li class="active">Home</li>
-      <li>Accounts</li>
-      <li>Pricing</li>
-      <li>Contact</li>
+      <li class="active" data-tab="home">Home</li>
+      <li data-tab="accounts">Accounts</li>
+      <li data-tab="pricing">Pricing</li>
+      <li data-tab="contact">Contact</li>
     </ul>
   </nav>
   <form class="search-bar" onsubmit="event.preventDefault();">
@@ -364,27 +440,71 @@
 </header>
 
 <main>
-
-  <section class="ads-container">
-    <h2 class="ads-title">Roblox Game Ads</h2>
-    <div class="ads-list">
-      <!-- Primeiro anúncio com botão comprar -->
-      <div class="ad-item" data-title="Game Title 1" data-desc="" data-img="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg">
-        <img src="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg" alt="Tio Patinhas" />
-        <h3>Game Title 1</h3>
-        <p>Short description of the game or promotion.</p>
-        <button class="buy-btn">Comprar</button>
-      </div>
-      <!-- Segundo anúncio exemplo -->
-      <div class="ad-item" data-title="Game Title 2" data-desc="" data-img="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png">
-        <img src="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png" alt="Game 2" />
-        <h3>Game Title 2</h3>
-        <p>Short description of the game or promotion.</p>
-        <button class="buy-btn">Comprar</button>
+  <!-- Home Tab Content -->
+  <section id="home" class="tab-content">
+    <div class="ads-container">
+      <h2 class="ads-title">Roblox Game Ads</h2>
+      <div class="ads-list">
+        <!-- Primeiro anúncio com botão comprar -->
+        <div class="ad-item" data-title="Game Title 1" data-desc="" data-img="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg">
+          <img src="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg" alt="Tio Patinhas" />
+          <h3>Game Title 1</h3>
+          <p>Short description of the game or promotion.</p>
+          <button class="buy-btn">Comprar</button>
+        </div>
+        <!-- Segundo anúncio exemplo -->
+        <div class="ad-item" data-title="Game Title 2" data-desc="" data-img="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png">
+          <img src="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png" alt="Game 2" />
+          <h3>Game Title 2</h3>
+          <p>Short description of the game or promotion.</p>
+          <button class="buy-btn">Comprar</button>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- Accounts Tab Content -->
+  <section id="accounts" class="tab-content" style="display:none;">
+    <div class="accounts-container">
+      <h2>Conta de Usuário</h2>
+      <div class="accounts-tabs">
+        <button id="showLogin" class="active">Login</button>
+        <button id="showRegister">Registrar</button>
+      </div>
+
+      <!-- Formulário Login -->
+      <form id="loginForm" class="accounts-form" style="display: block;">
+        <label for="loginUsername">Usuário:</label>
+        <input type="text" id="loginUsername" required />
+        <label for="loginPassword">Senha:</label>
+        <input type="password" id="loginPassword" required />
+        <button type="submit">Entrar</button>
+        <p id="loginMessage" class="message"></p>
+      </form>
+
+      <!-- Formulário Registro -->
+      <form id="registerForm" class="accounts-form" style="display: none;">
+        <label for="registerUsername">Usuário:</label>
+        <input type="text" id="registerUsername" required />
+        <label for="registerPassword">Senha:</label>
+        <input type="password" id="registerPassword" required />
+        <button type="submit">Registrar</button>
+        <p id="registerMessage" class="message"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Pricing Tab Content -->
+  <section id="pricing" class="tab-content" style="display:none;">
+    <h2 style="color:#ffeb3b;">Pricing</h2>
+    <p>Informações sobre preços aqui.</p>
+  </section>
+
+  <!-- Contact Tab Content -->
+  <section id="contact" class="tab-content" style="display:none;">
+    <h2 style="color:#ffeb3b;">Contact</h2>
+    <p>Informações de contato aqui.</p>
+  </section>
 </main>
 
 <!-- Modal -->
@@ -420,7 +540,25 @@
 </footer>
 
 <script>
-  // Seleciona elementos do modal
+  // Controle das abas do menu
+  const tabs = document.querySelectorAll('.tabs li');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active de todas as tabs
+      tabs.forEach(t => t.classList.remove('active'));
+      // Esconde todos os conteúdos
+      tabContents.forEach(tc => tc.style.display = 'none');
+
+      // Ativa a tab clicada
+      tab.classList.add('active');
+      const tabId = tab.getAttribute('data-tab');
+      document.getElementById(tabId).style.display = 'block';
+    });
+  });
+
+  // Modal e anúncios
   const modal = document.getElementById('buyModal');
   const modalImg = document.getElementById('modalImg');
   const modalTitle = document.getElementById('modalTitle');
@@ -428,40 +566,34 @@
   const modalProductList = document.getElementById('modalProductList');
   const closeModalBtn = document.getElementById('closeModal');
 
-  // Elementos do chat
   const chatToggleBtn = document.getElementById('chatToggleBtn');
   const chatBox = document.getElementById('chatBox');
   const chatMessages = document.getElementById('chatMessages');
   const chatForm = document.getElementById('chatForm');
   const chatInput = document.getElementById('chatInput');
 
-  // Função para abrir modal com dados do anúncio
   function openModal(adItem) {
     modalImg.src = adItem.dataset.img;
     modalTitle.textContent = adItem.dataset.title;
     modalDesc.textContent = adItem.dataset.desc || "Descrição do produto não disponível.";
-    modalProductList.innerHTML = ""; // Lista vazia por enquanto
+    modalProductList.innerHTML = "";
 
-    // Esconde o chat e reseta o botão ao abrir modal
     chatBox.style.display = 'none';
     chatToggleBtn.textContent = 'Atendimento';
 
     modal.style.display = "block";
   }
 
-  // Fecha modal
-  closeModalBtn.onclick = function() {
+  closeModalBtn.onclick = () => {
     modal.style.display = "none";
-  }
+  };
 
-  // Fecha modal ao clicar fora do conteúdo
-  window.onclick = function(event) {
+  window.onclick = (event) => {
     if (event.target == modal) {
       modal.style.display = "none";
     }
-  }
+  };
 
-  // Adiciona evento aos botões comprar para abrir modal
   document.querySelectorAll('.buy-btn').forEach(button => {
     button.addEventListener('click', (e) => {
       const adItem = e.target.closest('.ad-item');
@@ -469,7 +601,6 @@
     });
   });
 
-  // Alterna visibilidade da aba de dúvidas
   chatToggleBtn.addEventListener('click', () => {
     if (chatBox.style.display === 'none' || chatBox.style.display === '') {
       chatBox.style.display = 'flex';
@@ -480,28 +611,96 @@
     }
   });
 
-  // Envia mensagem do usuário e simula resposta automática
   chatForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const userMessage = chatInput.value.trim();
     if (!userMessage) return;
 
-    // Adiciona mensagem do usuário
     const userMsgElem = document.createElement('p');
     userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
     chatMessages.appendChild(userMsgElem);
 
-    // Limpa input
     chatInput.value = '';
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    // Simula resposta automática (substitua por integração real)
     setTimeout(() => {
       const botMsgElem = document.createElement('p');
       botMsgElem.innerHTML = `<strong>Atendente:</strong> Obrigado pela sua pergunta! Em breve responderemos.`;
       chatMessages.appendChild(botMsgElem);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }, 1000);
+  });
+
+  // Contas - Login e Registro
+  const showLoginBtn = document.getElementById('showLogin');
+  const showRegisterBtn = document.getElementById('showRegister');
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const loginMessage = document.getElementById('loginMessage');
+  const registerMessage = document.getElementById('registerMessage');
+
+  showLoginBtn.addEventListener('click', () => {
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
+    showLoginBtn.classList.add('active');
+    showRegisterBtn.classList.remove('active');
+    loginMessage.textContent = '';
+    registerMessage.textContent = '';
+  });
+
+  showRegisterBtn.addEventListener('click', () => {
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    showRegisterBtn.classList.add('active');
+    showLoginBtn.classList.remove('active');
+    loginMessage.textContent = '';
+    registerMessage.textContent = '';
+  });
+
+  function saveUser(username, password) {
+    let users = JSON.parse(localStorage.getItem('users')) || {};
+    if (users[username]) {
+      return false;
+    }
+    users[username] = { password };
+    localStorage.setItem('users', JSON.stringify(users));
+    return true;
+  }
+
+  function validateUser(username, password) {
+    let users = JSON.parse(localStorage.getItem('users')) || {};
+    return users[username] && users[username].password === password;
+  }
+
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('registerUsername').value.trim();
+    const password = document.getElementById('registerPassword').value.trim();
+
+    if (saveUser(username, password)) {
+      registerMessage.style.color = 'lightgreen';
+      registerMessage.textContent = 'Conta criada com sucesso! Você pode fazer login.';
+      registerForm.reset();
+    } else {
+      registerMessage.style.color = 'lightcoral';
+      registerMessage.textContent = 'Usuário já existe. Escolha outro nome.';
+    }
+  });
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+
+    if (validateUser(username, password)) {
+      loginMessage.style.color = 'lightgreen';
+      loginMessage.textContent = `Bem-vindo, ${username}! Você está logado.`;
+      loginForm.reset();
+      // Aqui você pode adicionar lógica para salvar sessão, redirecionar, etc.
+    } else {
+      loginMessage.style.color = 'lightcoral';
+      loginMessage.textContent = 'Usuário ou senha incorretos.';
+    }
   });
 </script>
 
