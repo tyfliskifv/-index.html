@@ -400,6 +400,57 @@
     box-shadow: 0 0 10px #ffeb3baa;
   }
 
+  /* Support form styles */
+  #supportForm {
+    max-width: 400px;
+    margin: 40px auto;
+    background-color: #111100;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #ffeb3baa;
+    color: #f0f0f0;
+  }
+
+  #supportForm h2 {
+    color: #ffeb3b;
+    margin-bottom: 20px;
+  }
+
+  #supportForm label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  #supportForm input, #supportForm textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ffeb3b;
+    background-color: #111100;
+    color: #f0f0f0;
+  }
+
+  #supportForm button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffeb3b;
+    border: none;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  #supportForm button:hover {
+    background-color: #fdd835;
+  }
+
+  #supportMessage {
+    margin-top: 10px;
+    min-height: 20px;
+  }
+
   /* Responsividade */
   @media (max-width: 900px) {
     main {
@@ -542,8 +593,19 @@
 
   <!-- Contact Tab Content -->
   <section id="contact" class="tab-content" style="display:none;">
-    <h2 style="color:#ffeb3b;">Contact</h2>
-    <p>Informações de contato aqui.</p>
+    <div id="supportForm">
+      <h2>Suporte</h2>
+      <form id="contactSupportForm">
+        <label for="supportName">Nome:</label>
+        <input type="text" id="supportName" required />
+        <label for="supportEmail">Email:</label>
+        <input type="email" id="supportEmail" required />
+        <label for="supportMessage">Mensagem:</label>
+        <textarea id="supportMessageInput" rows="5" required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+      <p id="supportMessage" class="message"></p>
+    </div>
   </section>
 </main>
 
@@ -847,6 +909,31 @@
       updateUIForLoggedIn(false);
       showSection('login');
     }
+  });
+
+  // Support form functionality
+  const supportForm = document.getElementById('contactSupportForm');
+  const supportMessage = document.getElementById('supportMessage');
+
+  supportForm.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const name = document.getElementById('supportName').value.trim();
+    const email = document.getElementById('supportEmail').value.trim();
+    const message = document.getElementById('supportMessageInput').value.trim();
+
+    if (!name || !email || !message) {
+      supportMessage.style.color = 'lightcoral';
+      supportMessage.textContent = 'Por favor, preencha todos os campos.';
+      return;
+    }
+
+    // Aqui você pode integrar com backend, API, ou enviar email via serviço externo
+    // Por enquanto, só simula envio e limpa o formulário
+
+    supportMessage.style.color = 'lightgreen';
+    supportMessage.textContent = 'Mensagem enviada com sucesso! Entraremos em contato em breve.';
+    supportForm.reset();
   });
 </script>
 
