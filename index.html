@@ -27,6 +27,7 @@
     justify-content: space-between;
     gap: 20px;
     flex-wrap: wrap;
+    position: relative;
   }
 
   .logo {
@@ -310,6 +311,7 @@
     border-radius: 12px;
     box-shadow: 0 0 20px #ffeb3baa;
     color: #f0f0f0;
+    position: relative;
   }
 
   .accounts-container h2 {
@@ -377,6 +379,27 @@
     min-height: 20px;
   }
 
+  /* Perfil Icon no header */
+  #profileIcon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ffeb3b;
+    color: #000;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 0 10px #ffeb3baa;
+  }
+
   /* Responsividade */
   @media (max-width: 900px) {
     main {
@@ -390,6 +413,7 @@
       justify-content: center;
       gap: 10px;
       padding: 15px 20px;
+      position: relative;
     }
     nav {
       order: 2;
@@ -418,12 +442,18 @@
     .ad-item p {
       font-size: 0.85rem;
     }
+    #profileIcon {
+      left: 10px;
+      top: 10px;
+      transform: none;
+    }
   }
 </style>
 </head>
 <body>
 
 <header>
+  <div id="profileIcon" title="Perfil" style="display:none;"></div>
   <div class="logo">TyF Blox</div>
   <nav>
     <ul class="tabs">
@@ -467,7 +497,7 @@
   <section id="accounts" class="tab-content" style="display:none;">
     <div class="accounts-container">
       <h2>Conta de Usuário</h2>
-      <div class="accounts-tabs">
+      <div class="accounts-tabs" id="accountsTabs">
         <button id="showLogin" class="active">Login</button>
         <button id="showRegister">Registrar</button>
         <button id="showProfile" style="display:none;">Perfil</button>
@@ -641,7 +671,7 @@
     }, 1000);
   });
 
-  // Contas - Login e Registro com perfil e sessão
+  // Contas - Login e Registro com perfil, sessão e ícone no header
   const showLoginBtn = document.getElementById('showLogin');
   const showRegisterBtn = document.getElementById('showRegister');
   const showProfileBtn = document.getElementById('showProfile');
@@ -656,6 +686,9 @@
   const profileUsername = document.getElementById('profileUsername');
   const profileEmail = document.getElementById('profileEmail');
   const logoutBtn = document.getElementById('logoutBtn');
+
+  const profileIcon = document.getElementById('profileIcon');
+  const accountsTabs = document.getElementById('accountsTabs');
 
   function showSection(section) {
     loginForm.style.display = 'none';
@@ -723,6 +756,24 @@
     if (!profile) return;
     profileUsername.textContent = username;
     profileEmail.textContent = profile.email;
+    profileIcon.textContent = username.charAt(0).toUpperCase();
+    profileIcon.title = `Perfil: ${username}`;
+  }
+
+  function updateUIForLoggedIn(loggedIn) {
+    if (loggedIn) {
+      // Mostrar só perfil e esconder login/registro
+      showProfileBtn.style.display = 'inline-block';
+      showLoginBtn.style.display = 'none';
+      showRegisterBtn.style.display = 'none';
+      profileIcon.style.display = 'flex';
+    } else {
+      // Mostrar login/registro e esconder perfil
+      showProfileBtn.style.display = 'none';
+      showLoginBtn.style.display = 'inline-block';
+      showRegisterBtn.style.display = 'inline-block';
+      profileIcon.style.display = 'none';
+    }
   }
 
   showLoginBtn.addEventListener('click', () => showSection('login'));
@@ -763,7 +814,7 @@
       loginMessage.textContent = `Bem-vindo, ${username}!`;
       loginForm.reset();
       updateProfileView(username);
-      showProfileBtn.style.display = 'inline-block';
+      updateUIForLoggedIn(true);
       showSection('profile');
     } else {
       loginMessage.style.color = 'lightcoral';
@@ -773,18 +824,27 @@
 
   logoutBtn.addEventListener('click', () => {
     clearSession();
-    showProfileBtn.style.display = 'none';
+    updateUIForLoggedIn(false);
     showSection('login');
+  });
+
+  profileIcon.addEventListener('click', () => {
+    // Ao clicar no ícone, abre a aba Accounts na seção Perfil
+    tabs.forEach(t => t.classList.remove('active'));
+    tabContents.forEach(tc => tc.style.display = 'none');
+    document.querySelector('li[data-tab="accounts"]').classList.add('active');
+    document.getElementById('accounts').style.display = 'block';
+    showSection('profile');
   });
 
   window.addEventListener('load', () => {
     const loggedUser = getSession();
     if (loggedUser) {
       updateProfileView(loggedUser);
-      showProfileBtn.style.display = 'inline-block';
+      updateUIForLoggedIn(true);
       showSection('profile');
     } else {
-      showProfileBtn.style.display = 'none';
+      updateUIForLoggedIn(false);
       showSection('login');
     }
   });
