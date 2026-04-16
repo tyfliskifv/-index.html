@@ -1,941 +1,1095 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TyF Blox</title>
-<style>
-  /* Reset básico */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #000000; /* Fundo preto */
-    color: #f0f0f0; /* Branco suave para texto */
-    line-height: 1.6;
-  }
-
-  header {
-    background-color: #000000; /* Fundo preto */
-    padding: 15px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-    position: relative;
-  }
-
-  .logo {
-    font-weight: 900;
-    font-size: 1.8rem;
-    color: transparent; /* invisível */
-    user-select: none;
-    flex-shrink: 0;
-  }
-
-  nav {
-    flex-grow: 1;
-  }
-
-  .tabs {
-    display: flex;
-    gap: 15px;
-    list-style: none;
-  }
-
-  .tabs li {
-    cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 8px;
-    background-color: #333300;
-    color: #f0f0f0;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-  }
-
-  .tabs li:hover,
-  .tabs li.active {
-    background-color: #ffeb3b;
-    color: #000000;
-  }
-
-  .search-bar {
-    display: flex;
-    max-width: 300px;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px #ffeb3baa;
-    flex-shrink: 0;
-  }
-
-  .search-bar input[type="text"] {
-    flex: 1;
-    padding: 10px 15px;
-    border: none;
-    font-size: 1rem;
-    background-color: #111100;
-    color: #f0f0f0;
-  }
-
-  .search-bar input[type="text"]::placeholder {
-    color: #bdb76b;
-  }
-
-  .search-bar button {
-    background-color: #ffeb3b;
-    border: none;
-    color: #000000;
-    font-weight: 700;
-    padding: 0 15px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-  }
-
-  .search-bar button:hover {
-    background-color: #fdd835;
-  }
-
-  main {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
-  }
-
-  .ads-container {
-    background-color: #111100;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 0 20px #ffeb3baa;
-  }
-
-  .ads-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ffeb3b;
-    margin-bottom: 20px;
-  }
-
-  .ads-list {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-  }
-
-  .ad-item {
-    min-width: 200px;
-    background-color: #333300;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #ffeb3baa;
-    padding: 15px;
-    color: #f0f0f0;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .ad-item img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    object-fit: cover;
-    height: 140px;
-  }
-
-  .ad-item h3 {
-    font-size: 1.1rem;
-    margin-bottom: 6px;
-  }
-
-  .ad-item p {
-    font-size: 0.9rem;
-    color: #dcdcdc;
-    margin-bottom: 12px;
-    text-align: center;
-  }
-
-  .buy-btn {
-    background-color: #ffeb3b;
-    color: #000000;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
-  }
-
-  .buy-btn:hover {
-    background-color: #fdd835;
-  }
-
-  /* Modal */
-  .modal {
-    display: none; /* hidden by default */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.8);
-  }
-
-  .modal-content {
-    background-color: #111100;
-    margin: 10% auto;
-    padding: 20px;
-    border-radius: 12px;
-    max-width: 500px;
-    color: #f0f0f0;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .modal-content img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 15px;
-  }
-
-  .modal-content h3 {
-    margin-bottom: 10px;
-    color: #ffeb3b;
-  }
-
-  .modal-content p {
-    margin-bottom: 15px;
-    min-height: 40px; /* espaço para descrição vazia */
-  }
-
-  .product-list {
-    min-height: 60px; /* espaço para lista vazia */
-    border: 1px solid #ffeb3b;
-    border-radius: 8px;
-    padding: 10px;
-    color: #f0f0f0;
-  }
-
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffeb3b;
-    cursor: pointer;
-  }
-
-  /* Chat box dentro do modal */
-  #chatBox {
-    display: none;
-    background-color: #222200;
-    border: 1px solid #ffeb3b;
-    border-radius: 8px;
-    padding: 10px;
-    height: 250px;
-    overflow-y: auto;
-    color: #f0f0f0;
-    font-size: 0.9rem;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  #chatMessages {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 10px;
-  }
-
-  #chatToggleBtn {
-    background-color: #ffeb3b;
-    color: #000;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 10px;
-    transition: background-color 0.3s ease;
-  }
-
-  #chatToggleBtn:hover {
-    background-color: #fdd835;
-  }
-
-  #chatInput {
-    flex: 1;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ffeb3b;
-    background-color: #111100;
-    color: #f0f0f0;
-  }
-
-  #chatForm {
-    display: flex;
-    gap: 5px;
-  }
-
-  #chatForm button {
-    background-color: #ffeb3b;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  #chatForm button:hover {
-    background-color: #fdd835;
-  }
-
-  /* Contas - Login e Registro */
-  .accounts-container {
-    max-width: 400px;
-    margin: 40px auto;
-    background-color: #111100;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 20px #ffeb3baa;
-    color: #f0f0f0;
-    position: relative;
-  }
-
-  .accounts-container h2 {
-    color: #ffeb3b;
-    margin-bottom: 20px;
-  }
-
-  .accounts-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .accounts-tabs button {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    border-radius: 8px;
-  }
-
-  .accounts-tabs .active {
-    background-color: #ffeb3b;
-    color: #000;
-  }
-
-  .accounts-tabs button:not(.active) {
-    background-color: #333300;
-    color: #f0f0f0;
-  }
-
-  .accounts-form label {
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  .accounts-form input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    border: 1px solid #ffeb3b;
-    background-color: #111100;
-    color: #f0f0f0;
-  }
-
-  .accounts-form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #ffeb3b;
-    border: none;
-    color: #000;
-    font-weight: 700;
-    cursor: pointer;
-    border-radius: 8px;
-  }
-
-  .accounts-form button:hover {
-    background-color: #fdd835;
-  }
-
-  .message {
-    margin-top: 10px;
-    min-height: 20px;
-  }
-
-  /* Perfil Icon no header */
-  #profileIcon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #ffeb3b;
-    color: #000;
-    font-weight: 700;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    user-select: none;
-    box-shadow: 0 0 10px #ffeb3baa;
-  }
-
-  /* Support form styles */
-  #supportForm {
-    max-width: 400px;
-    margin: 40px auto;
-    background-color: #111100;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 20px #ffeb3baa;
-    color: #f0f0f0;
-  }
-
-  #supportForm h2 {
-    color: #ffeb3b;
-    margin-bottom: 20px;
-  }
-
-  #supportForm label {
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  #supportForm input, #supportForm textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    border: 1px solid #ffeb3b;
-    background-color: #111100;
-    color: #f0f0f0;
-  }
-
-  #supportForm button {
-    width: 100%;
-    padding: 10px;
-    background-color: #ffeb3b;
-    border: none;
-    color: #000;
-    font-weight: 700;
-    cursor: pointer;
-    border-radius: 8px;
-  }
-
-  #supportForm button:hover {
-    background-color: #fdd835;
-  }
-
-  #supportMessage {
-    margin-top: 10px;
-    min-height: 20px;
-  }
-
-  /* Responsividade */
-  @media (max-width: 900px) {
-    main {
-      max-width: 100%;
-      padding: 0 10px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TyF Blox</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-  }
 
-  @media (max-width: 600px) {
+    :root {
+      --bg: #000000;
+      --surface: #111100;
+      --surface-2: #1b1b00;
+      --card: #333300;
+      --primary: #ffeb3b;
+      --primary-hover: #fdd835;
+      --text: #f5f5f5;
+      --muted: #d8d8d8;
+      --border: rgba(255, 235, 59, 0.35);
+      --shadow: 0 0 20px rgba(255, 235, 59, 0.2);
+      --danger: #ff8a80;
+      --success: #9cffac;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #000000 0%, #080800 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
     header {
-      justify-content: center;
-      gap: 10px;
-      padding: 15px 20px;
-      position: relative;
+      background-color: rgba(0, 0, 0, 0.95);
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
     }
+
+    .logo {
+      font-weight: 900;
+      font-size: 1.8rem;
+      color: var(--primary);
+      user-select: none;
+      flex-shrink: 0;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 12px rgba(255, 235, 59, 0.25);
+    }
+
     nav {
-      order: 2;
+      flex-grow: 1;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 15px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .tabs li {
+      cursor: pointer;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background-color: var(--card);
+      color: var(--text);
+      font-weight: 600;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .tabs li:hover,
+    .tabs li.active {
+      background-color: var(--primary);
+      color: #000000;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(255, 235, 59, 0.2);
+    }
+
+    .search-bar {
+      display: flex;
+      max-width: 320px;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 14px rgba(255, 235, 59, 0.18);
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
+    .search-bar input[type="text"] {
+      flex: 1;
+      padding: 11px 15px;
+      border: none;
+      font-size: 1rem;
+      background-color: var(--surface);
+      color: var(--text);
+      outline: none;
+    }
+
+    .search-bar input[type="text"]::placeholder {
+      color: #bdb76b;
+    }
+
+    .search-bar button {
+      background-color: var(--primary);
+      border: none;
+      color: #000000;
+      font-weight: 700;
+      padding: 0 15px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-bar button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 36px auto;
+      padding: 0 20px 30px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(255, 235, 59, 0.12), rgba(255, 235, 59, 0.03));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-size: 2rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .ads-container,
+    .pricing-wrapper,
+    .contact-card {
+      background-color: var(--surface);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .ads-title,
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 18px;
+    }
+
+    .ads-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .ad-item {
+      background-color: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 0 10px rgba(255, 235, 59, 0.14);
+      padding: 15px;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255, 235, 59, 0.12);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .ad-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.25);
+    }
+
+    .ad-item img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      object-fit: cover;
+      height: 150px;
+      background: #0e0e00;
+    }
+
+    .ad-item h3 {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+
+    .ad-item p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      text-align: left;
+      flex: 1;
+    }
+
+    .price-tag {
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #fff59d;
+    }
+
+    .buy-btn,
+    .primary-btn {
+      background-color: var(--primary);
+      color: #000000;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
       width: 100%;
     }
-    .tabs {
-      justify-content: center;
+
+    .buy-btn:hover,
+    .primary-btn:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .accounts-container,
+    #supportForm {
+      max-width: 460px;
+      margin: 10px auto 0;
+      background-color: var(--surface);
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      color: var(--text);
+      position: relative;
+      border: 1px solid var(--border);
+    }
+
+    .accounts-container h2,
+    #supportForm h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .accounts-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
     }
-    .search-bar {
-      order: 1;
-      max-width: 100%;
+
+    .accounts-tabs button {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: 0.25s ease;
+    }
+
+    .accounts-tabs .active {
+      background-color: var(--primary);
+      color: #000;
+    }
+
+    .accounts-tabs button:not(.active) {
+      background-color: var(--card);
+      color: var(--text);
+    }
+
+    .accounts-form label,
+    #supportForm label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .accounts-form input,
+    #supportForm input,
+    #supportForm textarea,
+    #chatInput {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: #0f0f00;
+      color: var(--text);
+      outline: none;
+    }
+
+    .accounts-form input:focus,
+    #supportForm input:focus,
+    #supportForm textarea:focus,
+    #chatInput:focus,
+    .search-bar input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 235, 59, 0.12);
+    }
+
+    .accounts-form button,
+    #supportForm button,
+    #chatForm button,
+    #chatToggleBtn,
+    #logoutBtn {
+      width: 100%;
+      padding: 10px;
+      background-color: var(--primary);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.25s ease;
+    }
+
+    .accounts-form button:hover,
+    #supportForm button:hover,
+    #chatForm button:hover,
+    #chatToggleBtn:hover,
+    #logoutBtn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .message {
+      margin-top: 10px;
+      min-height: 22px;
+      font-size: 0.95rem;
+    }
+
+    #profileIcon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: #000;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 0 10px rgba(255, 235, 59, 0.3);
+      border: 2px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .pricing-card {
+      background: var(--card);
+      border: 1px solid rgba(255, 235, 59, 0.14);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .pricing-card h3 {
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .pricing-value {
+      font-size: 1.6rem;
+      font-weight: 900;
       margin-bottom: 10px;
     }
-    .ads-list {
-      gap: 10px;
-      padding-bottom: 15px;
+
+    .pricing-card ul {
+      padding-left: 18px;
+      color: var(--muted);
+      margin-bottom: 14px;
     }
-    .ad-item {
-      min-width: 150px;
-      padding: 10px;
+
+    .hidden {
+      display: none !important;
     }
-    .ad-item h3 {
-      font-size: 1rem;
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.82);
+      padding: 20px;
     }
-    .ad-item p {
-      font-size: 0.85rem;
+
+    .modal-content {
+      background-color: var(--surface);
+      margin: 4% auto;
+      padding: 22px;
+      border-radius: 16px;
+      max-width: 560px;
+      color: var(--text);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
     }
-    #profileIcon {
-      left: 10px;
+
+    .modal-content img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      max-height: 260px;
+      object-fit: cover;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 1.4rem;
+    }
+
+    .modal-content p {
+      margin-bottom: 15px;
+      color: var(--muted);
+    }
+
+    .product-list {
+      min-height: 70px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      color: var(--text);
+      background: var(--surface-2);
+    }
+
+    .product-list ul {
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .close-btn {
+      position: absolute;
       top: 10px;
-      transform: none;
+      right: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--primary);
+      cursor: pointer;
+      line-height: 1;
     }
-  }
-</style>
+
+    #chatBox {
+      display: none;
+      background-color: #222200;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      height: 260px;
+      overflow: hidden;
+      color: var(--text);
+      font-size: 0.92rem;
+      margin: 10px 0;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #chatMessages {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    #chatMessages p {
+      margin-bottom: 8px;
+    }
+
+    #chatForm {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    #chatForm button {
+      width: auto;
+      padding: 10px 14px;
+      flex-shrink: 0;
+    }
+
+    footer {
+      padding: 22px;
+      text-align: center;
+      color: #cfcfcf;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        max-width: 100%;
+        padding: 0 12px 24px;
+      }
+
+      header {
+        padding-left: 66px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        justify-content: center;
+        gap: 10px;
+        padding: 16px 16px 16px 60px;
+        position: sticky;
+      }
+
+      nav {
+        order: 2;
+        width: 100%;
+      }
+
+      .tabs {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .search-bar {
+        order: 1;
+        max-width: 100%;
+      }
+
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+
+      .ad-item {
+        min-width: 100%;
+      }
+
+      .modal-content {
+        margin-top: 20px;
+        padding: 18px;
+      }
+
+      #profileIcon {
+        left: 10px;
+        top: 16px;
+        transform: none;
+      }
+
+      #chatForm {
+        flex-direction: column;
+      }
+
+      #chatForm button {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <div id="profileIcon" title="Perfil" style="display:none;"></div>
+    <div class="logo">TyF Blox</div>
 
-<header>
-  <div id="profileIcon" title="Perfil" style="display:none;"></div>
-  <div class="logo">TyF Blox</div>
-  <nav>
-    <ul class="tabs">
-      <li class="active" data-tab="home">Home</li>
-      <li data-tab="accounts">Accounts</li>
-      <li data-tab="pricing">Pricing</li>
-      <li data-tab="contact">Contact</li>
-    </ul>
-  </nav>
-  <form class="search-bar" onsubmit="event.preventDefault();">
-    <input type="text" placeholder="Search" />
-    <button type="submit">Search</button>
-  </form>
-</header>
+    <nav>
+      <ul class="tabs">
+        <li class="active" data-tab="home">Início</li>
+        <li data-tab="accounts">Conta</li>
+        <li data-tab="pricing">Planos</li>
+        <li data-tab="contact">Contato</li>
+      </ul>
+    </nav>
 
-<main>
-  <!-- Home Tab Content -->
-  <section id="home" class="tab-content">
-    <div class="ads-container">
-      <h2 class="ads-title">Roblox Game Ads</h2>
-      <div class="ads-list">
-        <!-- Primeiro anúncio com botão comprar -->
-        <div class="ad-item" data-title="Game Title 1" data-desc="" data-img="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg">
-          <img src="https://cdn.iset.io/assets/59429/produtos/1433/image47.jpg" alt="Tio Patinhas" />
-          <h3>Game Title 1</h3>
-          <p>Short description of the game or promotion.</p>
-          <button class="buy-btn">Comprar</button>
+    <form class="search-bar" id="searchForm">
+      <input type="text" id="searchInput" placeholder="Pesquisar jogo ou item..." />
+      <button type="submit">Buscar</button>
+    </form>
+  </header>
+
+  <main>
+    <section id="home" class="tab-content">
+      <div class="hero">
+        <h1>Bem-vindo à TyF Blox</h1>
+        <p>
+          Encontre anúncios, contas, itens e ofertas voltadas para o universo Roblox em uma interface moderna,
+          rápida e fácil de usar.
+        </p>
+      </div>
+
+      <div class="ads-container">
+        <h2 class="ads-title">Anúncios em destaque</h2>
+        <div class="ads-list" id="adsList">
+          <div class="ad-item" data-title="Conta Inicial Blox Fruits" data-desc="Conta ideal para quem quer começar com vantagem, com itens básicos e progressão inicial pronta." data-img="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" data-price="R$ 39,90" data-products='["Conta verificada","Acesso imediato","Suporte pós-venda"]'>
+            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" alt="Conta Inicial Blox Fruits" />
+            <h3>Conta Inicial Blox Fruits</h3>
+            <p>Boa opção para iniciantes que querem economizar tempo.</p>
+            <div class="price-tag">R$ 39,90</div>
+            <button class="buy-btn">Comprar</button>
+          </div>
+
+          <div class="ad-item" data-title="Kit Pets Adopt Me" data-desc="Pacote promocional com pets populares para troca, coleção ou evolução da conta." data-img="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" data-price="R$ 24,90" data-products='["Entrega rápida","Itens selecionados","Atendimento via chat"]'>
+            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" alt="Kit Pets Adopt Me" />
+            <h3>Kit Pets Adopt Me</h3>
+            <p>Pacote com pets para aumentar seu inventário e melhorar trocas.</p>
+            <div class="price-tag">R$ 24,90</div>
+            <button class="buy-btn">Comprar</button>
+          </div>
+
+          <div class="ad-item" data-title="Upgrade Brookhaven VIP" data-desc="Acesso a benefícios extras para aproveitar melhor sua experiência no Brookhaven." data-img="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" data-price="R$ 19,90" data-products='["Entrega digital","Ativação simples","Suporte em horário comercial"]'>
+            <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" alt="Upgrade Brookhaven VIP" />
+            <h3>Upgrade Brookhaven VIP</h3>
+            <p>Mais vantagens e personalização para sua gameplay.</p>
+            <div class="price-tag">R$ 19,90</div>
+            <button class="buy-btn">Comprar</button>
+          </div>
         </div>
-        <!-- Segundo anúncio exemplo -->
-        <div class="ad-item" data-title="Game Title 2" data-desc="" data-img="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png">
-          <img src="https://tr.rbxcdn.com/abcdef1234567890abcdef1234567890/420/420/Image/Png" alt="Game 2" />
-          <h3>Game Title 2</h3>
-          <p>Short description of the game or promotion.</p>
-          <button class="buy-btn">Comprar</button>
+      </div>
+    </section>
+
+    <section id="accounts" class="tab-content hidden">
+      <div class="accounts-container">
+        <h2>Conta de usuário</h2>
+        <div class="accounts-tabs" id="accountsTabs">
+          <button id="showLogin" class="active" type="button">Login</button>
+          <button id="showRegister" type="button">Registrar</button>
+          <button id="showProfile" type="button" style="display:none;">Perfil</button>
+        </div>
+
+        <form id="loginForm" class="accounts-form">
+          <label for="loginUsername">Usuário</label>
+          <input type="text" id="loginUsername" required />
+          <label for="loginPassword">Senha</label>
+          <input type="password" id="loginPassword" required />
+          <button type="submit">Entrar</button>
+          <p id="loginMessage" class="message"></p>
+        </form>
+
+        <form id="registerForm" class="accounts-form hidden">
+          <label for="registerUsername">Usuário</label>
+          <input type="text" id="registerUsername" required minlength="3" />
+          <label for="registerPassword">Senha</label>
+          <input type="password" id="registerPassword" required minlength="4" />
+          <label for="registerEmail">E-mail</label>
+          <input type="email" id="registerEmail" required />
+          <button type="submit">Registrar</button>
+          <p id="registerMessage" class="message"></p>
+        </form>
+
+        <div id="profileView" class="hidden">
+          <h3>Bem-vindo, <span id="profileUsername"></span>!</h3>
+          <p><strong>E-mail:</strong> <span id="profileEmail"></span></p>
+          <br />
+          <button id="logoutBtn" type="button">Sair</button>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Accounts Tab Content -->
-  <section id="accounts" class="tab-content" style="display:none;">
-    <div class="accounts-container">
-      <h2>Conta de Usuário</h2>
-      <div class="accounts-tabs" id="accountsTabs">
-        <button id="showLogin" class="active">Login</button>
-        <button id="showRegister">Registrar</button>
-        <button id="showProfile" style="display:none;">Perfil</button>
+    <section id="pricing" class="tab-content hidden">
+      <div class="pricing-wrapper">
+        <h2 class="section-title">Planos</h2>
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <h3>Básico</h3>
+            <div class="pricing-value">R$ 14,90</div>
+            <ul>
+              <li>1 anúncio em destaque</li>
+              <li>Suporte básico</li>
+              <li>Validade de 7 dias</li>
+            </ul>
+            <button class="primary-btn" type="button">Escolher plano</button>
+          </div>
+
+          <div class="pricing-card">
+            <h3>Pro</h3>
+            <div class="pricing-value">R$ 29,90</div>
+            <ul>
+              <li>3 anúncios simultâneos</li>
+              <li>Maior visibilidade</li>
+              <li>Suporte prioritário</li>
+            </ul>
+            <button class="primary-btn" type="button">Escolher plano</button>
+          </div>
+
+          <div class="pricing-card">
+            <h3>Premium</h3>
+            <div class="pricing-value">R$ 49,90</div>
+            <ul>
+              <li>Anúncios ilimitados</li>
+              <li>Destaque superior</li>
+              <li>Atendimento exclusivo</li>
+            </ul>
+            <button class="primary-btn" type="button">Escolher plano</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="tab-content hidden">
+      <div id="supportForm" class="contact-card">
+        <h2>Suporte</h2>
+        <form id="contactSupportForm">
+          <label for="supportName">Nome</label>
+          <input type="text" id="supportName" required />
+          <label for="supportEmail">E-mail</label>
+          <input type="email" id="supportEmail" required />
+          <label for="supportMessageInput">Mensagem</label>
+          <textarea id="supportMessageInput" rows="5" required></textarea>
+          <button type="submit">Enviar</button>
+        </form>
+        <p id="supportMessage" class="message"></p>
+      </div>
+    </section>
+  </main>
+
+  <div id="buyModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <img id="modalImg" src="" alt="Imagem do produto" />
+      <h3 id="modalTitle"></h3>
+      <p id="modalDesc"></p>
+
+      <button id="chatToggleBtn" type="button">Atendimento</button>
+
+      <div id="chatBox">
+        <div id="chatMessages">
+          <p><strong>Atendente:</strong> Olá! Como posso ajudar você hoje?</p>
+        </div>
+        <form id="chatForm">
+          <input type="text" id="chatInput" placeholder="Digite sua dúvida..." required />
+          <button type="submit">Enviar</button>
+        </form>
       </div>
 
-      <!-- Formulário Login -->
-      <form id="loginForm" class="accounts-form" style="display: block;">
-        <label for="loginUsername">Usuário:</label>
-        <input type="text" id="loginUsername" required />
-        <label for="loginPassword">Senha:</label>
-        <input type="password" id="loginPassword" required />
-        <button type="submit">Entrar</button>
-        <p id="loginMessage" class="message"></p>
-      </form>
-
-      <!-- Formulário Registro -->
-      <form id="registerForm" class="accounts-form" style="display: none;">
-        <label for="registerUsername">Usuário:</label>
-        <input type="text" id="registerUsername" required />
-        <label for="registerPassword">Senha:</label>
-        <input type="password" id="registerPassword" required />
-        <label for="registerEmail">Email:</label>
-        <input type="email" id="registerEmail" required />
-        <button type="submit">Registrar</button>
-        <p id="registerMessage" class="message"></p>
-      </form>
-
-      <!-- Perfil do Usuário -->
-      <div id="profileView" style="display:none; color:#f0f0f0;">
-        <h3>Bem-vindo, <span id="profileUsername"></span>!</h3>
-        <p><strong>Email:</strong> <span id="profileEmail"></span></p>
-        <button id="logoutBtn" style="background-color:#ffeb3b; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">Sair</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Pricing Tab Content -->
-  <section id="pricing" class="tab-content" style="display:none;">
-    <h2 style="color:#ffeb3b;">Pricing</h2>
-    <p>Informações sobre preços aqui.</p>
-  </section>
-
-  <!-- Contact Tab Content -->
-  <section id="contact" class="tab-content" style="display:none;">
-    <div id="supportForm">
-      <h2>Suporte</h2>
-      <form id="contactSupportForm">
-        <label for="supportName">Nome:</label>
-        <input type="text" id="supportName" required />
-        <label for="supportEmail">Email:</label>
-        <input type="email" id="supportEmail" required />
-        <label for="supportMessage">Mensagem:</label>
-        <textarea id="supportMessageInput" rows="5" required></textarea>
-        <button type="submit">Enviar</button>
-      </form>
-      <p id="supportMessage" class="message"></p>
-    </div>
-  </section>
-</main>
-
-<!-- Modal -->
-<div id="buyModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" id="closeModal">&times;</span>
-    <img id="modalImg" src="" alt="Product Image" />
-    <h3 id="modalTitle"></h3>
-    <p id="modalDesc"></p>
-
-    <!-- Botão Atendimento -->
-    <button id="chatToggleBtn">Atendimento</button>
-
-    <!-- Aba de dúvidas com chat simples -->
-    <div id="chatBox">
-      <div id="chatMessages">
-        <p><strong>Atendente:</strong> Olá! Como posso ajudar você?</p>
-      </div>
-      <form id="chatForm">
-        <input type="text" id="chatInput" placeholder="Digite sua dúvida..." required />
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
-
-    <div class="product-list" id="modalProductList">
-      <!-- Lista de produtos vazia por enquanto -->
+      <div class="product-list" id="modalProductList"></div>
     </div>
   </div>
-</div>
 
-<footer>
-  &copy; 2026 TyF Blox
-</footer>
+  <footer>
+    &copy; 2026 TyF Blox — Todos os direitos reservados.
+  </footer>
 
-<script>
-  // Controle das abas do menu
-  const tabs = document.querySelectorAll('.tabs li');
-  const tabContents = document.querySelectorAll('.tab-content');
+  <script>
+    const tabs = document.querySelectorAll('.tabs li');
+    const tabContents = document.querySelectorAll('.tab-content');
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      // Remove active de todas as tabs
-      tabs.forEach(t => t.classList.remove('active'));
-      // Esconde todos os conteúdos
-      tabContents.forEach(tc => tc.style.display = 'none');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(tc => tc.classList.add('hidden'));
 
-      // Ativa a tab clicada
-      tab.classList.add('active');
-      const tabId = tab.getAttribute('data-tab');
-      document.getElementById(tabId).style.display = 'block';
+        tab.classList.add('active');
+        const tabId = tab.getAttribute('data-tab');
+        document.getElementById(tabId).classList.remove('hidden');
+      });
     });
-  });
 
-  // Modal e anúncios
-  const modal = document.getElementById('buyModal');
-  const modalImg = document.getElementById('modalImg');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalDesc = document.getElementById('modalDesc');
-  const modalProductList = document.getElementById('modalProductList');
-  const closeModalBtn = document.getElementById('closeModal');
+    const modal = document.getElementById('buyModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalProductList = document.getElementById('modalProductList');
+    const closeModalBtn = document.getElementById('closeModal');
 
-  const chatToggleBtn = document.getElementById('chatToggleBtn');
-  const chatBox = document.getElementById('chatBox');
-  const chatMessages = document.getElementById('chatMessages');
-  const chatForm = document.getElementById('chatForm');
-  const chatInput = document.getElementById('chatInput');
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    const chatBox = document.getElementById('chatBox');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
 
-  function openModal(adItem) {
-    modalImg.src = adItem.dataset.img;
-    modalTitle.textContent = adItem.dataset.title;
-    modalDesc.textContent = adItem.dataset.desc || "Descrição do produto não disponível.";
-    modalProductList.innerHTML = "";
+    function openModal(adItem) {
+      modalImg.src = adItem.dataset.img;
+      modalTitle.textContent = `${adItem.dataset.title} — ${adItem.dataset.price}`;
+      modalDesc.textContent = adItem.dataset.desc || 'Descrição do produto não disponível.';
 
-    chatBox.style.display = 'none';
-    chatToggleBtn.textContent = 'Atendimento';
+      const products = JSON.parse(adItem.dataset.products || '[]');
+      modalProductList.innerHTML = products.length
+        ? `<strong>O que está incluso:</strong><ul>${products.map(item => `<li>${item}</li>`).join('')}</ul>`
+        : 'Nenhum detalhe adicional informado.';
 
-    modal.style.display = "block";
-  }
-
-  closeModalBtn.onclick = () => {
-    modal.style.display = "none";
-  };
-
-  window.onclick = (event) => {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-
-  document.querySelectorAll('.buy-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
-      const adItem = e.target.closest('.ad-item');
-      openModal(adItem);
-    });
-  });
-
-  chatToggleBtn.addEventListener('click', () => {
-    if (chatBox.style.display === 'none' || chatBox.style.display === '') {
-      chatBox.style.display = 'flex';
-      chatToggleBtn.textContent = 'Fechar Atendimento';
-    } else {
       chatBox.style.display = 'none';
       chatToggleBtn.textContent = 'Atendimento';
+      modal.style.display = 'block';
+      modal.setAttribute('aria-hidden', 'false');
     }
-  });
 
-  chatForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const userMessage = chatInput.value.trim();
-    if (!userMessage) return;
+    function closeModal() {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
 
-    const userMsgElem = document.createElement('p');
-    userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
-    chatMessages.appendChild(userMsgElem);
+    closeModalBtn.addEventListener('click', closeModal);
 
-    chatInput.value = '';
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    window.addEventListener('click', event => {
+      if (event.target === modal) closeModal();
+    });
 
-    setTimeout(() => {
-      const botMsgElem = document.createElement('p');
-      botMsgElem.innerHTML = `<strong>Atendente:</strong> Obrigado pela sua pergunta! Em breve responderemos.`;
-      chatMessages.appendChild(botMsgElem);
+    document.querySelectorAll('.buy-btn').forEach(button => {
+      button.addEventListener('click', e => {
+        const adItem = e.target.closest('.ad-item');
+        openModal(adItem);
+      });
+    });
+
+    chatToggleBtn.addEventListener('click', () => {
+      if (chatBox.style.display === 'none' || chatBox.style.display === '') {
+        chatBox.style.display = 'flex';
+        chatToggleBtn.textContent = 'Fechar atendimento';
+      } else {
+        chatBox.style.display = 'none';
+        chatToggleBtn.textContent = 'Atendimento';
+      }
+    });
+
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const userMessage = chatInput.value.trim();
+      if (!userMessage) return;
+
+      const userMsgElem = document.createElement('p');
+      userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
+      chatMessages.appendChild(userMsgElem);
+      chatInput.value = '';
       chatMessages.scrollTop = chatMessages.scrollHeight;
-    }, 1000);
-  });
 
-  // Contas - Login e Registro com perfil, sessão e ícone no header
-  const showLoginBtn = document.getElementById('showLogin');
-  const showRegisterBtn = document.getElementById('showRegister');
-  const showProfileBtn = document.getElementById('showProfile');
+      setTimeout(() => {
+        const botMsgElem = document.createElement('p');
+        botMsgElem.innerHTML = `<strong>Atendente:</strong> Recebemos sua mensagem. Vamos te responder o mais rápido possível.`;
+        chatMessages.appendChild(botMsgElem);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 700);
+    });
 
-  const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
-  const profileView = document.getElementById('profileView');
+    const showLoginBtn = document.getElementById('showLogin');
+    const showRegisterBtn = document.getElementById('showRegister');
+    const showProfileBtn = document.getElementById('showProfile');
 
-  const loginMessage = document.getElementById('loginMessage');
-  const registerMessage = document.getElementById('registerMessage');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const profileView = document.getElementById('profileView');
 
-  const profileUsername = document.getElementById('profileUsername');
-  const profileEmail = document.getElementById('profileEmail');
-  const logoutBtn = document.getElementById('logoutBtn');
+    const loginMessage = document.getElementById('loginMessage');
+    const registerMessage = document.getElementById('registerMessage');
 
-  const profileIcon = document.getElementById('profileIcon');
-  const accountsTabs = document.getElementById('accountsTabs');
+    const profileUsername = document.getElementById('profileUsername');
+    const profileEmail = document.getElementById('profileEmail');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-  function showSection(section) {
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'none';
-    profileView.style.display = 'none';
+    const profileIcon = document.getElementById('profileIcon');
 
-    showLoginBtn.classList.remove('active');
-    showRegisterBtn.classList.remove('active');
-    showProfileBtn.classList.remove('active');
-
-    if (section === 'login') {
-      loginForm.style.display = 'block';
-      showLoginBtn.classList.add('active');
-    } else if (section === 'register') {
-      registerForm.style.display = 'block';
-      showRegisterBtn.classList.add('active');
-    } else if (section === 'profile') {
-      profileView.style.display = 'block';
-      showProfileBtn.classList.add('active');
-    }
-    loginMessage.textContent = '';
-    registerMessage.textContent = '';
-  }
-
-  function getUsers() {
-    return JSON.parse(localStorage.getItem('users')) || {};
-  }
-
-  function saveUsers(users) {
-    localStorage.setItem('users', JSON.stringify(users));
-  }
-
-  function createUser(username, password, email) {
-    const users = getUsers();
-    if (users[username]) return false;
-    users[username] = { password, email };
-    saveUsers(users);
-    return true;
-  }
-
-  function validateUser(username, password) {
-    const users = getUsers();
-    return users[username] && users[username].password === password;
-  }
-
-  function getUserProfile(username) {
-    const users = getUsers();
-    return users[username] || null;
-  }
-
-  function setSession(username) {
-    localStorage.setItem('loggedInUser', username);
-  }
-
-  function getSession() {
-    return localStorage.getItem('loggedInUser');
-  }
-
-  function clearSession() {
-    localStorage.removeItem('loggedInUser');
-  }
-
-  function updateProfileView(username) {
-    const profile = getUserProfile(username);
-    if (!profile) return;
-    profileUsername.textContent = username;
-    profileEmail.textContent = profile.email;
-    profileIcon.textContent = username.charAt(0).toUpperCase();
-    profileIcon.title = `Perfil: ${username}`;
-  }
-
-  function updateUIForLoggedIn(loggedIn) {
-    if (loggedIn) {
-      // Mostrar só perfil e esconder login/registro
-      showProfileBtn.style.display = 'inline-block';
-      showLoginBtn.style.display = 'none';
-      showRegisterBtn.style.display = 'none';
-      profileIcon.style.display = 'flex';
-    } else {
-      // Mostrar login/registro e esconder perfil
-      showProfileBtn.style.display = 'none';
-      showLoginBtn.style.display = 'inline-block';
-      showRegisterBtn.style.display = 'inline-block';
-      profileIcon.style.display = 'none';
-    }
-  }
-
-  showLoginBtn.addEventListener('click', () => showSection('login'));
-  showRegisterBtn.addEventListener('click', () => showSection('register'));
-  showProfileBtn.addEventListener('click', () => showSection('profile'));
-
-  registerForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const username = document.getElementById('registerUsername').value.trim();
-    const password = document.getElementById('registerPassword').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-
-    if (!username || !password || !email) {
-      registerMessage.style.color = 'lightcoral';
-      registerMessage.textContent = 'Preencha todos os campos.';
-      return;
+    function setMessage(target, text, type) {
+      target.textContent = text;
+      target.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
     }
 
-    if (createUser(username, password, email)) {
-      registerMessage.style.color = 'lightgreen';
-      registerMessage.textContent = 'Conta criada com sucesso! Faça login.';
-      registerForm.reset();
-      showSection('login');
-    } else {
-      registerMessage.style.color = 'lightcoral';
-      registerMessage.textContent = 'Usuário já existe. Escolha outro nome.';
+    function showSection(section) {
+      loginForm.classList.add('hidden');
+      registerForm.classList.add('hidden');
+      profileView.classList.add('hidden');
+
+      showLoginBtn.classList.remove('active');
+      showRegisterBtn.classList.remove('active');
+      showProfileBtn.classList.remove('active');
+
+      if (section === 'login') {
+        loginForm.classList.remove('hidden');
+        showLoginBtn.classList.add('active');
+      } else if (section === 'register') {
+        registerForm.classList.remove('hidden');
+        showRegisterBtn.classList.add('active');
+      } else if (section === 'profile') {
+        profileView.classList.remove('hidden');
+        showProfileBtn.classList.add('active');
+      }
+
+      loginMessage.textContent = '';
+      registerMessage.textContent = '';
     }
-  });
 
-  loginForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
-
-    if (validateUser(username, password)) {
-      setSession(username);
-      loginMessage.style.color = 'lightgreen';
-      loginMessage.textContent = `Bem-vindo, ${username}!`;
-      loginForm.reset();
-      updateProfileView(username);
-      updateUIForLoggedIn(true);
-      showSection('profile');
-    } else {
-      loginMessage.style.color = 'lightcoral';
-      loginMessage.textContent = 'Usuário ou senha incorretos.';
+    function getUsers() {
+      return JSON.parse(localStorage.getItem('users')) || {};
     }
-  });
 
-  logoutBtn.addEventListener('click', () => {
-    clearSession();
-    updateUIForLoggedIn(false);
-    showSection('login');
-  });
+    function saveUsers(users) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
 
-  profileIcon.addEventListener('click', () => {
-    // Ao clicar no ícone, abre a aba Accounts na seção Perfil
-    tabs.forEach(t => t.classList.remove('active'));
-    tabContents.forEach(tc => tc.style.display = 'none');
-    document.querySelector('li[data-tab="accounts"]').classList.add('active');
-    document.getElementById('accounts').style.display = 'block';
-    showSection('profile');
-  });
+    function createUser(username, password, email) {
+      const users = getUsers();
+      const normalizedUsername = username.toLowerCase();
 
-  window.addEventListener('load', () => {
-    const loggedUser = getSession();
-    if (loggedUser) {
-      updateProfileView(loggedUser);
-      updateUIForLoggedIn(true);
-      showSection('profile');
-    } else {
+      if (users[normalizedUsername]) return false;
+
+      users[normalizedUsername] = {
+        usernameOriginal: username,
+        password,
+        email
+      };
+
+      saveUsers(users);
+      return true;
+    }
+
+    function validateUser(username, password) {
+      const users = getUsers();
+      const user = users[username.toLowerCase()];
+      return user && user.password === password;
+    }
+
+    function getUserProfile(username) {
+      const users = getUsers();
+      return users[username.toLowerCase()] || null;
+    }
+
+    function setSession(username) {
+      localStorage.setItem('loggedInUser', username.toLowerCase());
+    }
+
+    function getSession() {
+      return localStorage.getItem('loggedInUser');
+    }
+
+    function clearSession() {
+      localStorage.removeItem('loggedInUser');
+    }
+
+    function updateProfileView(username) {
+      const profile = getUserProfile(username);
+      if (!profile) return;
+
+      profileUsername.textContent = profile.usernameOriginal;
+      profileEmail.textContent = profile.email;
+      profileIcon.textContent = profile.usernameOriginal.charAt(0).toUpperCase();
+      profileIcon.title = `Perfil: ${profile.usernameOriginal}`;
+    }
+
+    function updateUIForLoggedIn(loggedIn) {
+      if (loggedIn) {
+        showProfileBtn.style.display = 'inline-block';
+        showLoginBtn.style.display = 'none';
+        showRegisterBtn.style.display = 'none';
+        profileIcon.style.display = 'flex';
+      } else {
+        showProfileBtn.style.display = 'none';
+        showLoginBtn.style.display = 'inline-block';
+        showRegisterBtn.style.display = 'inline-block';
+        profileIcon.style.display = 'none';
+      }
+    }
+
+    showLoginBtn.addEventListener('click', () => showSection('login'));
+    showRegisterBtn.addEventListener('click', () => showSection('register'));
+    showProfileBtn.addEventListener('click', () => showSection('profile'));
+
+    registerForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const username = document.getElementById('registerUsername').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+
+      if (!username || !password || !email) {
+        setMessage(registerMessage, 'Preencha todos os campos.', 'error');
+        return;
+      }
+
+      if (password.length < 4) {
+        setMessage(registerMessage, 'A senha deve ter pelo menos 4 caracteres.', 'error');
+        return;
+      }
+
+      if (createUser(username, password, email)) {
+        setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
+        registerForm.reset();
+        setTimeout(() => showSection('login'), 400);
+      } else {
+        setMessage(registerMessage, 'Esse usuário já existe. Escolha outro nome.', 'error');
+      }
+    });
+
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      if (validateUser(username, password)) {
+        setSession(username);
+        setMessage(loginMessage, `Bem-vindo, ${username}!`, 'success');
+        loginForm.reset();
+        updateProfileView(username);
+        updateUIForLoggedIn(true);
+        showSection('profile');
+      } else {
+        setMessage(loginMessage, 'Usuário ou senha incorretos.', 'error');
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      clearSession();
       updateUIForLoggedIn(false);
       showSection('login');
+    });
+
+    profileIcon.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tabContents.forEach(tc => tc.classList.add('hidden'));
+      document.querySelector('li[data-tab="accounts"]').classList.add('active');
+      document.getElementById('accounts').classList.remove('hidden');
+      showSection('profile');
+    });
+
+    window.addEventListener('load', () => {
+      const loggedUser = getSession();
+      if (loggedUser) {
+        updateProfileView(loggedUser);
+        updateUIForLoggedIn(true);
+        showSection('profile');
+      } else {
+        updateUIForLoggedIn(false);
+        showSection('login');
+      }
+    });
+
+    const supportForm = document.getElementById('contactSupportForm');
+    const supportMessage = document.getElementById('supportMessage');
+
+    supportForm.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const name = document.getElementById('supportName').value.trim();
+      const email = document.getElementById('supportEmail').value.trim();
+      const message = document.getElementById('supportMessageInput').value.trim();
+
+      if (!name || !email || !message) {
+        setMessage(supportMessage, 'Por favor, preencha todos os campos.', 'error');
+        return;
+      }
+
+      setMessage(supportMessage, 'Mensagem enviada com sucesso! Entraremos em contato em breve.', 'success');
+      supportForm.reset();
+    });
+
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const adItems = document.querySelectorAll('.ad-item');
+
+    function filterAds(term) {
+      const normalizedTerm = term.trim().toLowerCase();
+
+      adItems.forEach(item => {
+        const title = item.dataset.title.toLowerCase();
+        const desc = item.dataset.desc.toLowerCase();
+        const visible = !normalizedTerm || title.includes(normalizedTerm) || desc.includes(normalizedTerm);
+        item.style.display = visible ? 'flex' : 'none';
+      });
     }
-  });
 
-  // Support form functionality
-  const supportForm = document.getElementById('contactSupportForm');
-  const supportMessage = document.getElementById('supportMessage');
+    searchForm.addEventListener('submit', e => {
+      e.preventDefault();
+      filterAds(searchInput.value);
+    });
 
-  supportForm.addEventListener('submit', e => {
-    e.preventDefault();
+    searchInput.addEventListener('input', () => filterAds(searchInput.value));
 
-    const name = document.getElementById('supportName').value.trim();
-    const email = document.getElementById('supportEmail').value.trim();
-    const message = document.getElementById('supportMessageInput').value.trim();
-
-    if (!name || !email || !message) {
-      supportMessage.style.color = 'lightcoral';
-      supportMessage.textContent = 'Por favor, preencha todos os campos.';
-      return;
-    }
-
-    // Aqui você pode integrar com backend, API, ou enviar email via serviço externo
-    // Por enquanto, só simula envio e limpa o formulário
-
-    supportMessage.style.color = 'lightgreen';
-    supportMessage.textContent = 'Mensagem enviada com sucesso! Entraremos em contato em breve.';
-    supportForm.reset();
-  });
-</script>
-
+    // Observação: este sistema de login usa localStorage e serve apenas para demonstração visual.
+    // Para produção, o ideal é usar backend com autenticação segura.
+  </script>
 </body>
 </html>
