@@ -470,6 +470,7 @@
       <div class="accounts-tabs">
         <button id="showLogin" class="active">Login</button>
         <button id="showRegister">Registrar</button>
+        <button id="showProfile" style="display:none;">Perfil</button>
       </div>
 
       <!-- Formulário Login -->
@@ -488,9 +489,18 @@
         <input type="text" id="registerUsername" required />
         <label for="registerPassword">Senha:</label>
         <input type="password" id="registerPassword" required />
+        <label for="registerEmail">Email:</label>
+        <input type="email" id="registerEmail" required />
         <button type="submit">Registrar</button>
         <p id="registerMessage" class="message"></p>
       </form>
+
+      <!-- Perfil do Usuário -->
+      <div id="profileView" style="display:none; color:#f0f0f0;">
+        <h3>Bem-vindo, <span id="profileUsername"></span>!</h3>
+        <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+        <button id="logoutBtn" style="background-color:#ffeb3b; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">Sair</button>
+      </div>
     </div>
   </section>
 
@@ -631,75 +641,151 @@
     }, 1000);
   });
 
-  // Contas - Login e Registro
+  // Contas - Login e Registro com perfil e sessão
   const showLoginBtn = document.getElementById('showLogin');
   const showRegisterBtn = document.getElementById('showRegister');
+  const showProfileBtn = document.getElementById('showProfile');
+
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
+  const profileView = document.getElementById('profileView');
+
   const loginMessage = document.getElementById('loginMessage');
   const registerMessage = document.getElementById('registerMessage');
 
-  showLoginBtn.addEventListener('click', () => {
-    loginForm.style.display = 'block';
-    registerForm.style.display = 'none';
-    showLoginBtn.classList.add('active');
-    showRegisterBtn.classList.remove('active');
-    loginMessage.textContent = '';
-    registerMessage.textContent = '';
-  });
+  const profileUsername = document.getElementById('profileUsername');
+  const profileEmail = document.getElementById('profileEmail');
+  const logoutBtn = document.getElementById('logoutBtn');
 
-  showRegisterBtn.addEventListener('click', () => {
+  function showSection(section) {
     loginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-    showRegisterBtn.classList.add('active');
+    registerForm.style.display = 'none';
+    profileView.style.display = 'none';
+
     showLoginBtn.classList.remove('active');
+    showRegisterBtn.classList.remove('active');
+    showProfileBtn.classList.remove('active');
+
+    if (section === 'login') {
+      loginForm.style.display = 'block';
+      showLoginBtn.classList.add('active');
+    } else if (section === 'register') {
+      registerForm.style.display = 'block';
+      showRegisterBtn.classList.add('active');
+    } else if (section === 'profile') {
+      profileView.style.display = 'block';
+      showProfileBtn.classList.add('active');
+    }
     loginMessage.textContent = '';
     registerMessage.textContent = '';
-  });
+  }
 
-  function saveUser(username, password) {
-    let users = JSON.parse(localStorage.getItem('users')) || {};
-    if (users[username]) {
-      return false;
-    }
-    users[username] = { password };
+  function getUsers() {
+    return JSON.parse(localStorage.getItem('users')) || {};
+  }
+
+  function saveUsers(users) {
     localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  function createUser(username, password, email) {
+    const users = getUsers();
+    if (users[username]) return false;
+    users[username] = { password, email };
+    saveUsers(users);
     return true;
   }
 
   function validateUser(username, password) {
-    let users = JSON.parse(localStorage.getItem('users')) || {};
+    const users = getUsers();
     return users[username] && users[username].password === password;
   }
 
-  registerForm.addEventListener('submit', (e) => {
+  function getUserProfile(username) {
+    const users = getUsers();
+    return users[username] || null;
+  }
+
+  function setSession(username) {
+    localStorage.setItem('loggedInUser', username);
+  }
+
+  function getSession() {
+    return localStorage.getItem('loggedInUser');
+  }
+
+  function clearSession() {
+    localStorage.removeItem('loggedInUser');
+  }
+
+  function updateProfileView(username) {
+    const profile = getUserProfile(username);
+    if (!profile) return;
+    profileUsername.textContent = username;
+    profileEmail.textContent = profile.email;
+  }
+
+  showLoginBtn.addEventListener('click', () => showSection('login'));
+  showRegisterBtn.addEventListener('click', () => showSection('register'));
+  showProfileBtn.addEventListener('click', () => showSection('profile'));
+
+  registerForm.addEventListener('submit', e => {
     e.preventDefault();
     const username = document.getElementById('registerUsername').value.trim();
     const password = document.getElementById('registerPassword').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
 
-    if (saveUser(username, password)) {
+    if (!username || !password || !email) {
+      registerMessage.style.color = 'lightcoral';
+      registerMessage.textContent = 'Preencha todos os campos.';
+      return;
+    }
+
+    if (createUser(username, password, email)) {
       registerMessage.style.color = 'lightgreen';
-      registerMessage.textContent = 'Conta criada com sucesso! Você pode fazer login.';
+      registerMessage.textContent = 'Conta criada com sucesso! Faça login.';
       registerForm.reset();
+      showSection('login');
     } else {
       registerMessage.style.color = 'lightcoral';
       registerMessage.textContent = 'Usuário já existe. Escolha outro nome.';
     }
   });
 
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', e => {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
 
     if (validateUser(username, password)) {
+      setSession(username);
       loginMessage.style.color = 'lightgreen';
-      loginMessage.textContent = `Bem-vindo, ${username}! Você está logado.`;
+      loginMessage.textContent = `Bem-vindo, ${username}!`;
       loginForm.reset();
-      // Aqui você pode adicionar lógica para salvar sessão, redirecionar, etc.
+      updateProfileView(username);
+      showProfileBtn.style.display = 'inline-block';
+      showSection('profile');
     } else {
       loginMessage.style.color = 'lightcoral';
       loginMessage.textContent = 'Usuário ou senha incorretos.';
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    clearSession();
+    showProfileBtn.style.display = 'none';
+    showSection('login');
+  });
+
+  window.addEventListener('load', () => {
+    const loggedUser = getSession();
+    if (loggedUser) {
+      updateProfileView(loggedUser);
+      showProfileBtn.style.display = 'inline-block';
+      showSection('profile');
+    } else {
+      showProfileBtn.style.display = 'none';
+      showSection('login');
     }
   });
 </script>
