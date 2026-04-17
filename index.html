@@ -236,6 +236,76 @@
       max-width: 760px;
     }
 
+    .social-container {
+      background-color: var(--surface);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-top: 20px;
+    }
+
+    .social-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .social-text {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .social-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .social-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid rgba(255, 235, 59, 0.12);
+      border-radius: 14px;
+      padding: 16px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .social-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+      border-color: var(--border);
+    }
+
+    .social-card strong {
+      display: block;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .social-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .social-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 235, 59, 0.12);
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
     .ads-container {
       background-color: var(--surface);
       border-radius: 16px;
@@ -625,6 +695,39 @@
           Encontre anúncios, contas, itens e ofertas voltadas para o universo Roblox em uma interface moderna,
           rápida e fácil de usar.
         </p>
+      </div>
+
+      <div class="social-container">
+        <h2 class="social-title">Conecte-se com a TyF Blox</h2>
+        <p class="social-text">
+          Entre em contato e acompanhe nossas novidades nas redes oficiais.
+        </p>
+
+        <div class="social-links">
+          <a href="https://discord.com/" target="_blank" rel="noopener noreferrer" class="social-card">
+            <span class="social-icon">💬</span>
+            <div>
+              <strong>Discord</strong>
+              <p>Entre no nosso servidor</p>
+            </div>
+          </a>
+
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" class="social-card">
+            <span class="social-icon">📸</span>
+            <div>
+              <strong>Instagram</strong>
+              <p>Acompanhe nossos posts</p>
+            </div>
+          </a>
+
+          <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" class="social-card">
+            <span class="social-icon">🎵</span>
+            <div>
+              <strong>TikTok</strong>
+              <p>Veja nossos vídeos</p>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
 
