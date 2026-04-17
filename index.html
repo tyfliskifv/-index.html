@@ -1,1173 +1,340 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TyF Blox</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg: #000000;
-      --surface: #111100;
-      --surface-2: #1b1b00;
-      --card: #333300;
-      --primary: #ffeb3b;
-      --primary-hover: #fdd835;
-      --text: #f5f5f5;
-      --muted: #d8d8d8;
-      --border: rgba(255, 235, 59, 0.35);
-      --shadow: 0 0 20px rgba(255, 235, 59, 0.2);
-      --danger: #ff8a80;
-      --success: #9cffac;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(180deg, #000000 0%, #080800 100%);
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    header {
-      background-color: rgba(0, 0, 0, 0.95);
-      padding: 16px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(8px);
-    }
-
-    .logo {
-      font-weight: 900;
-      font-size: 1.8rem;
-      color: var(--primary);
-      user-select: none;
-      flex-shrink: 0;
-      letter-spacing: 0.5px;
-      text-shadow: 0 0 12px rgba(255, 235, 59, 0.25);
-    }
-
-    nav {
-      flex-grow: 1;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 15px;
-      list-style: none;
-      align-items: center;
-    }
-
-    .tabs li {
-      cursor: pointer;
-      padding: 10px 16px;
-      border-radius: 10px;
-      background-color: var(--card);
-      color: var(--text);
-      font-weight: 600;
-      transition: all 0.25s ease;
-      border: 1px solid transparent;
-    }
-
-    .tabs li:hover,
-    .tabs li.active {
-      background-color: var(--primary);
-      color: #000000;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(255, 235, 59, 0.2);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .search-bar {
-      display: flex;
-      max-width: 320px;
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 0 14px rgba(255, 235, 59, 0.18);
-      flex-shrink: 0;
-      border: 1px solid var(--border);
-    }
-
-    .search-bar input[type="text"] {
-      flex: 1;
-      padding: 11px 15px;
-      border: none;
-      font-size: 1rem;
-      background-color: var(--surface);
-      color: var(--text);
-      outline: none;
-    }
-
-    .search-bar input[type="text"]::placeholder {
-      color: #bdb76b;
-    }
-
-    .search-bar button {
-      background-color: var(--primary);
-      border: none;
-      color: #000000;
-      font-weight: 700;
-      padding: 0 15px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
-
-    .search-bar button:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .avatar-wrapper {
-      position: relative;
-    }
-
-    .avatar-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: none;
-      background: var(--primary);
-      color: #000;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 0 12px rgba(255, 235, 59, 0.25);
-      transition: transform 0.2s ease, background-color 0.2s ease;
-    }
-
-    .avatar-btn:hover {
-      background: var(--primary-hover);
-      transform: translateY(-1px);
-    }
-
-    .avatar-dropdown {
-      position: absolute;
-      top: calc(100% + 10px);
-      right: 0;
-      min-width: 220px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      padding: 10px;
-      display: none;
-      z-index: 50;
-    }
-
-    .avatar-dropdown.show {
-      display: block;
-    }
-
-    .dropdown-user {
-      padding: 8px 10px 10px;
-      border-bottom: 1px solid rgba(255,235,59,0.15);
-      margin-bottom: 8px;
-    }
-
-    .dropdown-user strong {
-      color: var(--primary);
-      display: block;
-      line-height: 1.2;
-    }
-
-    .dropdown-user small {
-      color: var(--muted);
-      word-break: break-word;
-    }
-
-    .dropdown-item {
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      text-align: left;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.2s ease;
-    }
-
-    .dropdown-item:hover {
-      background: var(--card);
-    }
-
-    main {
-      max-width: 1100px;
-      margin: 36px auto;
-      padding: 0 20px 30px;
-    }
-
-    .hero {
-      background: linear-gradient(135deg, rgba(255, 235, 59, 0.12), rgba(255, 235, 59, 0.03));
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 28px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .hero h1 {
-      color: var(--primary);
-      margin-bottom: 8px;
-      font-size: 2rem;
-    }
-
-    .hero p {
-      color: var(--muted);
-      max-width: 760px;
-    }
-
-    .ads-container {
-      background-color: var(--surface);
-      border-radius: 16px;
-      padding: 22px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-
-    .ads-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 18px;
-    }
-
-    .ads-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-
-    .ad-item {
-      background-color: var(--card);
-      border-radius: 14px;
-      box-shadow: 0 0 10px rgba(255, 235, 59, 0.14);
-      padding: 15px;
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      border: 1px solid rgba(255, 235, 59, 0.12);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .ad-item:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.25);
-    }
-
-    .ad-item img {
-      width: 100%;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      object-fit: cover;
-      height: 150px;
-      background: #0e0e00;
-    }
-
-    .ad-item h3 {
-      font-size: 1.1rem;
-      margin-bottom: 6px;
-      color: var(--primary);
-    }
-
-    .ad-item p {
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin-bottom: 14px;
-      text-align: left;
-      flex: 1;
-    }
-
-    .price-tag {
-      font-weight: 800;
-      margin-bottom: 12px;
-      color: #fff59d;
-    }
-
-    .buy-btn,
-    .primary-btn {
-      background-color: var(--primary);
-      color: #000000;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      width: 100%;
-    }
-
-    .buy-btn:hover,
-    .primary-btn:hover {
-      background-color: var(--primary-hover);
-      transform: translateY(-1px);
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.82);
-      padding: 20px;
-    }
-
-    .modal-content {
-      background-color: var(--surface);
-      margin: 4% auto;
-      padding: 22px;
-      border-radius: 16px;
-      max-width: 560px;
-      color: var(--text);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
-
-    .modal-content img {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      max-height: 260px;
-      object-fit: cover;
-    }
-
-    .modal-content h3 {
-      margin-bottom: 10px;
-      color: var(--primary);
-      font-size: 1.4rem;
-    }
-
-    .modal-content p {
-      margin-bottom: 15px;
-      color: var(--muted);
-    }
-
-    .product-list {
-      min-height: 70px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      color: var(--text);
-      background: var(--surface-2);
-    }
-
-    .product-list ul {
-      padding-left: 18px;
-      color: var(--muted);
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 28px;
-      font-weight: bold;
-      color: var(--primary);
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    #chatBox {
-      display: none;
-      background-color: #222200;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px;
-      height: 260px;
-      overflow: hidden;
-      color: var(--text);
-      font-size: 0.92rem;
-      margin: 10px 0;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    #chatMessages {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    #chatMessages p {
-      margin-bottom: 8px;
-    }
-
-    #chatForm {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    #chatForm button {
-      width: auto;
-      padding: 10px 14px;
-      flex-shrink: 0;
-    }
-
-    .auth-modal-box {
-      max-width: 460px;
-    }
-
-    .accounts-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .accounts-tabs button {
-      flex: 1;
-      min-width: 100px;
-      padding: 10px;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: 0.25s ease;
-    }
-
-    .accounts-tabs .active {
-      background-color: var(--primary);
-      color: #000;
-    }
-
-    .accounts-tabs button:not(.active) {
-      background-color: var(--card);
-      color: var(--text);
-    }
-
-    .accounts-form label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    .accounts-form input,
-    #chatInput {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: #0f0f00;
-      color: var(--text);
-      outline: none;
-    }
-
-    .accounts-form input:focus,
-    #chatInput:focus,
-    .search-bar input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(255, 235, 59, 0.12);
-    }
-
-    .accounts-form button,
-    #chatForm button,
-    #logoutBtn {
-      width: 100%;
-      padding: 10px;
-      background-color: var(--primary);
-      border: none;
-      color: #000;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: background-color 0.25s ease;
-    }
-
-    .accounts-form button:hover,
-    #chatForm button:hover,
-    #logoutBtn:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .message {
-      margin-top: 10px;
-      min-height: 22px;
-      font-size: 0.95rem;
-    }
-
-    footer {
-      padding: 22px;
-      text-align: center;
-      color: #cfcfcf;
-      border-top: 1px solid var(--border);
-      margin-top: 40px;
-    }
-
-    @media (max-width: 900px) {
-      main {
-        max-width: 100%;
-        padding: 0 12px 24px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      header {
-        justify-content: center;
-        gap: 10px;
-        padding: 16px;
-      }
-
-      nav {
-        order: 2;
-        width: 100%;
-      }
-
-      .tabs {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-
-      .header-actions {
-        order: 1;
-        width: 100%;
-        justify-content: center;
-      }
-
-      .search-bar {
-        max-width: 100%;
-      }
-
-      .hero h1 {
-        font-size: 1.6rem;
-      }
-
-      .ad-item {
-        min-width: 100%;
-      }
-
-      .modal-content {
-        margin-top: 20px;
-        padding: 18px;
-      }
-
-      #chatForm {
-        flex-direction: column;
-      }
-
-      #chatForm button {
-        width: 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TyF Blox</title>
+
+<style>
+body {
+  background:#000;
+  color:#fff;
+  font-family:Arial;
+}
+
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px;
+  background:#000;
+}
+
+.tabs {
+  display:flex;
+  gap:10px;
+  list-style:none;
+}
+
+.tabs li {
+  background:#333;
+  padding:8px 15px;
+  cursor:pointer;
+  border-radius:8px;
+}
+
+.tabs li.active {
+  background:#ffeb3b;
+  color:#000;
+}
+
+.search-bar {
+  display:flex;
+}
+
+.search-bar input {
+  padding:8px;
+}
+
+.search-bar button {
+  padding:8px;
+}
+
+.avatar-btn {
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#ffeb3b;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.avatar-dropdown {
+  position:absolute;
+  background:#111;
+  padding:10px;
+  display:none;
+  right:0;
+}
+
+.avatar-dropdown.show {
+  display:block;
+}
+
+.modal {
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+}
+
+.modal-content {
+  background:#111;
+  margin:10% auto;
+  padding:20px;
+  max-width:400px;
+}
+
+.hidden {
+  display:none;
+}
+</style>
 </head>
+
 <body>
-  <header>
-    <div class="logo">TyF Blox</div>
 
-    <nav>
-      <ul class="tabs">
-        <li class="active" data-tab="home">Início</li>
-      </ul>
-    </nav>
+<header>
+  <div>TyF Blox</div>
 
-    <div class="header-actions">
-      <form class="search-bar" id="searchForm">
-        <input type="text" id="searchInput" placeholder="Pesquisar jogo ou item..." />
-        <button type="submit">Buscar</button>
-      </form>
+  <ul class="tabs">
+    <li class="active" data-tab="home">Início</li>
+    <li data-tab="games">Jogos</li>
+  </ul>
 
-      <div class="avatar-wrapper">
-        <button id="avatarBtn" class="avatar-btn" type="button" title="Conta">C</button>
+  <div style="display:flex;gap:10px;">
+    <form class="search-bar">
+      <input type="text">
+      <button>Buscar</button>
+    </form>
 
-        <div id="avatarDropdown" class="avatar-dropdown">
-          <div id="dropdownUserInfo" class="dropdown-user hidden">
-            <strong id="dropdownUsername"></strong>
-            <small id="dropdownEmail"></small>
-          </div>
+    <div style="position:relative;">
+      <button id="avatarBtn" class="avatar-btn">C</button>
 
-          <button id="dropdownLogin" class="dropdown-item" type="button">Entrar</button>
-          <button id="dropdownRegister" class="dropdown-item" type="button">Registrar</button>
-          <button id="dropdownProfile" class="dropdown-item hidden" type="button">Meu perfil</button>
-          <button id="dropdownLogout" class="dropdown-item hidden" type="button">Sair</button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <section id="home" class="tab-content">
-      <div class="hero">
-        <h1>Bem-vindo à TyF Blox</h1>
-        <p>
-          Encontre anúncios, contas, itens e ofertas voltadas para o universo Roblox em uma interface moderna,
-          rápida e fácil de usar.
-        </p>
-      </div>
-
-      <div class="ads-container">
-        <h2 class="ads-title">Games em Destaque</h2>
-        <div class="ads-list" id="adsList">
-          <div class="ad-item" data-title="Conta Inicial Blox Fruits" data-desc="Conta ideal para quem quer começar com vantagem, com itens básicos e progressão inicial pronta." data-img="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" data-price="R$ 39,90" data-products='["Conta verificada","Acesso imediato","Suporte pós-venda"]'>
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" alt="Conta Inicial Blox Fruits" />
-            <h3>Conta Inicial Blox Fruits</h3>
-            <p>Boa opção para iniciantes que querem economizar tempo.</p>
-            <div class="price-tag">R$ 39,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
-
-          <div class="ad-item" data-title="Kit Pets Adopt Me" data-desc="Pacote promocional com pets populares para troca, coleção ou evolução da conta." data-img="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" data-price="R$ 24,90" data-products='["Entrega rápida","Itens selecionados","Atendimento via chat"]'>
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" alt="Kit Pets Adopt Me" />
-            <h3>Kit Pets Adopt Me</h3>
-            <p>Pacote com pets para aumentar seu inventário e melhorar trocas.</p>
-            <div class="price-tag">R$ 24,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
-
-          <div class="ad-item" data-title="Upgrade Brookhaven VIP" data-desc="Acesso a benefícios extras para aproveitar melhor sua experiência no Brookhaven." data-img="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" data-price="R$ 19,90" data-products='["Entrega digital","Ativação simples","Suporte em horário comercial"]'>
-            <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" alt="Upgrade Brookhaven VIP" />
-            <h3>Upgrade Brookhaven VIP</h3>
-            <p>Mais vantagens e personalização para sua gameplay.</p>
-            <div class="price-tag">R$ 19,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <div id="buyModal" class="modal" aria-hidden="true">
-    <div class="modal-content">
-      <span class="close-btn" id="closeModal">&times;</span>
-      <img id="modalImg" src="" alt="Imagem do produto" />
-      <h3 id="modalTitle"></h3>
-      <p id="modalDesc"></p>
-
-      <button id="chatToggleBtn" type="button" class="primary-btn">Atendimento</button>
-
-      <div id="chatBox">
-        <div id="chatMessages">
-          <p><strong>Atendente:</strong> Olá! Como posso ajudar você hoje?</p>
-        </div>
-        <form id="chatForm">
-          <input type="text" id="chatInput" placeholder="Digite sua dúvida..." required />
-          <button type="submit">Enviar</button>
-        </form>
-      </div>
-
-      <div class="product-list" id="modalProductList"></div>
-    </div>
-  </div>
-
-  <div id="authModal" class="modal" aria-hidden="true">
-    <div class="modal-content auth-modal-box">
-      <span class="close-btn" id="closeAuthModal">&times;</span>
-
-      <div class="accounts-tabs">
-        <button id="showLogin" class="active" type="button">Login</button>
-        <button id="showRegister" type="button">Registrar</button>
-        <button id="showProfile" type="button" class="hidden">Perfil</button>
-      </div>
-
-      <form id="loginForm" class="accounts-form" autocomplete="on">
-        <label for="loginUsername">Usuário</label>
-        <input type="text" id="loginUsername" name="username" required autocomplete="username" />
-
-        <label for="loginPassword">Senha</label>
-        <input type="password" id="loginPassword" name="password" required autocomplete="current-password" />
-
-        <button type="submit">Entrar</button>
-        <p id="loginMessage" class="message"></p>
-      </form>
-
-      <form id="registerForm" class="accounts-form hidden" autocomplete="on">
-        <div style="background:#1b1b00; border:1px solid rgba(255,235,59,0.35); border-radius:10px; padding:12px; margin-bottom:14px; color:#f5f5f5;">
-          <strong style="color:#ffeb3b; display:block; margin-bottom:6px;">Requisitos para cadastro</strong>
-          <div style="font-size:0.95rem; color:#d8d8d8;">
-            • Usuário com pelo menos 3 caracteres<br>
-            • Senha com no mínimo 8 caracteres<br>
-            • Informe um e-mail válido<br>
-            • Não use dados de outra pessoa
-          </div>
+      <div id="dropdown" class="avatar-dropdown">
+        <div id="userInfo" class="hidden">
+          <b id="userName"></b>
         </div>
 
-        <label for="registerUsername">Usuário</label>
-        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Escolha um nome único para entrar na sua conta.</small>
-        <input type="text" id="registerUsername" name="username" required minlength="3" autocomplete="username" />
+        <button id="loginBtn">Entrar</button>
+        <button id="registerBtn">Registrar</button>
 
-        <label for="registerPassword">Senha</label>
-        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Use uma senha forte com letras e números para mais segurança.</small>
-        <input type="password" id="registerPassword" name="password" required minlength="8" autocomplete="new-password" />
-
-        <label for="registerEmail">E-mail</label>
-        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Esse e-mail será usado para identificação da conta.</small>
-        <input type="email" id="registerEmail" name="email" required autocomplete="email" />
-
-        <button type="submit">Registrar</button>
-        <p id="registerMessage" class="message"></p>
-      </form>
-
-      <div id="profileView" class="hidden">
-        <h3>Bem-vindo, <span id="profileUsername"></span>!</h3>
-        <p><strong>E-mail:</strong> <span id="profileEmail"></span></p>
-        <br />
-        <button id="logoutBtn" type="button">Sair</button>
+        <button id="profileBtn" class="hidden">Perfil</button>
+        <button id="logoutBtn" class="hidden">Sair</button>
       </div>
     </div>
   </div>
+</header>
+
+<main>
+
+<section id="home">
+<h1>Home</h1>
+</section>
+
+<section id="games" class="hidden">
+<h1>Jogos</h1>
+
+<div>
+  <div>Blox Fruits</div>
+  <div>Adopt Me</div>
+  <div>Brookhaven</div>
+</div>
+
+</section>
+
+</main>
+
+<!-- MODAL LOGIN -->
+<div id="modal" class="modal">
+<div class="modal-content">
+
+<button onclick="closeModal()">X</button>
+
+<div>
+<button onclick="showLogin()">Login</button>
+<button onclick="showRegister()">Registrar</button>
+</div>
+
+<form id="loginForm">
+<input id="loginUser" placeholder="Usuário">
+<input id="loginPass" type="password" placeholder="Senha">
+<button>Entrar</button>
+</form>
+
+<form id="registerForm" class="hidden">
+<input id="regUser" placeholder="Usuário">
+<input id="regPass" type="password" placeholder="Senha">
+<input id="regEmail" placeholder="Email">
+<button>Registrar</button>
+</form>
+
+</div>
+</div>
+
+<script>
+
+// ===================
+// TABS
+// ===================
+document.querySelectorAll(".tabs li").forEach(tab=>{
+  tab.onclick=()=>{
+    document.querySelectorAll(".tabs li").forEach(t=>t.classList.remove("active"))
+    tab.classList.add("active")
+
+    document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"))
+    document.getElementById(tab.dataset.tab).classList.remove("hidden")
+  }
+})
+
+// ===================
+// DROPDOWN
+// ===================
+const avatarBtn = document.getElementById("avatarBtn")
+const dropdown = document.getElementById("dropdown")
+
+avatarBtn.onclick=(e)=>{
+  e.stopPropagation()
+  dropdown.classList.toggle("show")
+}
+
+document.onclick=()=>{
+  dropdown.classList.remove("show")
+}
+
+// ===================
+// MODAL
+// ===================
+const modal = document.getElementById("modal")
+
+function openModal(){ modal.style.display="block" }
+function closeModal(){ modal.style.display="none" }
+
+// ===================
+// TROCA FORM
+// ===================
+const loginForm = document.getElementById("loginForm")
+const registerForm = document.getElementById("registerForm")
+
+function showLogin(){
+  loginForm.classList.remove("hidden")
+  registerForm.classList.add("hidden")
+}
+
+function showRegister(){
+  loginForm.classList.add("hidden")
+  registerForm.classList.remove("hidden")
+}
+
+// ===================
+// BOTÕES
+// ===================
+document.getElementById("loginBtn").onclick=()=>{
+  openModal()
+  showLogin()
+}
+
+document.getElementById("registerBtn").onclick=()=>{
+  openModal()
+  showRegister()
+}
+
+// ===================
+// LOGIN FAKE (FRONT)
+// ===================
+function setUser(user){
+  localStorage.setItem("user", JSON.stringify(user))
+  updateUI()
+}
+
+function getUser(){
+  return JSON.parse(localStorage.getItem("user"))
+}
+
+function logout(){
+  localStorage.removeItem("user")
+  updateUI()
+}
+
+// ===================
+// UPDATE UI
+// ===================
+function updateUI(){
+  const user = getUser()
+
+  if(user){
+    document.getElementById("userInfo").classList.remove("hidden")
+    document.getElementById("userName").innerText=user.username
+
+    avatarBtn.innerText=user.username[0].toUpperCase()
+
+    document.getElementById("loginBtn").classList.add("hidden")
+    document.getElementById("registerBtn").classList.add("hidden")
+    document.getElementById("profileBtn").classList.remove("hidden")
+    document.getElementById("logoutBtn").classList.remove("hidden")
+  }else{
+    document.getElementById("userInfo").classList.add("hidden")
+
+    avatarBtn.innerText="C"
+
+    document.getElementById("loginBtn").classList.remove("hidden")
+    document.getElementById("registerBtn").classList.remove("hidden")
+    document.getElementById("profileBtn").classList.add("hidden")
+    document.getElementById("logoutBtn").classList.add("hidden")
+  }
+}
+
+// ===================
+// LOGIN
+// ===================
+loginForm.onsubmit=(e)=>{
+  e.preventDefault()
+
+  const user=document.getElementById("loginUser").value
+  const pass=document.getElementById("loginPass").value
+
+  if(!user || !pass){
+    alert("Preencha tudo")
+    return
+  }
+
+  setUser({username:user})
+  closeModal()
+}
+
+// ===================
+// REGISTER
+// ===================
+registerForm.onsubmit=(e)=>{
+  e.preventDefault()
+
+  const user=document.getElementById("regUser").value
+  const pass=document.getElementById("regPass").value
+  const email=document.getElementById("regEmail").value
+
+  if(user.length<3){
+    alert("Usuário curto")
+    return
+  }
+
+  if(pass.length<8){
+    alert("Senha fraca")
+    return
+  }
+
+  setUser({username:user})
+  closeModal()
+}
+
+// ===================
+document.getElementById("logoutBtn").onclick=logout
+
+updateUI()
+
+</script>
 
-  <footer>
-    &copy; 2026 TyF Blox — Todos os direitos reservados.
-  </footer>
-
-  <script>
-    const tabs = document.querySelectorAll('.tabs li');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(tc => tc.classList.add('hidden'));
-
-        tab.classList.add('active');
-        const tabId = tab.getAttribute('data-tab');
-        const target = document.getElementById(tabId);
-        if (target) target.classList.remove('hidden');
-      });
-    });
-
-    const modal = document.getElementById('buyModal');
-    const modalImg = document.getElementById('modalImg');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDesc');
-    const modalProductList = document.getElementById('modalProductList');
-    const closeModalBtn = document.getElementById('closeModal');
-
-    const chatToggleBtn = document.getElementById('chatToggleBtn');
-    const chatBox = document.getElementById('chatBox');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatForm = document.getElementById('chatForm');
-    const chatInput = document.getElementById('chatInput');
-
-    function openBuyModal(adItem) {
-      modalImg.src = adItem.dataset.img;
-      modalTitle.textContent = `${adItem.dataset.title} — ${adItem.dataset.price}`;
-      modalDesc.textContent = adItem.dataset.desc || 'Descrição do produto não disponível.';
-
-      const products = JSON.parse(adItem.dataset.products || '[]');
-      modalProductList.innerHTML = products.length
-        ? `<strong>O que está incluso:</strong><ul>${products.map(item => `<li>${item}</li>`).join('')}</ul>`
-        : 'Nenhum detalhe adicional informado.';
-
-      chatBox.style.display = 'none';
-      chatToggleBtn.textContent = 'Atendimento';
-      modal.style.display = 'block';
-      modal.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeBuyModal() {
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden', 'true');
-    }
-
-    closeModalBtn.addEventListener('click', closeBuyModal);
-
-    document.querySelectorAll('.buy-btn').forEach(button => {
-      button.addEventListener('click', e => {
-        const adItem = e.target.closest('.ad-item');
-        if (adItem) openBuyModal(adItem);
-      });
-    });
-
-    chatToggleBtn.addEventListener('click', () => {
-      if (chatBox.style.display === 'none' || chatBox.style.display === '') {
-        chatBox.style.display = 'flex';
-        chatToggleBtn.textContent = 'Fechar atendimento';
-      } else {
-        chatBox.style.display = 'none';
-        chatToggleBtn.textContent = 'Atendimento';
-      }
-    });
-
-    chatForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const userMessage = chatInput.value.trim();
-      if (!userMessage) return;
-
-      const userMsgElem = document.createElement('p');
-      userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
-      chatMessages.appendChild(userMsgElem);
-      chatInput.value = '';
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      setTimeout(() => {
-        const botMsgElem = document.createElement('p');
-        botMsgElem.innerHTML = `<strong>Atendente:</strong> Recebemos sua mensagem. Vamos te responder o mais rápido possível.`;
-        chatMessages.appendChild(botMsgElem);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 700);
-    });
-
-    const authModal = document.getElementById('authModal');
-    const closeAuthModal = document.getElementById('closeAuthModal');
-
-    const avatarBtn = document.getElementById('avatarBtn');
-    const avatarDropdown = document.getElementById('avatarDropdown');
-
-    const dropdownUserInfo = document.getElementById('dropdownUserInfo');
-    const dropdownUsername = document.getElementById('dropdownUsername');
-    const dropdownEmail = document.getElementById('dropdownEmail');
-
-    const dropdownLogin = document.getElementById('dropdownLogin');
-    const dropdownRegister = document.getElementById('dropdownRegister');
-    const dropdownProfile = document.getElementById('dropdownProfile');
-    const dropdownLogout = document.getElementById('dropdownLogout');
-
-    const showLoginBtn = document.getElementById('showLogin');
-    const showRegisterBtn = document.getElementById('showRegister');
-    const showProfileBtn = document.getElementById('showProfile');
-
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const profileView = document.getElementById('profileView');
-
-    const loginMessage = document.getElementById('loginMessage');
-    const registerMessage = document.getElementById('registerMessage');
-
-    const profileUsername = document.getElementById('profileUsername');
-    const profileEmail = document.getElementById('profileEmail');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    function openAuthModal() {
-      authModal.style.display = 'block';
-      authModal.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeAuthModalFn() {
-      authModal.style.display = 'none';
-      authModal.setAttribute('aria-hidden', 'true');
-    }
-
-    closeAuthModal.addEventListener('click', closeAuthModalFn);
-
-    function setMessage(target, text, type) {
-      target.textContent = text;
-      target.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
-    }
-
-    function clearMessages() {
-      loginMessage.textContent = '';
-      registerMessage.textContent = '';
-    }
-
-    function showSection(section) {
-      loginForm.classList.add('hidden');
-      registerForm.classList.add('hidden');
-      profileView.classList.add('hidden');
-
-      showLoginBtn.classList.remove('active');
-      showRegisterBtn.classList.remove('active');
-      showProfileBtn.classList.remove('active');
-
-      if (section === 'login') {
-        loginForm.classList.remove('hidden');
-        showLoginBtn.classList.add('active');
-      } else if (section === 'register') {
-        registerForm.classList.remove('hidden');
-        showRegisterBtn.classList.add('active');
-      } else if (section === 'profile') {
-        profileView.classList.remove('hidden');
-        showProfileBtn.classList.add('active');
-      }
-
-      clearMessages();
-    }
-
-    function setSession(user) {
-      localStorage.setItem('loggedInUser', JSON.stringify(user));
-    }
-
-    function getSession() {
-      const raw = localStorage.getItem('loggedInUser');
-      if (!raw) return null;
-
-      try {
-        return JSON.parse(raw);
-      } catch {
-        localStorage.removeItem('loggedInUser');
-        return null;
-      }
-    }
-
-    function clearSession() {
-      localStorage.removeItem('loggedInUser');
-    }
-
-    function updateProfileView(user) {
-      if (!user) return;
-
-      profileUsername.textContent = user.username || '';
-      profileEmail.textContent = user.email || '';
-
-      dropdownUsername.textContent = user.username || '';
-      dropdownEmail.textContent = user.email || '';
-
-      const initial = (user.username || 'C').charAt(0).toUpperCase();
-      avatarBtn.textContent = initial;
-      avatarBtn.title = `Conta de ${user.username || 'usuário'}`;
-    }
-
-    function updateUIForLoggedIn(loggedIn, user = null) {
-      if (loggedIn && user) {
-        dropdownUserInfo.classList.remove('hidden');
-        dropdownLogin.classList.add('hidden');
-        dropdownRegister.classList.add('hidden');
-        dropdownProfile.classList.remove('hidden');
-        dropdownLogout.classList.remove('hidden');
-
-        showProfileBtn.classList.remove('hidden');
-        showLoginBtn.classList.add('hidden');
-        showRegisterBtn.classList.add('hidden');
-
-        updateProfileView(user);
-      } else {
-        dropdownUserInfo.classList.add('hidden');
-        dropdownLogin.classList.remove('hidden');
-        dropdownRegister.classList.remove('hidden');
-        dropdownProfile.classList.add('hidden');
-        dropdownLogout.classList.add('hidden');
-
-        showProfileBtn.classList.add('hidden');
-        showLoginBtn.classList.remove('hidden');
-        showRegisterBtn.classList.remove('hidden');
-
-        avatarBtn.textContent = 'C';
-        avatarBtn.title = 'Conta';
-        profileUsername.textContent = '';
-        profileEmail.textContent = '';
-      }
-    }
-
-    async function apiRequest(url, method, body = null) {
-      const options = {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-      };
-
-      if (body) {
-        options.body = JSON.stringify(body);
-      }
-
-      let response;
-      try {
-        response = await fetch(url, options);
-      } catch {
-        throw new Error('Não foi possível conectar ao servidor.');
-      }
-
-      let data = {};
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro na requisição.');
-      }
-
-      return data;
-    }
-
-    avatarBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      avatarDropdown.classList.toggle('show');
-    });
-
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.avatar-wrapper')) {
-        avatarDropdown.classList.remove('show');
-      }
-    });
-
-    dropdownLogin.addEventListener('click', () => {
-      avatarDropdown.classList.remove('show');
-      openAuthModal();
-      showSection('login');
-    });
-
-    dropdownRegister.addEventListener('click', () => {
-      avatarDropdown.classList.remove('show');
-      openAuthModal();
-      showSection('register');
-    });
-
-    dropdownProfile.addEventListener('click', () => {
-      avatarDropdown.classList.remove('show');
-      openAuthModal();
-      showSection('profile');
-    });
-
-    showLoginBtn.addEventListener('click', () => showSection('login'));
-    showRegisterBtn.addEventListener('click', () => showSection('register'));
-    showProfileBtn.addEventListener('click', () => showSection('profile'));
-
-    registerForm.addEventListener('submit', async e => {
-      e.preventDefault();
-
-      const username = document.getElementById('registerUsername').value.trim();
-      const password = document.getElementById('registerPassword').value.trim();
-      const email = document.getElementById('registerEmail').value.trim();
-
-      if (!username || !password || !email) {
-        setMessage(registerMessage, 'Preencha todos os campos.', 'error');
-        return;
-      }
-
-      if (username.length < 3) {
-        setMessage(registerMessage, 'O usuário deve ter pelo menos 3 caracteres.', 'error');
-        return;
-      }
-
-      if (password.length < 8) {
-        setMessage(registerMessage, 'A senha deve ter pelo menos 8 caracteres.', 'error');
-        return;
-      }
-
-      try {
-        await apiRequest('/api/register', 'POST', { username, email, password });
-        setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
-        registerForm.reset();
-        setTimeout(() => showSection('login'), 500);
-      } catch (error) {
-        setMessage(registerMessage, error.message, 'error');
-      }
-    });
-
-    loginForm.addEventListener('submit', async e => {
-      e.preventDefault();
-
-      const username = document.getElementById('loginUsername').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-
-      if (!username || !password) {
-        setMessage(loginMessage, 'Preencha usuário e senha.', 'error');
-        return;
-      }
-
-      try {
-        const data = await apiRequest('/api/login', 'POST', { username, password });
-
-        if (!data.user) {
-          throw new Error('Resposta do servidor inválida.');
-        }
-
-        setSession(data.user);
-        updateUIForLoggedIn(true, data.user);
-        setMessage(loginMessage, `Bem-vindo, ${data.user.username}!`, 'success');
-        loginForm.reset();
-        showSection('profile');
-      } catch (error) {
-        setMessage(loginMessage, error.message, 'error');
-      }
-    });
-
-    async function performLogout() {
-      try {
-        await fetch('/api/logout', {
-          method: 'POST',
-          credentials: 'include'
-        });
-      } catch (error) {
-        console.error('Erro ao sair:', error);
-      }
-
-      clearSession();
-      updateUIForLoggedIn(false);
-      closeAuthModalFn();
-      showSection('login');
-    }
-
-    logoutBtn.addEventListener('click', performLogout);
-
-    dropdownLogout.addEventListener('click', async () => {
-      avatarDropdown.classList.remove('show');
-      await performLogout();
-    });
-
-    async function loadUserFromServer() {
-      try {
-        const data = await apiRequest('/api/me', 'GET');
-        if (!data.user) throw new Error('Sessão inválida');
-
-        setSession(data.user);
-        updateUIForLoggedIn(true, data.user);
-      } catch {
-        const localUser = getSession();
-        if (localUser) {
-          updateUIForLoggedIn(true, localUser);
-        } else {
-          clearSession();
-          updateUIForLoggedIn(false);
-        }
-      }
-    }
-
-    window.addEventListener('click', event => {
-      if (event.target === modal) closeBuyModal();
-      if (event.target === authModal) closeAuthModalFn();
-    });
-
-    window.addEventListener('load', async () => {
-      await loadUserFromServer();
-      showSection(getSession() ? 'profile' : 'login');
-    });
-
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
-    const adItems = document.querySelectorAll('.ad-item');
-
-    function filterAds(term) {
-      const normalizedTerm = term.trim().toLowerCase();
-
-      adItems.forEach(item => {
-        const title = item.dataset.title.toLowerCase();
-        const desc = item.dataset.desc.toLowerCase();
-        const visible = !normalizedTerm || title.includes(normalizedTerm) || desc.includes(normalizedTerm);
-        item.style.display = visible ? 'flex' : 'none';
-      });
-    }
-
-    searchForm.addEventListener('submit', e => {
-      e.preventDefault();
-      filterAds(searchInput.value);
-    });
-
-    searchInput.addEventListener('input', () => filterAds(searchInput.value));
-  </script>
 </body>
 </html>
