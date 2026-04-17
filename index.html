@@ -666,12 +666,49 @@
     }
 
     .star-selector {
-      font-size: 2rem;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+      min-height: 44px;
+    }
+
+    .star-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
       color: #fff59d;
-      letter-spacing: 4px;
+      font-size: 2.2rem;
+      line-height: 1;
       cursor: pointer;
+      padding: 2px;
+      transition: transform 0.15s ease, color 0.15s ease, text-shadow 0.15s ease;
       user-select: none;
+    }
+
+    .star-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .star-btn.active,
+    .star-btn.hovered {
+      color: var(--primary);
+      text-shadow: 0 0 10px rgba(255, 235, 59, 0.45);
+    }
+
+    .star-btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 4px;
+      border-radius: 6px;
+    }
+
+    .star-selector-label {
+      width: 100%;
+      margin-top: 0;
       margin-bottom: 14px;
+      font-size: 0.92rem;
+      color: var(--muted);
     }
 
     .review-meta {
@@ -977,7 +1014,13 @@
           <h3 id="reviewFormTitle">Deixe sua avaliação</h3>
           <p class="review-help">Faça login para enviar, editar ou excluir a sua avaliação.</p>
 
-          <div id="starSelector" class="star-selector">☆☆☆☆☆</div>
+          <div
+            id="starSelector"
+            class="star-selector"
+            role="radiogroup"
+            aria-label="Selecione uma nota de 1 a 5 estrelas"
+          ></div>
+          <div id="starSelectorLabel" class="star-selector-label">Nenhuma nota selecionada</div>
 
           <textarea
             id="reviewText"
@@ -1504,7 +1547,7 @@
     window.addEventListener('load', async () => {
       await loadUserFromServer();
       showSection(getSession() ? 'profile' : 'login');
-      renderStarSelector(0);
+      renderStarSelector(0, 0);
       renderReviews();
       syncReviewFormWithUser();
     });
@@ -1543,10 +1586,12 @@
 
     // ===== SISTEMA DE AVALIAÇÕES =====
     let selectedStars = 0;
+    let hoverStars = 0;
     let editingReviewId = null;
     let currentReviewImageData = '';
 
     const starSelector = document.getElementById('starSelector');
+    const starSelectorLabel = document.getElementById('starSelectorLabel');
     const reviewText = document.getElementById('reviewText');
     const submitReview = document.getElementById('submitReview');
     const cancelEditReview = document.getElementById('cancelEditReview');
@@ -1562,22 +1607,108 @@
     const reviewFormTitle = document.getElementById('reviewFormTitle');
     const reviewEditBadge = document.getElementById('reviewEditBadge');
 
-    function renderStarSelector(rating) {
-      let stars = '';
-      for (let i = 1; i <= 5; i++) {
-        stars += i <= rating ? '★' : '☆';
-      }
-      starSelector.textContent = stars;
+    function getRatingLabel(rating) {
+      const labels = {
+        0: 'Nenhuma nota selecionada',
+        1: '1 estrela - Muito ruim',
+        2: '2 estrelas - Ruim',
+        3: '3 estrelas - Regular',
+        4: '4 estrelas - Muito bom',
+        5: '5 estrelas - Excelente'
+      };
+      return labels[rating] || 'Nenhuma nota selecionada';
     }
 
-    starSelector.addEventListener('click', e => {
-      const rect = starSelector.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const width = rect.width;
-      const percent = x / width;
+    function renderStarSelector(rating = 0, hover = 0) {
+      const displayRating = hover || rating;
+      starSelector.innerHTML = '';
 
-      selectedStars = Math.min(5, Math.max(1, Math.ceil(percent * 5)));
-      renderStarSelector(selectedStars);
+      for (let i = 1; i <= 5; i++) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'star-btn';
+        button.innerHTML = i <= displayRating ? '★' : '☆';
+        button.setAttribute('data-value', i);
+        button.setAttribute('role', 'radio');
+        button.setAttribute('aria-checked', String(i === rating));
+        button.setAttribute('aria-label', `${i} estrela${i > 1 ? 's' : ''}`);
+        button.setAttribute('title', `${i} estrela${i > 1 ? 's' : ''}`);
+        button.tabIndex = i === (rating || 1) ? 0 : -1;
+
+        if (i <= rating) {
+          button.classList.add('active');
+        }
+
+        if (hover && i <= hover) {
+          button.classList.add('hovered');
+        }
+
+        button.addEventListener('mouseenter', () => {
+          hoverStars = i;
+          renderStarSelector(selectedStars, hoverStars);
+        });
+
+        button.addEventListener('click', () => {
+          selectedStars = i;
+          hoverStars = 0;
+          renderStarSelector(selectedStars, 0);
+        });
+
+        button.addEventListener('focus', () => {
+          hoverStars = i;
+          renderStarSelector(selectedStars, hoverStars);
+        });
+
+        button.addEventListener('touchstart', () => {
+          hoverStars = i;
+          selectedStars = i;
+          renderStarSelector(selectedStars, 0);
+        }, { passive: true });
+
+        starSelector.appendChild(button);
+      }
+
+      starSelectorLabel.textContent = getRatingLabel(displayRating || rating);
+    }
+
+    starSelector.addEventListener('mouseleave', () => {
+      hoverStars = 0;
+      renderStarSelector(selectedStars, 0);
+    });
+
+    starSelector.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedStars = Math.min(5, selectedStars + 1 || 1);
+        hoverStars = 0;
+        renderStarSelector(selectedStars, 0);
+      }
+
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedStars = Math.max(1, selectedStars - 1 || 1);
+        hoverStars = 0;
+        renderStarSelector(selectedStars, 0);
+      }
+
+      if (e.key === 'Home') {
+        e.preventDefault();
+        selectedStars = 1;
+        hoverStars = 0;
+        renderStarSelector(selectedStars, 0);
+      }
+
+      if (e.key === 'End') {
+        e.preventDefault();
+        selectedStars = 5;
+        hoverStars = 0;
+        renderStarSelector(selectedStars, 0);
+      }
+
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        renderStarSelector(selectedStars, 0);
+      }
     });
 
     function getReviews() {
@@ -1623,9 +1754,11 @@
 
       editingReviewId = null;
       selectedStars = 0;
+      hoverStars = 0;
       currentReviewImageData = '';
 
-      renderStarSelector(0);
+      renderStarSelector(0, 0);
+      starSelectorLabel.textContent = getRatingLabel(0);
       reviewText.value = '';
       reviewImageInput.value = '';
       updateReviewPreview('');
@@ -1644,9 +1777,11 @@
 
       editingReviewId = review.id;
       selectedStars = review.stars;
+      hoverStars = 0;
       currentReviewImageData = review.image || '';
 
-      renderStarSelector(selectedStars);
+      renderStarSelector(selectedStars, 0);
+      starSelectorLabel.textContent = getRatingLabel(selectedStars);
       reviewText.value = review.text || '';
       reviewImageInput.value = '';
       updateReviewPreview(currentReviewImageData);
