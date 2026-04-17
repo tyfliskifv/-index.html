@@ -626,9 +626,18 @@
           rápida e fácil de usar.
         </p>
       </div>
+    </section>
+
+    <section id="games" class="tab-content hidden">
+      <div class="hero">
+        <h1>Jogos</h1>
+        <p>
+          Explore os principais jogos em destaque da plataforma e encontre contas, itens e vantagens para cada um deles.
+        </p>
+      </div>
 
       <div class="ads-container">
-        <h2 class="ads-title">Games em Destaque</h2>
+        <h2 class="ads-title">Jogos Disponíveis</h2>
         <div class="ads-list" id="adsList">
           <div class="ad-item" data-title="Conta Inicial Blox Fruits" data-desc="Conta ideal para quem quer começar com vantagem, com itens básicos e progressão inicial pronta." data-img="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" data-price="R$ 39,90" data-products='["Conta verificada","Acesso imediato","Suporte pós-venda"]'>
             <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" alt="Conta Inicial Blox Fruits" />
@@ -652,44 +661,6 @@
             <p>Mais vantagens e personalização para sua gameplay.</p>
             <div class="price-tag">R$ 19,90</div>
             <button class="buy-btn" type="button">Comprar</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="games" class="tab-content hidden">
-      <div class="hero">
-        <h1>Jogos</h1>
-        <p>
-          Explore os principais jogos em destaque da plataforma e encontre contas, itens e vantagens para cada um deles.
-        </p>
-      </div>
-
-      <div class="ads-container">
-        <h2 class="ads-title">Jogos Disponíveis</h2>
-        <div class="ads-list">
-          <div class="ad-item">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" alt="Blox Fruits" />
-            <h3>Blox Fruits</h3>
-            <p>Um dos jogos mais populares do Roblox, com evolução, batalhas e frutas especiais.</p>
-            <div class="price-tag">Categoria</div>
-            <button class="primary-btn" type="button" onclick="goToSearch('Blox Fruits')">Ver ofertas</button>
-          </div>
-
-          <div class="ad-item">
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" alt="Adopt Me" />
-            <h3>Adopt Me</h3>
-            <p>Pets raros, trocas valiosas e muita coleção para quem quer evoluir rápido.</p>
-            <div class="price-tag">Categoria</div>
-            <button class="primary-btn" type="button" onclick="goToSearch('Adopt Me')">Ver ofertas</button>
-          </div>
-
-          <div class="ad-item">
-            <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" alt="Brookhaven" />
-            <h3>Brookhaven</h3>
-            <p>Jogo focado em roleplay, casas, veículos e personalização de experiência.</p>
-            <div class="price-tag">Categoria</div>
-            <button class="primary-btn" type="button" onclick="goToSearch('Brookhaven')">Ver ofertas</button>
           </div>
         </div>
       </div>
@@ -1176,16 +1147,6 @@
       }
     }
 
-    function goToSearch(term) {
-      tabs.forEach(t => t.classList.remove('active'));
-      tabContents.forEach(tc => tc.classList.add('hidden'));
-      document.querySelector('[data-tab="home"]').classList.add('active');
-      document.getElementById('home').classList.remove('hidden');
-      searchInput.value = term;
-      filterAds(term);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
     window.addEventListener('click', event => {
       if (event.target === modal) closeBuyModal();
       if (event.target === authModal) closeAuthModalFn();
@@ -1213,10 +1174,20 @@
 
     searchForm.addEventListener('submit', e => {
       e.preventDefault();
+
+      tabs.forEach(t => t.classList.remove('active'));
+      tabContents.forEach(tc => tc.classList.add('hidden'));
+      document.querySelector('[data-tab="games"]').classList.add('active');
+      document.getElementById('games').classList.remove('hidden');
+
       filterAds(searchInput.value);
     });
 
-    searchInput.addEventListener('input', () => filterAds(searchInput.value));
+    searchInput.addEventListener('input', () => {
+      if (!document.getElementById('games').classList.contains('hidden')) {
+        filterAds(searchInput.value);
+      }
+    });
   </script>
 </body>
 </html>
