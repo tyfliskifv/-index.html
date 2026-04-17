@@ -162,7 +162,7 @@
       position: absolute;
       top: calc(100% + 10px);
       right: 0;
-      min-width: 210px;
+      min-width: 220px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -303,7 +303,8 @@
       color: #fff59d;
     }
 
-    .buy-btn {
+    .buy-btn,
+    .primary-btn {
       background-color: var(--primary);
       color: #000000;
       border: none;
@@ -315,7 +316,8 @@
       width: 100%;
     }
 
-    .buy-btn:hover {
+    .buy-btn:hover,
+    .primary-btn:hover {
       background-color: var(--primary-hover);
       transform: translateY(-1px);
     }
@@ -426,28 +428,10 @@
       align-items: center;
     }
 
-    #chatInput,
-    .accounts-form input {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: #0f0f00;
-      color: var(--text);
-      outline: none;
-    }
-
     #chatForm button {
       width: auto;
       padding: 10px 14px;
       flex-shrink: 0;
-      background-color: var(--primary);
-      border: none;
-      color: #000;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 10px;
     }
 
     .auth-modal-box {
@@ -488,7 +472,27 @@
       font-weight: 600;
     }
 
+    .accounts-form input,
+    #chatInput {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: #0f0f00;
+      color: var(--text);
+      outline: none;
+    }
+
+    .accounts-form input:focus,
+    #chatInput:focus,
+    .search-bar input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 235, 59, 0.12);
+    }
+
     .accounts-form button,
+    #chatForm button,
     #logoutBtn {
       width: 100%;
       padding: 10px;
@@ -502,6 +506,7 @@
     }
 
     .accounts-form button:hover,
+    #chatForm button:hover,
     #logoutBtn:hover {
       background-color: var(--primary-hover);
     }
@@ -518,6 +523,13 @@
       color: #cfcfcf;
       border-top: 1px solid var(--border);
       margin-top: 40px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        max-width: 100%;
+        padding: 0 12px 24px;
+      }
     }
 
     @media (max-width: 600px) {
@@ -538,12 +550,26 @@
       }
 
       .header-actions {
+        order: 1;
         width: 100%;
         justify-content: center;
       }
 
       .search-bar {
         max-width: 100%;
+      }
+
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+
+      .ad-item {
+        min-width: 100%;
+      }
+
+      .modal-content {
+        margin-top: 20px;
+        padding: 18px;
       }
 
       #chatForm {
@@ -608,7 +634,7 @@
             <h3>Conta Inicial Blox Fruits</h3>
             <p>Boa opção para iniciantes que querem economizar tempo.</p>
             <div class="price-tag">R$ 39,90</div>
-            <button class="buy-btn">Comprar</button>
+            <button class="buy-btn" type="button">Comprar</button>
           </div>
 
           <div class="ad-item" data-title="Kit Pets Adopt Me" data-desc="Pacote promocional com pets populares para troca, coleção ou evolução da conta." data-img="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" data-price="R$ 24,90" data-products='["Entrega rápida","Itens selecionados","Atendimento via chat"]'>
@@ -616,7 +642,7 @@
             <h3>Kit Pets Adopt Me</h3>
             <p>Pacote com pets para aumentar seu inventário e melhorar trocas.</p>
             <div class="price-tag">R$ 24,90</div>
-            <button class="buy-btn">Comprar</button>
+            <button class="buy-btn" type="button">Comprar</button>
           </div>
 
           <div class="ad-item" data-title="Upgrade Brookhaven VIP" data-desc="Acesso a benefícios extras para aproveitar melhor sua experiência no Brookhaven." data-img="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" data-price="R$ 19,90" data-products='["Entrega digital","Ativação simples","Suporte em horário comercial"]'>
@@ -624,14 +650,13 @@
             <h3>Upgrade Brookhaven VIP</h3>
             <p>Mais vantagens e personalização para sua gameplay.</p>
             <div class="price-tag">R$ 19,90</div>
-            <button class="buy-btn">Comprar</button>
+            <button class="buy-btn" type="button">Comprar</button>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Modal de compra -->
   <div id="buyModal" class="modal" aria-hidden="true">
     <div class="modal-content">
       <span class="close-btn" id="closeModal">&times;</span>
@@ -639,7 +664,7 @@
       <h3 id="modalTitle"></h3>
       <p id="modalDesc"></p>
 
-      <button id="chatToggleBtn" type="button" class="buy-btn">Atendimento</button>
+      <button id="chatToggleBtn" type="button" class="primary-btn">Atendimento</button>
 
       <div id="chatBox">
         <div id="chatMessages">
@@ -655,7 +680,6 @@
     </div>
   </div>
 
-  <!-- Modal de autenticação -->
   <div id="authModal" class="modal" aria-hidden="true">
     <div class="modal-content auth-modal-box">
       <span class="close-btn" id="closeAuthModal">&times;</span>
@@ -728,7 +752,8 @@
 
         tab.classList.add('active');
         const tabId = tab.getAttribute('data-tab');
-        document.getElementById(tabId).classList.remove('hidden');
+        const target = document.getElementById(tabId);
+        if (target) target.classList.remove('hidden');
       });
     });
 
@@ -745,7 +770,7 @@
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
 
-    function openModal(adItem) {
+    function openBuyModal(adItem) {
       modalImg.src = adItem.dataset.img;
       modalTitle.textContent = `${adItem.dataset.title} — ${adItem.dataset.price}`;
       modalDesc.textContent = adItem.dataset.desc || 'Descrição do produto não disponível.';
@@ -761,25 +786,18 @@
       modal.setAttribute('aria-hidden', 'false');
     }
 
-    function closeModal() {
+    function closeBuyModal() {
       modal.style.display = 'none';
       modal.setAttribute('aria-hidden', 'true');
     }
 
-    closeModalBtn.addEventListener('click', closeModal);
-
-    window.addEventListener('click', event => {
-      if (event.target === modal) closeModal();
-      if (event.target === authModal) closeAuthModalFn();
-    });
+    closeModalBtn.addEventListener('click', closeBuyModal);
 
     document.querySelectorAll('.buy-btn').forEach(button => {
-      if (button.id !== 'chatToggleBtn') {
-        button.addEventListener('click', e => {
-          const adItem = e.target.closest('.ad-item');
-          openModal(adItem);
-        });
-      }
+      button.addEventListener('click', e => {
+        const adItem = e.target.closest('.ad-item');
+        if (adItem) openBuyModal(adItem);
+      });
     });
 
     chatToggleBtn.addEventListener('click', () => {
@@ -811,7 +829,6 @@
       }, 700);
     });
 
-    // AUTENTICAÇÃO / AVATAR
     const authModal = document.getElementById('authModal');
     const closeAuthModal = document.getElementById('closeAuthModal');
 
@@ -859,6 +876,11 @@
       target.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
     }
 
+    function clearMessages() {
+      loginMessage.textContent = '';
+      registerMessage.textContent = '';
+    }
+
     function showSection(section) {
       loginForm.classList.add('hidden');
       registerForm.classList.add('hidden');
@@ -879,8 +901,7 @@
         showProfileBtn.classList.add('active');
       }
 
-      loginMessage.textContent = '';
-      registerMessage.textContent = '';
+      clearMessages();
     }
 
     function setSession(user) {
@@ -888,8 +909,15 @@
     }
 
     function getSession() {
-      const session = localStorage.getItem('loggedInUser');
-      return session ? JSON.parse(session) : null;
+      const raw = localStorage.getItem('loggedInUser');
+      if (!raw) return null;
+
+      try {
+        return JSON.parse(raw);
+      } catch {
+        localStorage.removeItem('loggedInUser');
+        return null;
+      }
     }
 
     function clearSession() {
@@ -899,14 +927,15 @@
     function updateProfileView(user) {
       if (!user) return;
 
-      profileUsername.textContent = user.username;
-      profileEmail.textContent = user.email;
+      profileUsername.textContent = user.username || '';
+      profileEmail.textContent = user.email || '';
 
-      dropdownUsername.textContent = user.username;
-      dropdownEmail.textContent = user.email;
+      dropdownUsername.textContent = user.username || '';
+      dropdownEmail.textContent = user.email || '';
 
-      avatarBtn.textContent = user.username.charAt(0).toUpperCase();
-      avatarBtn.title = `Conta de ${user.username}`;
+      const initial = (user.username || 'C').charAt(0).toUpperCase();
+      avatarBtn.textContent = initial;
+      avatarBtn.title = `Conta de ${user.username || 'usuário'}`;
     }
 
     function updateUIForLoggedIn(loggedIn, user = null) {
@@ -935,15 +964,51 @@
 
         avatarBtn.textContent = 'C';
         avatarBtn.title = 'Conta';
+        profileUsername.textContent = '';
+        profileEmail.textContent = '';
       }
     }
 
-    avatarBtn.addEventListener('click', (e) => {
+    async function apiRequest(url, method, body = null) {
+      const options = {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      };
+
+      if (body) {
+        options.body = JSON.stringify(body);
+      }
+
+      let response;
+      try {
+        response = await fetch(url, options);
+      } catch {
+        throw new Error('Não foi possível conectar ao servidor.');
+      }
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro na requisição.');
+      }
+
+      return data;
+    }
+
+    avatarBtn.addEventListener('click', e => {
       e.stopPropagation();
       avatarDropdown.classList.toggle('show');
     });
 
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       if (!e.target.closest('.avatar-wrapper')) {
         avatarDropdown.classList.remove('show');
       }
@@ -971,25 +1036,6 @@
     showRegisterBtn.addEventListener('click', () => showSection('register'));
     showProfileBtn.addEventListener('click', () => showSection('profile'));
 
-    async function apiRequest(url, method, body) {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(body)
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro na requisição.');
-      }
-
-      return data;
-    }
-
     registerForm.addEventListener('submit', async e => {
       e.preventDefault();
 
@@ -1002,6 +1048,11 @@
         return;
       }
 
+      if (username.length < 3) {
+        setMessage(registerMessage, 'O usuário deve ter pelo menos 3 caracteres.', 'error');
+        return;
+      }
+
       if (password.length < 8) {
         setMessage(registerMessage, 'A senha deve ter pelo menos 8 caracteres.', 'error');
         return;
@@ -1011,7 +1062,7 @@
         await apiRequest('/api/register', 'POST', { username, email, password });
         setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
         registerForm.reset();
-        setTimeout(() => showSection('login'), 400);
+        setTimeout(() => showSection('login'), 500);
       } catch (error) {
         setMessage(registerMessage, error.message, 'error');
       }
@@ -1023,8 +1074,18 @@
       const username = document.getElementById('loginUsername').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
 
+      if (!username || !password) {
+        setMessage(loginMessage, 'Preencha usuário e senha.', 'error');
+        return;
+      }
+
       try {
         const data = await apiRequest('/api/login', 'POST', { username, password });
+
+        if (!data.user) {
+          throw new Error('Resposta do servidor inválida.');
+        }
+
         setSession(data.user);
         updateUIForLoggedIn(true, data.user);
         setMessage(loginMessage, `Bem-vindo, ${data.user.username}!`, 'success');
@@ -1042,7 +1103,7 @@
           credentials: 'include'
         });
       } catch (error) {
-        console.error(error);
+        console.error('Erro ao sair:', error);
       }
 
       clearSession();
@@ -1052,29 +1113,38 @@
     }
 
     logoutBtn.addEventListener('click', performLogout);
+
     dropdownLogout.addEventListener('click', async () => {
       avatarDropdown.classList.remove('show');
       await performLogout();
     });
 
-    window.addEventListener('load', async () => {
+    async function loadUserFromServer() {
       try {
-        const response = await fetch('/api/me', {
-          method: 'GET',
-          credentials: 'include'
-        });
+        const data = await apiRequest('/api/me', 'GET');
+        if (!data.user) throw new Error('Sessão inválida');
 
-        if (!response.ok) throw new Error('Sessão não encontrada');
-
-        const data = await response.json();
         setSession(data.user);
         updateUIForLoggedIn(true, data.user);
-        showSection('profile');
-      } catch (error) {
-        clearSession();
-        updateUIForLoggedIn(false);
-        showSection('login');
+      } catch {
+        const localUser = getSession();
+        if (localUser) {
+          updateUIForLoggedIn(true, localUser);
+        } else {
+          clearSession();
+          updateUIForLoggedIn(false);
+        }
       }
+    }
+
+    window.addEventListener('click', event => {
+      if (event.target === modal) closeBuyModal();
+      if (event.target === authModal) closeAuthModalFn();
+    });
+
+    window.addEventListener('load', async () => {
+      await loadUserFromServer();
+      showSection(getSession() ? 'profile' : 'login');
     });
 
     const searchForm = document.getElementById('searchForm');
