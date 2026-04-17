@@ -821,6 +821,7 @@
           <div style="font-size:0.95rem; color:#d8d8d8;">
             • Usuário com pelo menos 3 caracteres<br>
             • Senha com no mínimo 8 caracteres<br>
+            • A senha deve conter letras e números<br>
             • Informe um e-mail válido<br>
             • Não use dados de outra pessoa
           </div>
@@ -831,7 +832,7 @@
         <input type="text" id="registerUsername" name="username" required minlength="3" autocomplete="username" />
 
         <label for="registerPassword">Senha</label>
-        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Use uma senha forte com letras e números para mais segurança.</small>
+        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Use uma senha forte com pelo menos 8 caracteres, letras e números.</small>
         <input type="password" id="registerPassword" name="password" required minlength="8" autocomplete="new-password" />
 
         <label for="registerEmail">E-mail</label>
@@ -1018,26 +1019,6 @@
       clearMessages();
     }
 
-    function setSession(user) {
-      localStorage.setItem('loggedInUser', JSON.stringify(user));
-    }
-
-    function getSession() {
-      const raw = localStorage.getItem('loggedInUser');
-      if (!raw) return null;
-
-      try {
-        return JSON.parse(raw);
-      } catch {
-        localStorage.removeItem('loggedInUser');
-        return null;
-      }
-    }
-
-    function clearSession() {
-      localStorage.removeItem('loggedInUser');
-    }
-
     function updateProfileView(user) {
       if (!user) return;
 
@@ -1167,8 +1148,8 @@
         return;
       }
 
-      if (password.length < 8) {
-        setMessage(registerMessage, 'A senha deve ter pelo menos 8 caracteres.', 'error');
+      if (!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password)) {
+        setMessage(registerMessage, 'A senha deve ter no mínimo 8 caracteres, com letras e números.', 'error');
         return;
       }
 
@@ -1176,7 +1157,7 @@
         await apiRequest('/api/register', 'POST', { username, email, password });
         setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
         registerForm.reset();
-        setTimeout(() => showSection('login'), 500);
+        setTimeout(() => showSection('login'), 700);
       } catch (error) {
         setMessage(registerMessage, error.message, 'error');
       }
@@ -1200,7 +1181,6 @@
           throw new Error('Resposta do servidor inválida.');
         }
 
-        setSession(data.user);
         updateUIForLoggedIn(true, data.user);
         setMessage(loginMessage, `Bem-vindo, ${data.user.username}!`, 'success');
         loginForm.reset();
@@ -1212,15 +1192,11 @@
 
     async function performLogout() {
       try {
-        await fetch('/api/logout', {
-          method: 'POST',
-          credentials: 'include'
-        });
+        await apiRequest('/api/logout', 'POST');
       } catch (error) {
         console.error('Erro ao sair:', error);
       }
 
-      clearSession();
       updateUIForLoggedIn(false);
       closeAuthModalFn();
       showSection('login');
@@ -1238,16 +1214,9 @@
         const data = await apiRequest('/api/me', 'GET');
         if (!data.user) throw new Error('Sessão inválida');
 
-        setSession(data.user);
         updateUIForLoggedIn(true, data.user);
       } catch {
-        const localUser = getSession();
-        if (localUser) {
-          updateUIForLoggedIn(true, localUser);
-        } else {
-          clearSession();
-          updateUIForLoggedIn(false);
-        }
+        updateUIForLoggedIn(false);
       }
     }
 
@@ -1258,7 +1227,7 @@
 
     window.addEventListener('load', async () => {
       await loadUserFromServer();
-      showSection(getSession() ? 'profile' : 'login');
+      showSection('login');
     });
 
     const searchForm = document.getElementById('searchForm');
