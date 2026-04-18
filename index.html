@@ -50,6 +50,36 @@
       backdrop-filter: blur(8px);
     }
 
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--primary);
+      font-size: 1.5rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(255, 235, 59, 0.12);
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .menu-toggle-btn:hover {
+      background: var(--surface-2);
+      transform: translateY(-1px);
+      box-shadow: 0 0 16px rgba(255, 235, 59, 0.18);
+    }
+
     .logo {
       font-weight: 900;
       font-size: 1.8rem;
@@ -209,6 +239,134 @@
 
     .dropdown-item:hover {
       background: var(--card);
+    }
+
+    .side-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+
+    .side-menu-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 300px;
+      max-width: 86vw;
+      height: 100vh;
+      background: linear-gradient(180deg, #0d0d00 0%, #151500 100%);
+      border-right: 1px solid var(--border);
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
+      z-index: 100;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .side-menu.open {
+      transform: translateX(0);
+    }
+
+    .side-menu-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(255, 235, 59, 0.18);
+    }
+
+    .side-menu-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .side-menu-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--primary);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .side-menu-close:hover {
+      background: var(--surface-2);
+      transform: translateY(-1px);
+    }
+
+    .side-menu-content {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    .side-menu-userbox {
+      background: rgba(255, 235, 59, 0.08);
+      border: 1px solid rgba(255, 235, 59, 0.18);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .side-menu-userbox strong {
+      display: block;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .side-menu-userbox small {
+      color: var(--muted);
+      word-break: break-word;
+    }
+
+    .side-menu-section-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff59d;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .side-menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .side-menu-link {
+      width: 100%;
+      text-align: left;
+      border: 1px solid rgba(255, 235, 59, 0.14);
+      background: var(--card);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .side-menu-link:hover {
+      background: #444400;
+      border-color: var(--border);
+      transform: translateY(-1px);
     }
 
     main {
@@ -865,24 +1023,72 @@
       #chatForm button {
         width: 100%;
       }
+
+      .side-menu {
+        width: 86vw;
+      }
     }
   </style>
 </head>
 <body>
+  <div id="sideMenuOverlay" class="side-menu-overlay"></div>
+
+  <aside id="sideMenu" class="side-menu" aria-hidden="true">
+    <div class="side-menu-header">
+      <div class="side-menu-title">Menu</div>
+      <button id="closeSideMenu" class="side-menu-close" type="button" aria-label="Fechar menu">×</button>
+    </div>
+
+    <div class="side-menu-content">
+      <div class="side-menu-userbox">
+        <strong id="sideMenuUserName">Visitante</strong>
+        <small id="sideMenuUserEmail">Faça login para acessar sua conta</small>
+      </div>
+
+      <div>
+        <div class="side-menu-section-title">Navegação</div>
+        <div class="side-menu-links">
+          <button class="side-menu-link" type="button" data-target-tab="home">Início</button>
+          <button class="side-menu-link" type="button" data-target-tab="reviews">Avaliações</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="side-menu-section-title">Atalhos</div>
+        <div class="side-menu-links">
+          <button id="openLoginFromMenu" class="side-menu-link" type="button">Entrar na conta</button>
+          <button id="openRegisterFromMenu" class="side-menu-link" type="button">Criar conta</button>
+          <button id="openProfileFromMenu" class="side-menu-link hidden" type="button">Meu perfil</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="side-menu-section-title">Redes</div>
+        <div class="side-menu-links">
+          <button class="side-menu-link" type="button" onclick="window.open('https://discord.gg/fBbTfc7f','_blank')">Discord</button>
+          <button class="side-menu-link" type="button" onclick="window.open('https://www.instagram.com/tyfblox/','_blank')">Instagram</button>
+          <button class="side-menu-link" type="button" onclick="window.open('https://www.tiktok.com/','_blank')">TikTok</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
   <header>
-    <div class="logo">TyF Blox</div>
+    <div class="brand-area">
+      <button id="menuBtn" class="menu-toggle-btn" type="button" aria-label="Abrir menu">☰</button>
+      <div class="logo">TyF Blox</div>
+    </div>
 
     <nav>
       <ul class="tabs">
         <li class="active" data-tab="home">Início</li>
-        <li data-tab="games">Jogos</li>
         <li data-tab="reviews">Avaliações</li>
       </ul>
     </nav>
 
     <div class="header-actions">
       <form class="search-bar" id="searchForm">
-        <input type="text" id="searchInput" placeholder="Pesquisar jogo ou item..." />
+        <input type="text" id="searchInput" placeholder="Pesquisar no site..." />
         <button type="submit">Buscar</button>
       </form>
 
@@ -951,44 +1157,6 @@
               <p>Veja nossos vídeos</p>
             </div>
           </a>
-        </div>
-      </div>
-    </section>
-
-    <section id="games" class="tab-content hidden">
-      <div class="hero">
-        <h1>Jogos</h1>
-        <p>
-          Explore os principais jogos em destaque da plataforma e encontre contas, itens e vantagens para cada um deles.
-        </p>
-      </div>
-
-      <div class="ads-container">
-        <h2 class="ads-title">Jogos Disponíveis</h2>
-        <div class="ads-list" id="adsList">
-          <div class="ad-item" data-title="Conta Inicial Blox Fruits" data-desc="Conta ideal para quem quer começar com vantagem, com itens básicos e progressão inicial pronta." data-img="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" data-price="R$ 39,90" data-products='["Conta verificada","Acesso imediato","Suporte pós-venda"]'>
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" alt="Conta Inicial Blox Fruits" />
-            <h3>Conta Inicial Blox Fruits</h3>
-            <p>Boa opção para iniciantes que querem economizar tempo.</p>
-            <div class="price-tag">R$ 39,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
-
-          <div class="ad-item" data-title="Kit Pets Adopt Me" data-desc="Pacote promocional com pets populares para troca, coleção ou evolução da conta." data-img="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" data-price="R$ 24,90" data-products='["Entrega rápida","Itens selecionados","Atendimento via chat"]'>
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" alt="Kit Pets Adopt Me" />
-            <h3>Kit Pets Adopt Me</h3>
-            <p>Pacote com pets para aumentar seu inventário e melhorar trocas.</p>
-            <div class="price-tag">R$ 24,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
-
-          <div class="ad-item" data-title="Upgrade Brookhaven VIP" data-desc="Acesso a benefícios extras para aproveitar melhor sua experiência no Brookhaven." data-img="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" data-price="R$ 19,90" data-products='["Entrega digital","Ativação simples","Suporte em horário comercial"]'>
-            <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" alt="Upgrade Brookhaven VIP" />
-            <h3>Upgrade Brookhaven VIP</h3>
-            <p>Mais vantagens e personalização para sua gameplay.</p>
-            <div class="price-tag">R$ 19,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
         </div>
       </div>
     </section>
@@ -1179,7 +1347,17 @@
 
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
-    const adItems = document.querySelectorAll('.ad-item[data-title]');
+
+    const menuBtn = document.getElementById('menuBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const sideMenuOverlay = document.getElementById('sideMenuOverlay');
+    const closeSideMenu = document.getElementById('closeSideMenu');
+    const sideMenuUserName = document.getElementById('sideMenuUserName');
+    const sideMenuUserEmail = document.getElementById('sideMenuUserEmail');
+    const openLoginFromMenu = document.getElementById('openLoginFromMenu');
+    const openRegisterFromMenu = document.getElementById('openRegisterFromMenu');
+    const openProfileFromMenu = document.getElementById('openProfileFromMenu');
+    const sideMenuTabButtons = document.querySelectorAll('[data-target-tab]');
 
     let selectedStars = 0;
     let hoverStars = 0;
@@ -1277,6 +1455,20 @@
       authModal.setAttribute('aria-hidden', 'true');
     }
 
+    function openSideMenu() {
+      sideMenu.classList.add('open');
+      sideMenuOverlay.classList.add('show');
+      sideMenu.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSideMenuFn() {
+      sideMenu.classList.remove('open');
+      sideMenuOverlay.classList.remove('show');
+      sideMenu.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
     function setMessage(target, text, type) {
       target.textContent = text;
       target.style.color =
@@ -1315,6 +1507,22 @@
       clearMessages();
     }
 
+    function switchTab(tabId) {
+      tabs.forEach(t => t.classList.remove('active'));
+      tabContents.forEach(tc => tc.classList.add('hidden'));
+
+      const selectedTab = document.querySelector(`.tabs li[data-tab="${tabId}"]`);
+      const target = document.getElementById(tabId);
+
+      if (selectedTab) selectedTab.classList.add('active');
+      if (target) target.classList.remove('hidden');
+
+      if (tabId === 'reviews') {
+        renderReviews();
+        syncReviewFormWithUser();
+      }
+    }
+
     function updateProfileView(user) {
       if (!user) return;
 
@@ -1322,6 +1530,9 @@
       profileEmail.textContent = user.email || '';
       dropdownUsername.textContent = user.username || '';
       dropdownEmail.textContent = user.email || '';
+
+      sideMenuUserName.textContent = user.username || 'Usuário';
+      sideMenuUserEmail.textContent = user.email || '';
 
       const initial = (user.username || 'C').charAt(0).toUpperCase();
       avatarBtn.textContent = initial;
@@ -1340,6 +1551,10 @@
         showLoginBtn.classList.add('hidden');
         showRegisterBtn.classList.add('hidden');
 
+        openLoginFromMenu.classList.add('hidden');
+        openRegisterFromMenu.classList.add('hidden');
+        openProfileFromMenu.classList.remove('hidden');
+
         updateProfileView(user);
       } else {
         dropdownUserInfo.classList.add('hidden');
@@ -1352,10 +1567,17 @@
         showLoginBtn.classList.remove('hidden');
         showRegisterBtn.classList.remove('hidden');
 
+        openLoginFromMenu.classList.remove('hidden');
+        openRegisterFromMenu.classList.remove('hidden');
+        openProfileFromMenu.classList.add('hidden');
+
         avatarBtn.textContent = 'C';
         avatarBtn.title = 'Conta';
         profileUsername.textContent = '';
         profileEmail.textContent = '';
+
+        sideMenuUserName.textContent = 'Visitante';
+        sideMenuUserEmail.textContent = 'Faça login para acessar sua conta';
       }
     }
 
@@ -1471,6 +1693,7 @@
       reviewFormTitle.textContent = 'Edite sua avaliação';
       reviewEditBadge.classList.remove('hidden');
       reviewMessage.textContent = '';
+      switchTab('reviews');
     }
 
     function syncReviewFormWithUser() {
@@ -1593,41 +1816,23 @@
       });
     }
 
-    function filterAds(term) {
-      const normalizedTerm = term.trim().toLowerCase();
-      adItems.forEach(item => {
-        const title = item.dataset.title.toLowerCase();
-        const desc = item.dataset.desc.toLowerCase();
-        const visible = !normalizedTerm || title.includes(normalizedTerm) || desc.includes(normalizedTerm);
-        item.style.display = visible ? 'flex' : 'none';
-      });
-    }
-
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(tc => tc.classList.add('hidden'));
-        tab.classList.add('active');
         const tabId = tab.getAttribute('data-tab');
-        const target = document.getElementById(tabId);
-        if (target) target.classList.remove('hidden');
+        switchTab(tabId);
+      });
+    });
 
-        if (tabId === 'reviews') {
-          renderReviews();
-          syncReviewFormWithUser();
-        }
+    sideMenuTabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetTab = button.getAttribute('data-target-tab');
+        switchTab(targetTab);
+        closeSideMenuFn();
       });
     });
 
     closeModalBtn.addEventListener('click', closeBuyModal);
     closeAuthModal.addEventListener('click', closeAuthModalFn);
-
-    document.querySelectorAll('.buy-btn').forEach(button => {
-      button.addEventListener('click', e => {
-        const adItem = e.target.closest('.ad-item');
-        if (adItem) openBuyModal(adItem);
-      });
-    });
 
     chatToggleBtn.addEventListener('click', () => {
       if (chatBox.style.display === 'none' || chatBox.style.display === '') {
@@ -1669,6 +1874,10 @@
       }
     });
 
+    menuBtn.addEventListener('click', openSideMenu);
+    closeSideMenu.addEventListener('click', closeSideMenuFn);
+    sideMenuOverlay.addEventListener('click', closeSideMenuFn);
+
     dropdownLogin.addEventListener('click', () => {
       avatarDropdown.classList.remove('show');
       openAuthModal();
@@ -1683,6 +1892,24 @@
 
     dropdownProfile.addEventListener('click', () => {
       avatarDropdown.classList.remove('show');
+      openAuthModal();
+      showSection('profile');
+    });
+
+    openLoginFromMenu.addEventListener('click', () => {
+      closeSideMenuFn();
+      openAuthModal();
+      showSection('login');
+    });
+
+    openRegisterFromMenu.addEventListener('click', () => {
+      closeSideMenuFn();
+      openAuthModal();
+      showSection('register');
+    });
+
+    openProfileFromMenu.addEventListener('click', () => {
+      closeSideMenuFn();
       openAuthModal();
       showSection('profile');
     });
@@ -1799,18 +2026,11 @@
 
     searchForm.addEventListener('submit', e => {
       e.preventDefault();
-      tabs.forEach(t => t.classList.remove('active'));
-      tabContents.forEach(tc => tc.classList.add('hidden'));
-      document.querySelector('[data-tab="games"]').classList.add('active');
-      document.getElementById('games').classList.remove('hidden');
-      filterAds(searchInput.value);
+      switchTab('home');
+      closeSideMenuFn();
     });
 
-    searchInput.addEventListener('input', () => {
-      if (!document.getElementById('games').classList.contains('hidden')) {
-        filterAds(searchInput.value);
-      }
-    });
+    searchInput.addEventListener('input', () => {});
 
     reviewImageInput.addEventListener('change', e => {
       const file = e.target.files[0];
@@ -1964,6 +2184,12 @@
       if (event.target === authModal) closeAuthModalFn();
     });
 
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeSideMenuFn();
+      }
+    });
+
     window.addEventListener('load', () => {
       const user = getSession();
       if (user) {
@@ -1977,6 +2203,7 @@
       renderStarSelector(0, 0);
       renderReviews();
       syncReviewFormWithUser();
+      switchTab('home');
     });
   </script>
 </body>
