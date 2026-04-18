@@ -1,3 +1,15 @@
+# TyF Blox com banco de dados (frontend + backend)
+
+Abaixo estão os **2 arquivos completos** para você usar:
+
+* `index.html` → sua página completa editada
+* `server.js` → servidor Node.js com Express + SQLite para salvar usuários e avaliações
+
+---
+
+## 1) index.html
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -997,7 +1009,7 @@
       <div class="hero">
         <h1>Avaliações</h1>
         <p>
-          Veja avaliações públicas da TyF Blox. Qualquer visitante pode visualizar, mas apenas usuários logados podem publicar, editar ou excluir a própria avaliação.
+          Veja as avaliações publicadas pelos usuários da TyF Blox. Qualquer visitante pode visualizar, mas apenas usuários logados podem publicar, editar ou excluir a própria avaliação.
         </p>
       </div>
 
@@ -1012,21 +1024,12 @@
           <div id="reviewEditBadge" class="review-edit-badge hidden">Editando sua avaliação</div>
 
           <h3 id="reviewFormTitle">Deixe sua avaliação</h3>
-          <p class="review-help">As avaliações publicadas ficam visíveis para todos. Faça login para enviar, editar ou excluir a sua avaliação.</p>
+          <p class="review-help">As avaliações publicadas ficam visíveis na categoria Avaliações. Faça login para enviar, editar ou excluir a sua avaliação.</p>
 
-          <div
-            id="starSelector"
-            class="star-selector"
-            role="radiogroup"
-            aria-label="Selecione uma nota de 1 a 5 estrelas"
-          ></div>
+          <div id="starSelector" class="star-selector" role="radiogroup" aria-label="Selecione uma nota de 1 a 5 estrelas"></div>
           <div id="starSelectorLabel" class="star-selector-label">Nenhuma nota selecionada</div>
 
-          <textarea
-            id="reviewText"
-            rows="4"
-            placeholder="Escreva sua avaliação sobre a TyF Blox..."
-          ></textarea>
+          <textarea id="reviewText" rows="4" placeholder="Escreva sua avaliação sobre a TyF Blox..."></textarea>
 
           <input type="file" id="reviewImageInput" accept="image/*" />
 
@@ -1137,23 +1140,6 @@
     const tabs = document.querySelectorAll('.tabs li');
     const tabContents = document.querySelectorAll('.tab-content');
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(tc => tc.classList.add('hidden'));
-
-        tab.classList.add('active');
-        const tabId = tab.getAttribute('data-tab');
-        const target = document.getElementById(tabId);
-        if (target) target.classList.remove('hidden');
-
-        if (tabId === 'reviews') {
-          renderReviews();
-          syncReviewFormWithUser();
-        }
-      });
-    });
-
     const modal = document.getElementById('buyModal');
     const modalImg = document.getElementById('modalImg');
     const modalTitle = document.getElementById('modalTitle');
@@ -1166,6 +1152,59 @@
     const chatMessages = document.getElementById('chatMessages');
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
+
+    const authModal = document.getElementById('authModal');
+    const closeAuthModal = document.getElementById('closeAuthModal');
+
+    const avatarBtn = document.getElementById('avatarBtn');
+    const avatarDropdown = document.getElementById('avatarDropdown');
+
+    const dropdownUserInfo = document.getElementById('dropdownUserInfo');
+    const dropdownUsername = document.getElementById('dropdownUsername');
+    const dropdownEmail = document.getElementById('dropdownEmail');
+    const dropdownLogin = document.getElementById('dropdownLogin');
+    const dropdownRegister = document.getElementById('dropdownRegister');
+    const dropdownProfile = document.getElementById('dropdownProfile');
+    const dropdownLogout = document.getElementById('dropdownLogout');
+
+    const showLoginBtn = document.getElementById('showLogin');
+    const showRegisterBtn = document.getElementById('showRegister');
+    const showProfileBtn = document.getElementById('showProfile');
+
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const profileView = document.getElementById('profileView');
+    const loginMessage = document.getElementById('loginMessage');
+    const registerMessage = document.getElementById('registerMessage');
+    const profileUsername = document.getElementById('profileUsername');
+    const profileEmail = document.getElementById('profileEmail');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const adItems = document.querySelectorAll('.ad-item[data-title]');
+
+    let selectedStars = 0;
+    let hoverStars = 0;
+    let editingReviewId = null;
+    let currentReviewImageData = '';
+
+    const starSelector = document.getElementById('starSelector');
+    const starSelectorLabel = document.getElementById('starSelectorLabel');
+    const reviewText = document.getElementById('reviewText');
+    const submitReview = document.getElementById('submitReview');
+    const cancelEditReview = document.getElementById('cancelEditReview');
+    const reviewsList = document.getElementById('reviewsList');
+    const averageValue = document.getElementById('averageValue');
+    const averageStars = document.getElementById('averageStars');
+    const averageText = document.getElementById('averageText');
+    const reviewMessage = document.getElementById('reviewMessage');
+    const reviewImageInput = document.getElementById('reviewImageInput');
+    const reviewPreviewBox = document.getElementById('reviewPreviewBox');
+    const reviewPreviewImage = document.getElementById('reviewPreviewImage');
+    const removePreviewImageBtn = document.getElementById('removePreviewImageBtn');
+    const reviewFormTitle = document.getElementById('reviewFormTitle');
+    const reviewEditBadge = document.getElementById('reviewEditBadge');
 
     function openBuyModal(adItem) {
       modalImg.src = adItem.dataset.img;
@@ -1188,74 +1227,6 @@
       modal.setAttribute('aria-hidden', 'true');
     }
 
-    closeModalBtn.addEventListener('click', closeBuyModal);
-
-    document.querySelectorAll('.buy-btn').forEach(button => {
-      button.addEventListener('click', e => {
-        const adItem = e.target.closest('.ad-item');
-        if (adItem) openBuyModal(adItem);
-      });
-    });
-
-    chatToggleBtn.addEventListener('click', () => {
-      if (chatBox.style.display === 'none' || chatBox.style.display === '') {
-        chatBox.style.display = 'flex';
-        chatToggleBtn.textContent = 'Fechar atendimento';
-      } else {
-        chatBox.style.display = 'none';
-        chatToggleBtn.textContent = 'Atendimento';
-      }
-    });
-
-    chatForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const userMessage = chatInput.value.trim();
-      if (!userMessage) return;
-
-      const userMsgElem = document.createElement('p');
-      userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
-      chatMessages.appendChild(userMsgElem);
-      chatInput.value = '';
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      setTimeout(() => {
-        const botMsgElem = document.createElement('p');
-        botMsgElem.innerHTML = `<strong>Atendente:</strong> Recebemos sua mensagem. Vamos te responder o mais rápido possível.`;
-        chatMessages.appendChild(botMsgElem);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 700);
-    });
-
-    const authModal = document.getElementById('authModal');
-    const closeAuthModal = document.getElementById('closeAuthModal');
-
-    const avatarBtn = document.getElementById('avatarBtn');
-    const avatarDropdown = document.getElementById('avatarDropdown');
-
-    const dropdownUserInfo = document.getElementById('dropdownUserInfo');
-    const dropdownUsername = document.getElementById('dropdownUsername');
-    const dropdownEmail = document.getElementById('dropdownEmail');
-
-    const dropdownLogin = document.getElementById('dropdownLogin');
-    const dropdownRegister = document.getElementById('dropdownRegister');
-    const dropdownProfile = document.getElementById('dropdownProfile');
-    const dropdownLogout = document.getElementById('dropdownLogout');
-
-    const showLoginBtn = document.getElementById('showLogin');
-    const showRegisterBtn = document.getElementById('showRegister');
-    const showProfileBtn = document.getElementById('showProfile');
-
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const profileView = document.getElementById('profileView');
-
-    const loginMessage = document.getElementById('loginMessage');
-    const registerMessage = document.getElementById('registerMessage');
-
-    const profileUsername = document.getElementById('profileUsername');
-    const profileEmail = document.getElementById('profileEmail');
-    const logoutBtn = document.getElementById('logoutBtn');
-
     function openAuthModal() {
       authModal.style.display = 'block';
       authModal.setAttribute('aria-hidden', 'false');
@@ -1265,8 +1236,6 @@
       authModal.style.display = 'none';
       authModal.setAttribute('aria-hidden', 'true');
     }
-
-    closeAuthModal.addEventListener('click', closeAuthModalFn);
 
     function setMessage(target, text, type) {
       target.textContent = text;
@@ -1306,37 +1275,35 @@
       clearMessages();
     }
 
-    function getUsers() {
-      try {
-        return JSON.parse(localStorage.getItem('tyfUsers') || '[]');
-      } catch {
-        localStorage.removeItem('tyfUsers');
-        return [];
+    async function apiRequest(url, method = 'GET', body = null, isFormData = false) {
+      const options = {
+        method,
+        credentials: 'include'
+      };
+
+      if (body) {
+        if (isFormData) {
+          options.body = body;
+        } else {
+          options.headers = { 'Content-Type': 'application/json' };
+          options.body = JSON.stringify(body);
+        }
       }
-    }
 
-    function saveUsers(users) {
-      localStorage.setItem('tyfUsers', JSON.stringify(users));
-    }
-
-    function setSession(user) {
-      localStorage.setItem('loggedInUser', JSON.stringify(user));
-    }
-
-    function getSession() {
-      const raw = localStorage.getItem('loggedInUser');
-      if (!raw) return null;
+      const response = await fetch(url, options);
+      let data = {};
 
       try {
-        return JSON.parse(raw);
+        data = await response.json();
       } catch {
-        localStorage.removeItem('loggedInUser');
-        return null;
+        data = {};
       }
-    }
 
-    function clearSession() {
-      localStorage.removeItem('loggedInUser');
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro na requisição.');
+      }
+
+      return data;
     }
 
     function updateProfileView(user) {
@@ -1344,7 +1311,6 @@
 
       profileUsername.textContent = user.username || '';
       profileEmail.textContent = user.email || '';
-
       dropdownUsername.textContent = user.username || '';
       dropdownEmail.textContent = user.email || '';
 
@@ -1384,6 +1350,298 @@
       }
     }
 
+    async function loadCurrentUser() {
+      try {
+        const data = await apiRequest('/api/me');
+        updateUIForLoggedIn(true, data.user);
+      } catch {
+        updateUIForLoggedIn(false);
+      }
+    }
+
+    async function fetchReviews() {
+      const data = await apiRequest('/api/reviews');
+      return data.reviews || [];
+    }
+
+    function getRatingLabel(rating) {
+      const labels = {
+        0: 'Nenhuma nota selecionada',
+        1: '1 estrela - Muito ruim',
+        2: '2 estrelas - Ruim',
+        3: '3 estrelas - Regular',
+        4: '4 estrelas - Muito bom',
+        5: '5 estrelas - Excelente'
+      };
+      return labels[rating] || 'Nenhuma nota selecionada';
+    }
+
+    function renderStarSelector(rating = 0, hover = 0) {
+      const displayRating = hover || rating;
+      starSelector.innerHTML = '';
+
+      for (let i = 1; i <= 5; i++) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'star-btn';
+        button.innerHTML = i <= displayRating ? '★' : '☆';
+        button.setAttribute('data-value', i);
+        button.setAttribute('role', 'radio');
+        button.setAttribute('aria-checked', String(i === rating));
+        button.setAttribute('aria-label', `${i} estrela${i > 1 ? 's' : ''}`);
+        button.setAttribute('title', `${i} estrela${i > 1 ? 's' : ''}`);
+        button.tabIndex = i === (rating || 1) ? 0 : -1;
+
+        if (i <= rating) button.classList.add('active');
+        if (hover && i <= hover) button.classList.add('hovered');
+
+        button.addEventListener('mouseenter', () => {
+          hoverStars = i;
+          renderStarSelector(selectedStars, hoverStars);
+        });
+
+        button.addEventListener('click', () => {
+          selectedStars = i;
+          hoverStars = 0;
+          renderStarSelector(selectedStars, 0);
+        });
+
+        button.addEventListener('focus', () => {
+          hoverStars = i;
+          renderStarSelector(selectedStars, hoverStars);
+        });
+
+        button.addEventListener('touchstart', () => {
+          hoverStars = i;
+          selectedStars = i;
+          renderStarSelector(selectedStars, 0);
+        }, { passive: true });
+
+        starSelector.appendChild(button);
+      }
+
+      starSelectorLabel.textContent = getRatingLabel(displayRating || rating);
+    }
+
+    function formatReviewDate(dateString) {
+      if (!dateString) return 'Agora mesmo';
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return 'Agora mesmo';
+      return date.toLocaleDateString('pt-BR');
+    }
+
+    function updateReviewPreview(imageData) {
+      if (imageData) {
+        reviewPreviewImage.src = imageData;
+        reviewPreviewBox.classList.add('show');
+      } else {
+        reviewPreviewImage.src = '';
+        reviewPreviewBox.classList.remove('show');
+      }
+    }
+
+    function resetReviewForm(options = {}) {
+      const { keepMessage = false } = options;
+      editingReviewId = null;
+      selectedStars = 0;
+      hoverStars = 0;
+      currentReviewImageData = '';
+
+      renderStarSelector(0, 0);
+      reviewText.value = '';
+      reviewImageInput.value = '';
+      updateReviewPreview('');
+      submitReview.textContent = 'Enviar avaliação';
+      cancelEditReview.classList.add('hidden');
+      reviewFormTitle.textContent = 'Deixe sua avaliação';
+      reviewEditBadge.classList.add('hidden');
+
+      if (!keepMessage) reviewMessage.textContent = '';
+    }
+
+    function enterEditMode(review) {
+      editingReviewId = review.id;
+      selectedStars = review.stars;
+      hoverStars = 0;
+      currentReviewImageData = review.image || '';
+
+      renderStarSelector(selectedStars, 0);
+      reviewText.value = review.text || '';
+      reviewImageInput.value = '';
+      updateReviewPreview(currentReviewImageData);
+      submitReview.textContent = 'Salvar alterações';
+      cancelEditReview.classList.remove('hidden');
+      reviewFormTitle.textContent = 'Edite sua avaliação';
+      reviewEditBadge.classList.remove('hidden');
+      reviewMessage.textContent = '';
+    }
+
+    async function syncReviewFormWithUser() {
+      try {
+        const me = await apiRequest('/api/me');
+        const user = me.user;
+        const reviews = await fetchReviews();
+        const ownReviews = reviews.filter(review => review.user === user.username);
+
+        if (!editingReviewId) {
+          resetReviewForm({ keepMessage: true });
+          reviewMessage.textContent = ownReviews.length > 0
+            ? 'Você já possui avaliações publicadas. Pode adicionar mais, editar ou excluir as suas.'
+            : 'Você está logado e pode publicar sua avaliação.';
+          reviewMessage.style.color = ownReviews.length > 0 ? 'var(--info)' : 'var(--success)';
+        }
+      } catch {
+        resetReviewForm({ keepMessage: true });
+        reviewMessage.textContent = 'As avaliações são públicas. Faça login para publicar a sua.';
+        reviewMessage.style.color = 'var(--info)';
+      }
+    }
+
+    async function renderReviews() {
+      const reviews = await fetchReviews();
+      let currentUser = null;
+
+      try {
+        const me = await apiRequest('/api/me');
+        currentUser = me.user;
+      } catch {
+        currentUser = null;
+      }
+
+      reviewsList.innerHTML = '';
+
+      if (reviews.length === 0) {
+        averageValue.textContent = '0.0';
+        averageStars.textContent = '☆☆☆☆☆';
+        averageText.textContent = '0 avaliações até o momento';
+        reviewsList.innerHTML = `
+          <div class="ad-item">
+            <h3>Sem avaliações ainda</h3>
+            <p>As avaliações publicadas pelos usuários aparecerão aqui na categoria Avaliações.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let total = 0;
+
+      reviews.forEach(review => {
+        total += Number(review.stars) || 0;
+        const reviewCard = document.createElement('div');
+        reviewCard.className = 'ad-item';
+
+        const isOwner = currentUser && currentUser.username === review.user;
+
+        reviewCard.innerHTML = `
+          <div class="review-card-header">
+            <div class="review-card-name">${review.user}</div>
+            <div class="review-card-stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
+          </div>
+          ${review.image ? `<img class="review-image" src="${review.image}" alt="Imagem da avaliação de ${review.user}" />` : ''}
+          <p>${review.text}</p>
+          <div class="review-meta">
+            Publicado em ${formatReviewDate(review.createdAt)}
+            ${review.updatedAt ? ` • Editado em ${formatReviewDate(review.updatedAt)}` : ''}
+          </div>
+          ${isOwner ? `
+            <div class="review-actions">
+              <button type="button" class="secondary-btn review-edit-btn" data-review-id="${review.id}">Editar</button>
+              <button type="button" class="danger-btn review-delete-btn" data-review-id="${review.id}">Excluir</button>
+            </div>
+          ` : ''}
+        `;
+
+        reviewsList.appendChild(reviewCard);
+      });
+
+      const avg = total / reviews.length;
+      const rounded = Math.round(avg);
+      averageValue.textContent = avg.toFixed(1);
+      averageStars.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+      averageText.textContent = `${reviews.length} avaliação${reviews.length > 1 ? 'ões' : ''} publicada${reviews.length > 1 ? 's' : ''}`;
+
+      reviewsList.querySelectorAll('.review-edit-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+          const reviewId = Number(button.getAttribute('data-review-id'));
+          const freshReviews = await fetchReviews();
+          const review = freshReviews.find(item => item.id === reviewId);
+          if (review) enterEditMode(review);
+        });
+      });
+
+      reviewsList.querySelectorAll('.review-delete-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+          const reviewId = Number(button.getAttribute('data-review-id'));
+          try {
+            await apiRequest(`/api/reviews/${reviewId}`, 'DELETE');
+            reviewMessage.textContent = 'Avaliação excluída com sucesso.';
+            reviewMessage.style.color = 'var(--success)';
+            if (editingReviewId === reviewId) resetReviewForm();
+            await renderReviews();
+            await syncReviewFormWithUser();
+          } catch (error) {
+            reviewMessage.textContent = error.message;
+            reviewMessage.style.color = 'var(--danger)';
+          }
+        });
+      });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', async () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(tc => tc.classList.add('hidden'));
+        tab.classList.add('active');
+        const tabId = tab.getAttribute('data-tab');
+        const target = document.getElementById(tabId);
+        if (target) target.classList.remove('hidden');
+
+        if (tabId === 'reviews') {
+          await renderReviews();
+          await syncReviewFormWithUser();
+        }
+      });
+    });
+
+    closeModalBtn.addEventListener('click', closeBuyModal);
+    closeAuthModal.addEventListener('click', closeAuthModalFn);
+
+    document.querySelectorAll('.buy-btn').forEach(button => {
+      button.addEventListener('click', e => {
+        const adItem = e.target.closest('.ad-item');
+        if (adItem) openBuyModal(adItem);
+      });
+    });
+
+    chatToggleBtn.addEventListener('click', () => {
+      if (chatBox.style.display === 'none' || chatBox.style.display === '') {
+        chatBox.style.display = 'flex';
+        chatToggleBtn.textContent = 'Fechar atendimento';
+      } else {
+        chatBox.style.display = 'none';
+        chatToggleBtn.textContent = 'Atendimento';
+      }
+    });
+
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const userMessage = chatInput.value.trim();
+      if (!userMessage) return;
+
+      const userMsgElem = document.createElement('p');
+      userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
+      chatMessages.appendChild(userMsgElem);
+      chatInput.value = '';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      setTimeout(() => {
+        const botMsgElem = document.createElement('p');
+        botMsgElem.innerHTML = `<strong>Atendente:</strong> Recebemos sua mensagem. Vamos te responder o mais rápido possível.`;
+        chatMessages.appendChild(botMsgElem);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 700);
+    });
+
     avatarBtn.addEventListener('click', e => {
       e.stopPropagation();
       avatarDropdown.classList.toggle('show');
@@ -1417,61 +1675,29 @@
     showRegisterBtn.addEventListener('click', () => showSection('register'));
     showProfileBtn.addEventListener('click', () => showSection('profile'));
 
-    registerForm.addEventListener('submit', e => {
+    registerForm.addEventListener('submit', async e => {
       e.preventDefault();
-
       const username = document.getElementById('registerUsername').value.trim();
       const password = document.getElementById('registerPassword').value.trim();
-      const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+      const email = document.getElementById('registerEmail').value.trim();
 
       if (!username || !password || !email) {
         setMessage(registerMessage, 'Preencha todos os campos.', 'error');
         return;
       }
 
-      if (username.length < 3) {
-        setMessage(registerMessage, 'O usuário deve ter pelo menos 3 caracteres.', 'error');
-        return;
+      try {
+        await apiRequest('/api/register', 'POST', { username, password, email });
+        setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
+        registerForm.reset();
+        setTimeout(() => showSection('login'), 500);
+      } catch (error) {
+        setMessage(registerMessage, error.message, 'error');
       }
-
-      if (password.length < 8) {
-        setMessage(registerMessage, 'A senha deve ter pelo menos 8 caracteres.', 'error');
-        return;
-      }
-
-      const users = getUsers();
-
-      const usernameExists = users.some(user => user.username.toLowerCase() === username.toLowerCase());
-      if (usernameExists) {
-        setMessage(registerMessage, 'Esse nome de usuário já está em uso.', 'error');
-        return;
-      }
-
-      const emailExists = users.some(user => user.email.toLowerCase() === email);
-      if (emailExists) {
-        setMessage(registerMessage, 'Esse e-mail já está cadastrado.', 'error');
-        return;
-      }
-
-      users.push({
-        id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        username,
-        email,
-        password
-      });
-
-      saveUsers(users);
-      setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
-      registerForm.reset();
-
-      setTimeout(() => {
-        showSection('login');
-      }, 500);
     });
 
-    loginForm.addEventListener('submit', e => {
+    loginForm.addEventListener('submit', async e => {
       e.preventDefault();
-
       const username = document.getElementById('loginUsername').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
 
@@ -1480,80 +1706,39 @@
         return;
       }
 
-      const users = getUsers();
-      const foundUser = users.find(
-        user =>
-          user.username.toLowerCase() === username.toLowerCase() &&
-          user.password === password
-      );
-
-      if (!foundUser) {
-        setMessage(loginMessage, 'Usuário ou senha inválidos.', 'error');
-        return;
+      try {
+        const data = await apiRequest('/api/login', 'POST', { username, password });
+        updateUIForLoggedIn(true, data.user);
+        setMessage(loginMessage, `Bem-vindo, ${data.user.username}!`, 'success');
+        loginForm.reset();
+        showSection('profile');
+        await renderReviews();
+        await syncReviewFormWithUser();
+      } catch (error) {
+        setMessage(loginMessage, error.message, 'error');
       }
-
-      const sessionUser = {
-        id: foundUser.id,
-        username: foundUser.username,
-        email: foundUser.email
-      };
-
-      setSession(sessionUser);
-      updateUIForLoggedIn(true, sessionUser);
-      setMessage(loginMessage, `Bem-vindo, ${sessionUser.username}!`, 'success');
-      loginForm.reset();
-      showSection('profile');
-      syncReviewFormWithUser();
-      renderReviews();
     });
 
-    function performLogout() {
-      clearSession();
+    async function performLogout() {
+      try {
+        await apiRequest('/api/logout', 'POST');
+      } catch {}
       updateUIForLoggedIn(false);
       closeAuthModalFn();
       showSection('login');
       resetReviewForm();
-      syncReviewFormWithUser();
-      renderReviews();
+      await renderReviews();
+      await syncReviewFormWithUser();
     }
 
     logoutBtn.addEventListener('click', performLogout);
-
-    dropdownLogout.addEventListener('click', () => {
+    dropdownLogout.addEventListener('click', async () => {
       avatarDropdown.classList.remove('show');
-      performLogout();
+      await performLogout();
     });
-
-    function loadUserFromStorage() {
-      const localUser = getSession();
-      if (localUser) {
-        updateUIForLoggedIn(true, localUser);
-      } else {
-        clearSession();
-        updateUIForLoggedIn(false);
-      }
-    }
-
-    window.addEventListener('click', event => {
-      if (event.target === modal) closeBuyModal();
-      if (event.target === authModal) closeAuthModalFn();
-    });
-
-    window.addEventListener('load', () => {
-      loadUserFromStorage();
-      showSection(getSession() ? 'profile' : 'login');
-      renderStarSelector(0, 0);
-      renderReviews();
-      syncReviewFormWithUser();
-    });
-
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
-    const adItems = document.querySelectorAll('.ad-item[data-title]');
 
     function filterAds(term) {
       const normalizedTerm = term.trim().toLowerCase();
-
       adItems.forEach(item => {
         const title = item.dataset.title.toLowerCase();
         const desc = item.dataset.desc.toLowerCase();
@@ -1564,12 +1749,10 @@
 
     searchForm.addEventListener('submit', e => {
       e.preventDefault();
-
       tabs.forEach(t => t.classList.remove('active'));
       tabContents.forEach(tc => tc.classList.add('hidden'));
       document.querySelector('[data-tab="games"]').classList.add('active');
       document.getElementById('games').classList.remove('hidden');
-
       filterAds(searchInput.value);
     });
 
@@ -1579,91 +1762,100 @@
       }
     });
 
-    let selectedStars = 0;
-    let hoverStars = 0;
-    let editingReviewId = null;
-    let currentReviewImageData = '';
+    reviewImageInput.addEventListener('change', async e => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    const starSelector = document.getElementById('starSelector');
-    const starSelectorLabel = document.getElementById('starSelectorLabel');
-    const reviewText = document.getElementById('reviewText');
-    const submitReview = document.getElementById('submitReview');
-    const cancelEditReview = document.getElementById('cancelEditReview');
-    const reviewsList = document.getElementById('reviewsList');
-    const averageValue = document.getElementById('averageValue');
-    const averageStars = document.getElementById('averageStars');
-    const averageText = document.getElementById('averageText');
-    const reviewMessage = document.getElementById('reviewMessage');
-    const reviewImageInput = document.getElementById('reviewImageInput');
-    const reviewPreviewBox = document.getElementById('reviewPreviewBox');
-    const reviewPreviewImage = document.getElementById('reviewPreviewImage');
-    const removePreviewImageBtn = document.getElementById('removePreviewImageBtn');
-    const reviewFormTitle = document.getElementById('reviewFormTitle');
-    const reviewEditBadge = document.getElementById('reviewEditBadge');
-
-    function getRatingLabel(rating) {
-      const labels = {
-        0: 'Nenhuma nota selecionada',
-        1: '1 estrela - Muito ruim',
-        2: '2 estrelas - Ruim',
-        3: '3 estrelas - Regular',
-        4: '4 estrelas - Muito bom',
-        5: '5 estrelas - Excelente'
-      };
-      return labels[rating] || 'Nenhuma nota selecionada';
-    }
-
-    function renderStarSelector(rating = 0, hover = 0) {
-      const displayRating = hover || rating;
-      starSelector.innerHTML = '';
-
-      for (let i = 1; i <= 5; i++) {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'star-btn';
-        button.innerHTML = i <= displayRating ? '★' : '☆';
-        button.setAttribute('data-value', i);
-        button.setAttribute('role', 'radio');
-        button.setAttribute('aria-checked', String(i === rating));
-        button.setAttribute('aria-label', `${i} estrela${i > 1 ? 's' : ''}`);
-        button.setAttribute('title', `${i} estrela${i > 1 ? 's' : ''}`);
-        button.tabIndex = i === (rating || 1) ? 0 : -1;
-
-        if (i <= rating) {
-          button.classList.add('active');
-        }
-
-        if (hover && i <= hover) {
-          button.classList.add('hovered');
-        }
-
-        button.addEventListener('mouseenter', () => {
-          hoverStars = i;
-          renderStarSelector(selectedStars, hoverStars);
-        });
-
-        button.addEventListener('click', () => {
-          selectedStars = i;
-          hoverStars = 0;
-          renderStarSelector(selectedStars, 0);
-        });
-
-        button.addEventListener('focus', () => {
-          hoverStars = i;
-          renderStarSelector(selectedStars, hoverStars);
-        });
-
-        button.addEventListener('touchstart', () => {
-          hoverStars = i;
-          selectedStars = i;
-          renderStarSelector(selectedStars, 0);
-        }, { passive: true });
-
-        starSelector.appendChild(button);
+      if (!file.type.startsWith('image/')) {
+        reviewMessage.textContent = 'Escolha um arquivo de imagem válido.';
+        reviewMessage.style.color = 'var(--danger)';
+        reviewImageInput.value = '';
+        return;
       }
 
-      starSelectorLabel.textContent = getRatingLabel(displayRating || rating);
-    }
+      if (file.size > 5 * 1024 * 1024) {
+        reviewMessage.textContent = 'A imagem deve ter no máximo 5MB.';
+        reviewMessage.style.color = 'var(--danger)';
+        reviewImageInput.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        currentReviewImageData = reader.result;
+        updateReviewPreview(currentReviewImageData);
+        reviewMessage.textContent = 'Imagem carregada com sucesso.';
+        reviewMessage.style.color = 'var(--success)';
+      };
+      reader.onerror = () => {
+        reviewMessage.textContent = 'Não foi possível carregar a imagem.';
+        reviewMessage.style.color = 'var(--danger)';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    removePreviewImageBtn.addEventListener('click', () => {
+      currentReviewImageData = '';
+      reviewImageInput.value = '';
+      updateReviewPreview('');
+      reviewMessage.textContent = 'Imagem removida da avaliação.';
+      reviewMessage.style.color = 'var(--info)';
+    });
+
+    cancelEditReview.addEventListener('click', async () => {
+      resetReviewForm();
+      await syncReviewFormWithUser();
+    });
+
+    submitReview.addEventListener('click', async () => {
+      try {
+        await apiRequest('/api/me');
+      } catch {
+        reviewMessage.textContent = 'Você precisa estar logado para enviar uma avaliação.';
+        reviewMessage.style.color = 'var(--danger)';
+        return;
+      }
+
+      if (selectedStars === 0) {
+        reviewMessage.textContent = 'Selecione uma nota de 1 a 5 estrelas.';
+        reviewMessage.style.color = 'var(--danger)';
+        return;
+      }
+
+      if (!reviewText.value.trim()) {
+        reviewMessage.textContent = 'Escreva sua avaliação antes de enviar.';
+        reviewMessage.style.color = 'var(--danger)';
+        return;
+      }
+
+      try {
+        if (editingReviewId) {
+          await apiRequest(`/api/reviews/${editingReviewId}`, 'PUT', {
+            stars: selectedStars,
+            text: reviewText.value.trim(),
+            image: currentReviewImageData || ''
+          });
+          resetReviewForm();
+          reviewMessage.textContent = 'Avaliação atualizada com sucesso!';
+          reviewMessage.style.color = 'var(--success)';
+        } else {
+          await apiRequest('/api/reviews', 'POST', {
+            stars: selectedStars,
+            text: reviewText.value.trim(),
+            image: currentReviewImageData || ''
+          });
+          resetReviewForm();
+          reviewMessage.textContent = 'Avaliação publicada com sucesso na categoria Avaliações!';
+          reviewMessage.style.color = 'var(--success)';
+        }
+
+        await renderReviews();
+        await syncReviewFormWithUser();
+      } catch (error) {
+        reviewMessage.textContent = error.message;
+        reviewMessage.style.color = 'var(--danger)';
+      }
+    });
 
     starSelector.addEventListener('mouseleave', () => {
       hoverStars = 0;
@@ -1698,360 +1890,22 @@
         hoverStars = 0;
         renderStarSelector(selectedStars, 0);
       }
-
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        renderStarSelector(selectedStars, 0);
-      }
     });
 
-    function getReviews() {
-      try {
-        return JSON.parse(localStorage.getItem('reviews') || '[]');
-      } catch {
-        localStorage.removeItem('reviews');
-        return [];
-      }
-    }
+    window.addEventListener('click', event => {
+      if (event.target === modal) closeBuyModal();
+      if (event.target === authModal) closeAuthModalFn();
+    });
 
-    function saveReviews(reviews) {
-      localStorage.setItem('reviews', JSON.stringify(reviews));
-    }
-
-    function formatReviewDate(dateString) {
-      if (!dateString) return 'Agora mesmo';
-      const date = new Date(dateString);
-      if (Number.isNaN(date.getTime())) return 'Agora mesmo';
-      return date.toLocaleDateString('pt-BR');
-    }
-
-    function getCurrentUserReview() {
-      const user = getSession();
-      if (!user) return null;
-
-      const reviews = getReviews();
-      return reviews.find(review => review.user === user.username) || null;
-    }
-
-    function updateReviewPreview(imageData) {
-      if (imageData) {
-        reviewPreviewImage.src = imageData;
-        reviewPreviewBox.classList.add('show');
-      } else {
-        reviewPreviewImage.src = '';
-        reviewPreviewBox.classList.remove('show');
-      }
-    }
-
-    function resetReviewForm(options = {}) {
-      const { keepMessage = false } = options;
-
-      editingReviewId = null;
-      selectedStars = 0;
-      hoverStars = 0;
-      currentReviewImageData = '';
-
+    window.addEventListener('load', async () => {
+      await loadCurrentUser();
+      showSection('login');
       renderStarSelector(0, 0);
-      starSelectorLabel.textContent = getRatingLabel(0);
-      reviewText.value = '';
-      reviewImageInput.value = '';
-      updateReviewPreview('');
-      submitReview.textContent = 'Enviar avaliação';
-      cancelEditReview.classList.add('hidden');
-      reviewFormTitle.textContent = 'Deixe sua avaliação';
-      reviewEditBadge.classList.add('hidden');
-
-      if (!keepMessage) {
-        reviewMessage.textContent = '';
-      }
-    }
-
-    function enterEditMode(review) {
-      if (!review) return;
-
-      editingReviewId = review.id;
-      selectedStars = review.stars;
-      hoverStars = 0;
-      currentReviewImageData = review.image || '';
-
-      renderStarSelector(selectedStars, 0);
-      starSelectorLabel.textContent = getRatingLabel(selectedStars);
-      reviewText.value = review.text || '';
-      reviewImageInput.value = '';
-      updateReviewPreview(currentReviewImageData);
-
-      submitReview.textContent = 'Salvar alterações';
-      cancelEditReview.classList.remove('hidden');
-      reviewFormTitle.textContent = 'Edite sua avaliação';
-      reviewEditBadge.classList.remove('hidden');
-      reviewMessage.textContent = '';
-      reviewText.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    function syncReviewFormWithUser() {
-      const user = getSession();
-      const currentTab = document.querySelector('.tabs li.active')?.dataset?.tab;
-
-      if (!user) {
-        resetReviewForm({ keepMessage: true });
-        if (currentTab === 'reviews') {
-          reviewMessage.textContent = 'As avaliações já publicadas são públicas. Faça login para enviar a sua.';
-          reviewMessage.style.color = 'var(--info)';
-        }
-        return;
-      }
-
-      const existingReview = getCurrentUserReview();
-
-      if (editingReviewId && existingReview && editingReviewId === existingReview.id) {
-        return;
-      }
-
-      if (!editingReviewId) {
-        resetReviewForm({ keepMessage: true });
-        reviewMessage.textContent = existingReview
-          ? 'Sua avaliação é pública e visível para todos. Você pode editar ou excluir a qualquer momento.'
-          : 'Você está logado. A avaliação que publicar ficará visível para todos.';
-        reviewMessage.style.color = existingReview ? 'var(--info)' : 'var(--success)';
-      }
-    }
-
-    function renderReviews() {
-      const reviews = getReviews();
-      const currentUser = getSession();
-      reviewsList.innerHTML = '';
-
-      if (reviews.length === 0) {
-        averageValue.textContent = '0.0';
-        averageStars.textContent = '☆☆☆☆☆';
-        averageText.textContent = '0 avaliações até o momento';
-
-        reviewsList.innerHTML = `
-          <div class="ad-item">
-            <h3>Sem avaliações ainda</h3>
-            <p>As avaliações publicadas aparecerão aqui para qualquer visitante.</p>
-          </div>
-        `;
-        return;
-      }
-
-      let total = 0;
-
-      reviews.forEach(review => {
-        total += Number(review.stars) || 0;
-
-        const reviewCard = document.createElement('div');
-        reviewCard.className = 'ad-item';
-
-        const isOwner = currentUser && currentUser.username === review.user;
-
-        reviewCard.innerHTML = `
-          <div class="review-card-header">
-            <div class="review-card-name">${review.user}</div>
-            <div class="review-card-stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
-          </div>
-          ${review.image ? `<img class="review-image" src="${review.image}" alt="Imagem da avaliação de ${review.user}" />` : ''}
-          <p>${review.text}</p>
-          <div class="review-meta">
-            Publicado em ${formatReviewDate(review.createdAt)}
-            ${review.updatedAt ? ` • Editado em ${formatReviewDate(review.updatedAt)}` : ''}
-          </div>
-          ${
-            isOwner
-              ? `
-              <div class="review-actions">
-                <button type="button" class="secondary-btn review-edit-btn" data-review-id="${review.id}">Editar</button>
-                <button type="button" class="danger-btn review-delete-btn" data-review-id="${review.id}">Excluir</button>
-              </div>
-              `
-              : ''
-          }
-        `;
-
-        reviewsList.appendChild(reviewCard);
-      });
-
-      const avg = total / reviews.length;
-      const rounded = Math.round(avg);
-
-      averageValue.textContent = avg.toFixed(1);
-      averageStars.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
-      averageText.textContent = `${reviews.length} avaliação${reviews.length > 1 ? 'ões' : ''} pública${reviews.length > 1 ? 's' : ''}`;
-
-      reviewsList.querySelectorAll('.review-edit-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const reviewId = button.getAttribute('data-review-id');
-          const review = getReviews().find(item => item.id === reviewId);
-          if (review) enterEditMode(review);
-        });
-      });
-
-      reviewsList.querySelectorAll('.review-delete-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const reviewId = button.getAttribute('data-review-id');
-          deleteOwnReview(reviewId);
-        });
-      });
-    }
-
-    function readFileAsDataURL(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error('Erro ao ler a imagem.'));
-        reader.readAsDataURL(file);
-      });
-    }
-
-    reviewImageInput.addEventListener('change', async e => {
-      const file = e.target.files[0];
-
-      if (!file) return;
-
-      if (!file.type.startsWith('image/')) {
-        reviewMessage.textContent = 'Escolha um arquivo de imagem válido.';
-        reviewMessage.style.color = 'var(--danger)';
-        reviewImageInput.value = '';
-        return;
-      }
-
-      if (file.size > 2 * 1024 * 1024) {
-        reviewMessage.textContent = 'A imagem deve ter no máximo 2MB.';
-        reviewMessage.style.color = 'var(--danger)';
-        reviewImageInput.value = '';
-        return;
-      }
-
-      try {
-        const imageData = await readFileAsDataURL(file);
-        currentReviewImageData = imageData;
-        updateReviewPreview(currentReviewImageData);
-        reviewMessage.textContent = 'Imagem carregada com sucesso.';
-        reviewMessage.style.color = 'var(--success)';
-      } catch (error) {
-        reviewMessage.textContent = error.message || 'Não foi possível carregar a imagem.';
-        reviewMessage.style.color = 'var(--danger)';
-      }
-    });
-
-    removePreviewImageBtn.addEventListener('click', () => {
-      currentReviewImageData = '';
-      reviewImageInput.value = '';
-      updateReviewPreview('');
-      reviewMessage.textContent = 'Imagem removida da avaliação.';
-      reviewMessage.style.color = 'var(--info)';
-    });
-
-    cancelEditReview.addEventListener('click', () => {
-      resetReviewForm();
-      syncReviewFormWithUser();
-    });
-
-    function deleteOwnReview(reviewId) {
-      const user = getSession();
-
-      if (!user) {
-        reviewMessage.textContent = 'Você precisa estar logado para excluir sua avaliação.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      const reviews = getReviews();
-      const reviewToDelete = reviews.find(review => review.id === reviewId);
-
-      if (!reviewToDelete || reviewToDelete.user !== user.username) {
-        reviewMessage.textContent = 'Você só pode excluir a sua própria avaliação.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      const updatedReviews = reviews.filter(review => review.id !== reviewId);
-      saveReviews(updatedReviews);
-
-      if (editingReviewId === reviewId) {
-        resetReviewForm();
-      }
-
-      reviewMessage.textContent = 'Avaliação excluída com sucesso.';
-      reviewMessage.style.color = 'var(--success)';
-      renderReviews();
-      syncReviewFormWithUser();
-    }
-
-    submitReview.addEventListener('click', () => {
-      const user = getSession();
-
-      if (!user) {
-        reviewMessage.textContent = 'Você precisa estar logado para enviar uma avaliação.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      if (selectedStars === 0) {
-        reviewMessage.textContent = 'Selecione uma nota de 1 a 5 estrelas.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      if (!reviewText.value.trim()) {
-        reviewMessage.textContent = 'Escreva sua avaliação antes de enviar.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      const reviews = getReviews();
-      const existingUserReviewIndex = reviews.findIndex(review => review.user === user.username);
-
-      if (editingReviewId) {
-        const reviewIndex = reviews.findIndex(review => review.id === editingReviewId);
-
-        if (reviewIndex === -1 || reviews[reviewIndex].user !== user.username) {
-          reviewMessage.textContent = 'Você só pode editar a sua própria avaliação.';
-          reviewMessage.style.color = 'var(--danger)';
-          return;
-        }
-
-        reviews[reviewIndex] = {
-          ...reviews[reviewIndex],
-          stars: selectedStars,
-          text: reviewText.value.trim(),
-          image: currentReviewImageData || '',
-          updatedAt: new Date().toISOString()
-        };
-
-        saveReviews(reviews);
-        resetReviewForm();
-        reviewMessage.textContent = 'Avaliação atualizada com sucesso! Agora ela continua pública para todos.';
-        reviewMessage.style.color = 'var(--success)';
-        renderReviews();
-        syncReviewFormWithUser();
-        return;
-      }
-
-      if (existingUserReviewIndex !== -1) {
-        reviewMessage.textContent = 'Você já possui uma avaliação. Clique em editar na sua avaliação para alterar.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      reviews.unshift({
-        id: `review_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        user: user.username,
-        stars: selectedStars,
-        text: reviewText.value.trim(),
-        image: currentReviewImageData || '',
-        createdAt: new Date().toISOString(),
-        updatedAt: ''
-      });
-
-      saveReviews(reviews);
-
-      resetReviewForm();
-      reviewMessage.textContent = 'Avaliação enviada com sucesso! Ela agora está visível para todos os visitantes deste navegador.';
-      reviewMessage.style.color = 'var(--success)';
-      renderReviews();
-      syncReviewFormWithUser();
+      await renderReviews();
+      await syncReviewFormWithUser();
     });
   </script>
 </body>
 </html>
+
+A imagem da avaliação está sendo salva em Base64 no banco para manter tudo simples em um projeto pequeno. Em projeto maior, o ideal é salvar arquivo em pasta ou storage e gravar só a URL no banco.
