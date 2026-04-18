@@ -1014,10 +1014,19 @@
           <h3 id="reviewFormTitle">Deixe sua avaliação</h3>
           <p class="review-help">As avaliações publicadas ficam visíveis na categoria Avaliações. Faça login para enviar, editar ou excluir a sua avaliação.</p>
 
-          <div id="starSelector" class="star-selector" role="radiogroup" aria-label="Selecione uma nota de 1 a 5 estrelas"></div>
+          <div
+            id="starSelector"
+            class="star-selector"
+            role="radiogroup"
+            aria-label="Selecione uma nota de 1 a 5 estrelas"
+          ></div>
           <div id="starSelectorLabel" class="star-selector-label">Nenhuma nota selecionada</div>
 
-          <textarea id="reviewText" rows="4" placeholder="Escreva sua avaliação sobre a TyF Blox..."></textarea>
+          <textarea
+            id="reviewText"
+            rows="4"
+            placeholder="Escreva sua avaliação sobre a TyF Blox..."
+          ></textarea>
 
           <input type="file" id="reviewImageInput" accept="image/*" />
 
@@ -1194,6 +1203,49 @@
     const reviewFormTitle = document.getElementById('reviewFormTitle');
     const reviewEditBadge = document.getElementById('reviewEditBadge');
 
+    function getUsers() {
+      try {
+        return JSON.parse(localStorage.getItem('tyfUsers') || '[]');
+      } catch {
+        localStorage.removeItem('tyfUsers');
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem('tyfUsers', JSON.stringify(users));
+    }
+
+    function getSession() {
+      try {
+        return JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+      } catch {
+        localStorage.removeItem('loggedInUser');
+        return null;
+      }
+    }
+
+    function setSession(user) {
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+    }
+
+    function clearSession() {
+      localStorage.removeItem('loggedInUser');
+    }
+
+    function getReviews() {
+      try {
+        return JSON.parse(localStorage.getItem('reviews') || '[]');
+      } catch {
+        localStorage.removeItem('reviews');
+        return [];
+      }
+    }
+
+    function saveReviews(reviews) {
+      localStorage.setItem('reviews', JSON.stringify(reviews));
+    }
+
     function openBuyModal(adItem) {
       modalImg.src = adItem.dataset.img;
       modalTitle.textContent = `${adItem.dataset.title} — ${adItem.dataset.price}`;
@@ -1263,37 +1315,6 @@
       clearMessages();
     }
 
-    async function apiRequest(url, method = 'GET', body = null, isFormData = false) {
-      const options = {
-        method,
-        credentials: 'include'
-      };
-
-      if (body) {
-        if (isFormData) {
-          options.body = body;
-        } else {
-          options.headers = { 'Content-Type': 'application/json' };
-          options.body = JSON.stringify(body);
-        }
-      }
-
-      const response = await fetch(url, options);
-      let data = {};
-
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro na requisição.');
-      }
-
-      return data;
-    }
-
     function updateProfileView(user) {
       if (!user) return;
 
@@ -1336,20 +1357,6 @@
         profileUsername.textContent = '';
         profileEmail.textContent = '';
       }
-    }
-
-    async function loadCurrentUser() {
-      try {
-        const data = await apiRequest('/api/me');
-        updateUIForLoggedIn(true, data.user);
-      } catch {
-        updateUIForLoggedIn(false);
-      }
-    }
-
-    async function fetchReviews() {
-      const data = await apiRequest('/api/reviews');
-      return data.reviews || [];
     }
 
     function getRatingLabel(rating) {
@@ -1444,7 +1451,9 @@
       reviewFormTitle.textContent = 'Deixe sua avaliação';
       reviewEditBadge.classList.add('hidden');
 
-      if (!keepMessage) reviewMessage.textContent = '';
+      if (!keepMessage) {
+        reviewMessage.textContent = '';
+      }
     }
 
     function enterEditMode(review) {
@@ -1464,38 +1473,31 @@
       reviewMessage.textContent = '';
     }
 
-    async function syncReviewFormWithUser() {
-      try {
-        const me = await apiRequest('/api/me');
-        const user = me.user;
-        const reviews = await fetchReviews();
-        const ownReviews = reviews.filter(review => review.user === user.username);
+    function syncReviewFormWithUser() {
+      const user = getSession();
+      const reviews = getReviews();
 
-        if (!editingReviewId) {
-          resetReviewForm({ keepMessage: true });
-          reviewMessage.textContent = ownReviews.length > 0
-            ? 'Você já possui avaliações publicadas. Pode adicionar mais, editar ou excluir as suas.'
-            : 'Você está logado e pode publicar sua avaliação.';
-          reviewMessage.style.color = ownReviews.length > 0 ? 'var(--info)' : 'var(--success)';
-        }
-      } catch {
+      if (!user) {
         resetReviewForm({ keepMessage: true });
         reviewMessage.textContent = 'As avaliações são públicas. Faça login para publicar a sua.';
         reviewMessage.style.color = 'var(--info)';
+        return;
+      }
+
+      const ownReviews = reviews.filter(review => review.user === user.username);
+
+      if (!editingReviewId) {
+        resetReviewForm({ keepMessage: true });
+        reviewMessage.textContent = ownReviews.length > 0
+          ? 'Você já possui avaliações publicadas. Pode adicionar mais, editar ou excluir as suas.'
+          : 'Você está logado e pode publicar sua avaliação.';
+        reviewMessage.style.color = ownReviews.length > 0 ? 'var(--info)' : 'var(--success)';
       }
     }
 
-    async function renderReviews() {
-      const reviews = await fetchReviews();
-      let currentUser = null;
-
-      try {
-        const me = await apiRequest('/api/me');
-        currentUser = me.user;
-      } catch {
-        currentUser = null;
-      }
-
+    function renderReviews() {
+      const reviews = getReviews();
+      const currentUser = getSession();
       reviewsList.innerHTML = '';
 
       if (reviews.length === 0) {
@@ -1549,34 +1551,60 @@
       averageText.textContent = `${reviews.length} avaliação${reviews.length > 1 ? 'ões' : ''} publicada${reviews.length > 1 ? 's' : ''}`;
 
       reviewsList.querySelectorAll('.review-edit-btn').forEach(button => {
-        button.addEventListener('click', async () => {
-          const reviewId = Number(button.getAttribute('data-review-id'));
-          const freshReviews = await fetchReviews();
-          const review = freshReviews.find(item => item.id === reviewId);
+        button.addEventListener('click', () => {
+          const reviewId = button.getAttribute('data-review-id');
+          const review = getReviews().find(item => item.id === reviewId);
           if (review) enterEditMode(review);
         });
       });
 
       reviewsList.querySelectorAll('.review-delete-btn').forEach(button => {
-        button.addEventListener('click', async () => {
-          const reviewId = Number(button.getAttribute('data-review-id'));
-          try {
-            await apiRequest(`/api/reviews/${reviewId}`, 'DELETE');
-            reviewMessage.textContent = 'Avaliação excluída com sucesso.';
-            reviewMessage.style.color = 'var(--success)';
-            if (editingReviewId === reviewId) resetReviewForm();
-            await renderReviews();
-            await syncReviewFormWithUser();
-          } catch (error) {
-            reviewMessage.textContent = error.message;
+        button.addEventListener('click', () => {
+          const reviewId = button.getAttribute('data-review-id');
+          const user = getSession();
+
+          if (!user) {
+            reviewMessage.textContent = 'Você precisa estar logado para excluir sua avaliação.';
             reviewMessage.style.color = 'var(--danger)';
+            return;
           }
+
+          const reviews = getReviews();
+          const reviewToDelete = reviews.find(review => review.id === reviewId);
+
+          if (!reviewToDelete || reviewToDelete.user !== user.username) {
+            reviewMessage.textContent = 'Você só pode excluir a sua própria avaliação.';
+            reviewMessage.style.color = 'var(--danger)';
+            return;
+          }
+
+          const updatedReviews = reviews.filter(review => review.id !== reviewId);
+          saveReviews(updatedReviews);
+
+          if (editingReviewId === reviewId) {
+            resetReviewForm();
+          }
+
+          reviewMessage.textContent = 'Avaliação excluída com sucesso.';
+          reviewMessage.style.color = 'var(--success)';
+          renderReviews();
+          syncReviewFormWithUser();
         });
       });
     }
 
+    function filterAds(term) {
+      const normalizedTerm = term.trim().toLowerCase();
+      adItems.forEach(item => {
+        const title = item.dataset.title.toLowerCase();
+        const desc = item.dataset.desc.toLowerCase();
+        const visible = !normalizedTerm || title.includes(normalizedTerm) || desc.includes(normalizedTerm);
+        item.style.display = visible ? 'flex' : 'none';
+      });
+    }
+
     tabs.forEach(tab => {
-      tab.addEventListener('click', async () => {
+      tab.addEventListener('click', () => {
         tabs.forEach(t => t.classList.remove('active'));
         tabContents.forEach(tc => tc.classList.add('hidden'));
         tab.classList.add('active');
@@ -1585,8 +1613,8 @@
         if (target) target.classList.remove('hidden');
 
         if (tabId === 'reviews') {
-          await renderReviews();
-          await syncReviewFormWithUser();
+          renderReviews();
+          syncReviewFormWithUser();
         }
       });
     });
@@ -1663,29 +1691,61 @@
     showRegisterBtn.addEventListener('click', () => showSection('register'));
     showProfileBtn.addEventListener('click', () => showSection('profile'));
 
-    registerForm.addEventListener('submit', async e => {
+    registerForm.addEventListener('submit', e => {
       e.preventDefault();
+
       const username = document.getElementById('registerUsername').value.trim();
       const password = document.getElementById('registerPassword').value.trim();
-      const email = document.getElementById('registerEmail').value.trim();
+      const email = document.getElementById('registerEmail').value.trim().toLowerCase();
 
       if (!username || !password || !email) {
         setMessage(registerMessage, 'Preencha todos os campos.', 'error');
         return;
       }
 
-      try {
-        await apiRequest('/api/register', 'POST', { username, password, email });
-        setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
-        registerForm.reset();
-        setTimeout(() => showSection('login'), 500);
-      } catch (error) {
-        setMessage(registerMessage, error.message, 'error');
+      if (username.length < 3) {
+        setMessage(registerMessage, 'O usuário deve ter pelo menos 3 caracteres.', 'error');
+        return;
       }
+
+      if (password.length < 8) {
+        setMessage(registerMessage, 'A senha deve ter pelo menos 8 caracteres.', 'error');
+        return;
+      }
+
+      const users = getUsers();
+
+      const usernameExists = users.some(user => user.username.toLowerCase() === username.toLowerCase());
+      if (usernameExists) {
+        setMessage(registerMessage, 'Esse nome de usuário já está em uso.', 'error');
+        return;
+      }
+
+      const emailExists = users.some(user => user.email.toLowerCase() === email);
+      if (emailExists) {
+        setMessage(registerMessage, 'Esse e-mail já está cadastrado.', 'error');
+        return;
+      }
+
+      users.push({
+        id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        username,
+        email,
+        password
+      });
+
+      saveUsers(users);
+      setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
+      registerForm.reset();
+
+      setTimeout(() => {
+        showSection('login');
+      }, 500);
     });
 
-    loginForm.addEventListener('submit', async e => {
+    loginForm.addEventListener('submit', e => {
       e.preventDefault();
+
       const username = document.getElementById('loginUsername').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
 
@@ -1694,29 +1754,41 @@
         return;
       }
 
-      try {
-        const data = await apiRequest('/api/login', 'POST', { username, password });
-        updateUIForLoggedIn(true, data.user);
-        setMessage(loginMessage, `Bem-vindo, ${data.user.username}!`, 'success');
-        loginForm.reset();
-        showSection('profile');
-        await renderReviews();
-        await syncReviewFormWithUser();
-      } catch (error) {
-        setMessage(loginMessage, error.message, 'error');
+      const users = getUsers();
+      const foundUser = users.find(
+        user =>
+          user.username.toLowerCase() === username.toLowerCase() &&
+          user.password === password
+      );
+
+      if (!foundUser) {
+        setMessage(loginMessage, 'Usuário ou senha inválidos.', 'error');
+        return;
       }
+
+      const sessionUser = {
+        id: foundUser.id,
+        username: foundUser.username,
+        email: foundUser.email
+      };
+
+      setSession(sessionUser);
+      updateUIForLoggedIn(true, sessionUser);
+      setMessage(loginMessage, `Bem-vindo, ${sessionUser.username}!`, 'success');
+      loginForm.reset();
+      showSection('profile');
+      renderReviews();
+      syncReviewFormWithUser();
     });
 
     async function performLogout() {
-      try {
-        await apiRequest('/api/logout', 'POST');
-      } catch {}
+      clearSession();
       updateUIForLoggedIn(false);
       closeAuthModalFn();
       showSection('login');
       resetReviewForm();
-      await renderReviews();
-      await syncReviewFormWithUser();
+      renderReviews();
+      syncReviewFormWithUser();
     }
 
     logoutBtn.addEventListener('click', performLogout);
@@ -1724,16 +1796,6 @@
       avatarDropdown.classList.remove('show');
       await performLogout();
     });
-
-    function filterAds(term) {
-      const normalizedTerm = term.trim().toLowerCase();
-      adItems.forEach(item => {
-        const title = item.dataset.title.toLowerCase();
-        const desc = item.dataset.desc.toLowerCase();
-        const visible = !normalizedTerm || title.includes(normalizedTerm) || desc.includes(normalizedTerm);
-        item.style.display = visible ? 'flex' : 'none';
-      });
-    }
 
     searchForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -1750,7 +1812,7 @@
       }
     });
 
-    reviewImageInput.addEventListener('change', async e => {
+    reviewImageInput.addEventListener('change', e => {
       const file = e.target.files[0];
       if (!file) return;
 
@@ -1790,15 +1852,15 @@
       reviewMessage.style.color = 'var(--info)';
     });
 
-    cancelEditReview.addEventListener('click', async () => {
+    cancelEditReview.addEventListener('click', () => {
       resetReviewForm();
-      await syncReviewFormWithUser();
+      syncReviewFormWithUser();
     });
 
-    submitReview.addEventListener('click', async () => {
-      try {
-        await apiRequest('/api/me');
-      } catch {
+    submitReview.addEventListener('click', () => {
+      const user = getSession();
+
+      if (!user) {
         reviewMessage.textContent = 'Você precisa estar logado para enviar uma avaliação.';
         reviewMessage.style.color = 'var(--danger)';
         return;
@@ -1816,33 +1878,50 @@
         return;
       }
 
-      try {
-        if (editingReviewId) {
-          await apiRequest(`/api/reviews/${editingReviewId}`, 'PUT', {
-            stars: selectedStars,
-            text: reviewText.value.trim(),
-            image: currentReviewImageData || ''
-          });
-          resetReviewForm();
-          reviewMessage.textContent = 'Avaliação atualizada com sucesso!';
-          reviewMessage.style.color = 'var(--success)';
-        } else {
-          await apiRequest('/api/reviews', 'POST', {
-            stars: selectedStars,
-            text: reviewText.value.trim(),
-            image: currentReviewImageData || ''
-          });
-          resetReviewForm();
-          reviewMessage.textContent = 'Avaliação publicada com sucesso na categoria Avaliações!';
-          reviewMessage.style.color = 'var(--success)';
+      const reviews = getReviews();
+
+      if (editingReviewId) {
+        const reviewIndex = reviews.findIndex(review => review.id === editingReviewId);
+
+        if (reviewIndex === -1 || reviews[reviewIndex].user !== user.username) {
+          reviewMessage.textContent = 'Você só pode editar a sua própria avaliação.';
+          reviewMessage.style.color = 'var(--danger)';
+          return;
         }
 
-        await renderReviews();
-        await syncReviewFormWithUser();
-      } catch (error) {
-        reviewMessage.textContent = error.message;
-        reviewMessage.style.color = 'var(--danger)';
+        reviews[reviewIndex] = {
+          ...reviews[reviewIndex],
+          stars: selectedStars,
+          text: reviewText.value.trim(),
+          image: currentReviewImageData || '',
+          updatedAt: new Date().toISOString()
+        };
+
+        saveReviews(reviews);
+        resetReviewForm();
+        reviewMessage.textContent = 'Avaliação atualizada com sucesso!';
+        reviewMessage.style.color = 'var(--success)';
+        renderReviews();
+        syncReviewFormWithUser();
+        return;
       }
+
+      reviews.unshift({
+        id: `review_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        user: user.username,
+        stars: selectedStars,
+        text: reviewText.value.trim(),
+        image: currentReviewImageData || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: ''
+      });
+
+      saveReviews(reviews);
+      resetReviewForm();
+      reviewMessage.textContent = 'Avaliação publicada com sucesso na categoria Avaliações!';
+      reviewMessage.style.color = 'var(--success)';
+      renderReviews();
+      syncReviewFormWithUser();
     });
 
     starSelector.addEventListener('mouseleave', () => {
@@ -1885,12 +1964,19 @@
       if (event.target === authModal) closeAuthModalFn();
     });
 
-    window.addEventListener('load', async () => {
-      await loadCurrentUser();
-      showSection('login');
+    window.addEventListener('load', () => {
+      const user = getSession();
+      if (user) {
+        updateUIForLoggedIn(true, user);
+        showSection('profile');
+      } else {
+        updateUIForLoggedIn(false);
+        showSection('login');
+      }
+
       renderStarSelector(0, 0);
-      await renderReviews();
-      await syncReviewFormWithUser();
+      renderReviews();
+      syncReviewFormWithUser();
     });
   </script>
 </body>
