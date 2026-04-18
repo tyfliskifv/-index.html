@@ -58,11 +58,11 @@
     }
 
     .menu-toggle-btn {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
       border: 1px solid var(--border);
-      background: var(--surface);
+      background: linear-gradient(180deg, #1b1b00 0%, #101000 100%);
       color: var(--primary);
       font-size: 1.5rem;
       font-weight: 900;
@@ -70,14 +70,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 12px rgba(255, 235, 59, 0.12);
+      box-shadow: 0 0 14px rgba(255, 235, 59, 0.12);
       transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .menu-toggle-btn:hover {
-      background: var(--surface-2);
+      background: linear-gradient(180deg, #252500 0%, #131300 100%);
       transform: translateY(-1px);
-      box-shadow: 0 0 16px rgba(255, 235, 59, 0.18);
+      box-shadow: 0 0 18px rgba(255, 235, 59, 0.18);
     }
 
     .logo {
@@ -244,7 +244,8 @@
     .side-menu-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.65);
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(4px);
       z-index: 90;
       opacity: 0;
       pointer-events: none;
@@ -260,17 +261,20 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 300px;
-      max-width: 86vw;
+      width: 320px;
+      max-width: 88vw;
       height: 100vh;
-      background: linear-gradient(180deg, #0d0d00 0%, #151500 100%);
+      background:
+        radial-gradient(circle at top left, rgba(255, 235, 59, 0.13), transparent 28%),
+        linear-gradient(180deg, #0c0c00 0%, #141400 45%, #090900 100%);
       border-right: 1px solid var(--border);
-      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
+      box-shadow: 14px 0 34px rgba(0, 0, 0, 0.5);
       z-index: 100;
       transform: translateX(-100%);
-      transition: transform 0.3s ease;
+      transition: transform 0.32s ease;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .side-menu.open {
@@ -278,18 +282,47 @@
     }
 
     .side-menu-header {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(255, 235, 59, 0.16);
+      background: rgba(255, 235, 59, 0.04);
+    }
+
+    .side-menu-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 18px 18px 14px;
-      border-bottom: 1px solid rgba(255, 235, 59, 0.18);
+      margin-bottom: 14px;
+    }
+
+    .side-menu-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .side-menu-brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 235, 59, 0.12);
+      border: 1px solid rgba(255, 235, 59, 0.18);
+      color: var(--primary);
+      font-size: 1.2rem;
     }
 
     .side-menu-title {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 800;
       color: var(--primary);
+    }
+
+    .side-menu-subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
     }
 
     .side-menu-close {
@@ -309,18 +342,10 @@
       transform: translateY(-1px);
     }
 
-    .side-menu-content {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      overflow-y: auto;
-    }
-
     .side-menu-userbox {
-      background: rgba(255, 235, 59, 0.08);
+      background: linear-gradient(180deg, rgba(255, 235, 59, 0.1), rgba(255, 235, 59, 0.03));
       border: 1px solid rgba(255, 235, 59, 0.18);
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 14px;
     }
 
@@ -328,20 +353,50 @@
       display: block;
       color: var(--primary);
       margin-bottom: 4px;
+      font-size: 1rem;
     }
 
     .side-menu-userbox small {
       color: var(--muted);
       word-break: break-word;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .side-menu-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 235, 59, 0.12);
+      color: #fff59d;
+      border: 1px solid rgba(255, 235, 59, 0.16);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .side-menu-content {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      overflow-y: auto;
+    }
+
+    .side-menu-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .side-menu-section-title {
-      font-size: 0.9rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: 800;
       color: #fff59d;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      margin-bottom: 4px;
+      opacity: 0.9;
     }
 
     .side-menu-links {
@@ -354,19 +409,68 @@
       width: 100%;
       text-align: left;
       border: 1px solid rgba(255, 235, 59, 0.14);
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(51, 51, 0, 0.95), rgba(34, 34, 0, 0.95));
       color: var(--text);
-      border-radius: 12px;
-      padding: 13px 14px;
+      border-radius: 14px;
+      padding: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .side-menu-link:hover {
-      background: #444400;
+      background: linear-gradient(180deg, rgba(68, 68, 0, 0.98), rgba(40, 40, 0, 0.98));
       border-color: var(--border);
       transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    .side-menu-link-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .side-menu-link-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255, 235, 59, 0.1);
+      border: 1px solid rgba(255, 235, 59, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .side-menu-link-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .side-menu-link-text strong {
+      color: var(--text);
+      font-size: 0.96rem;
+    }
+
+    .side-menu-link-text span {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .side-menu-arrow {
+      color: #fff59d;
+      opacity: 0.85;
+      flex-shrink: 0;
     }
 
     main {
@@ -1025,7 +1129,7 @@
       }
 
       .side-menu {
-        width: 86vw;
+        width: 88vw;
       }
     }
   </style>
@@ -1035,39 +1139,128 @@
 
   <aside id="sideMenu" class="side-menu" aria-hidden="true">
     <div class="side-menu-header">
-      <div class="side-menu-title">Menu</div>
-      <button id="closeSideMenu" class="side-menu-close" type="button" aria-label="Fechar menu">×</button>
-    </div>
+      <div class="side-menu-top">
+        <div class="side-menu-brand">
+          <div class="side-menu-brand-icon">✦</div>
+          <div>
+            <div class="side-menu-title">TyF Blox</div>
+            <div class="side-menu-subtitle">Menu principal</div>
+          </div>
+        </div>
+        <button id="closeSideMenu" class="side-menu-close" type="button" aria-label="Fechar menu">×</button>
+      </div>
 
-    <div class="side-menu-content">
       <div class="side-menu-userbox">
         <strong id="sideMenuUserName">Visitante</strong>
         <small id="sideMenuUserEmail">Faça login para acessar sua conta</small>
+        <div class="side-menu-badge">● Online agora</div>
       </div>
+    </div>
 
-      <div>
+    <div class="side-menu-content">
+      <div class="side-menu-section">
         <div class="side-menu-section-title">Navegação</div>
+
         <div class="side-menu-links">
-          <button class="side-menu-link" type="button" data-target-tab="home">Início</button>
-          <button class="side-menu-link" type="button" data-target-tab="reviews">Avaliações</button>
+          <button class="side-menu-link" type="button" data-target-tab="home">
+            <div class="side-menu-link-left">
+              <div class="side-menu-link-icon">⌂</div>
+              <div class="side-menu-link-text">
+                <strong>Início</strong>
+                <span>Página principal do site</span>
+              </div>
+            </div>
+            <div class="side-menu-arrow">›</div>
+          </button>
+
+          <button class="side-menu-link" type="button" data-target-tab="reviews">
+            <div class="side-menu-link-left">
+              <div class="side-menu-link-icon">★</div>
+              <div class="side-menu-link-text">
+                <strong>Avaliações</strong>
+                <span>Veja a opinião dos usuários</span>
+              </div>
+            </div>
+            <div class="side-menu-arrow">›</div>
+          </button>
         </div>
       </div>
 
-      <div>
-        <div class="side-menu-section-title">Atalhos</div>
+      <div class="side-menu-section">
+        <div class="side-menu-section-title">Conta</div>
+
         <div class="side-menu-links">
-          <button id="openLoginFromMenu" class="side-menu-link" type="button">Entrar na conta</button>
-          <button id="openRegisterFromMenu" class="side-menu-link" type="button">Criar conta</button>
-          <button id="openProfileFromMenu" class="side-menu-link hidden" type="button">Meu perfil</button>
+          <button id="openLoginFromMenu" class="side-menu-link" type="button">
+            <div class="side-menu-link-left">
+              <div class="side-menu-link-icon">↪</div>
+              <div class="side-menu-link-text">
+                <strong>Entrar</strong>
+                <span>Acesse sua conta</span>
+              </div>
+            </div>
+            <div class="side-menu-arrow">›</div>
+          </button>
+
+          <button id="openRegisterFromMenu" class="side-menu-link" type="button">
+            <div class="side-menu-link-left">
+              <div class="side-menu-link-icon">＋</div>
+              <div class="side-menu-link-text">
+                <strong>Registrar</strong>
+                <span>Crie sua conta no site</span>
+              </div>
+            </div>
+            <div class="side-menu-arrow">›</div>
+          </button>
+
+          <button id="openProfileFromMenu" class="side-menu-link hidden" type="button">
+            <div class="side-menu-link-left">
+              <div class="side-menu-link-icon">◉</div>
+              <div class="side-menu-link-text">
+                <strong>Meu perfil</strong>
+                <span>Veja seus dados da conta</span>
+              </div>
+            </div>
+            <div class="side-menu-arrow">›</div>
+          </button>
         </div>
       </div>
 
-      <div>
-        <div class="side-menu-section-title">Redes</div>
+      <div class="side-menu-section">
+        <div class="side-menu-section-title">Redes oficiais</div>
+
         <div class="side-menu-links">
-          <button class="side-menu-link" type="button" onclick="window.open('https://discord.gg/fBbTfc7f','_blank')">Discord</button>
-          <button class="side-menu-link" type="button" onclick="window.open('https://www.instagram.com/tyfblox/','_blank')">Instagram</button>
-          <button class="side-menu-link" type="button" onclick="window.open('https://www.tiktok.com/','_blank')">TikTok</button>
+          <button class="side-menu-link" type="button" onclick="window.open('https://discord.gg/fBbTfc7f','_blank')">
+            <div class="side-menu-link-left">
+              <div class="side-menu-link-icon">◎</div>
+              <div class="side-menu-link-text">
+                <strong>Discord</strong>
+                <span>Entre no servidor</span>
+              </div>
+            </div>
+            <div class="side-menu-arrow">↗</div>
+          </button>
+
+          <button class="side-menu-link" type="button" onclick="window.open('https://www.instagram.com/tyfblox/','_blank')">
+            <div class="side-menu-link-left">
+              <div class="side-menu-link-icon">◌</div>
+              <div class="side-menu-link-text">
+                <strong>Instagram</strong>
+                <span>Acompanhe os posts</span>
+              </div>
+            </div>
+            <div class="side-menu-arrow">↗</div>
+          </button>
+
+          <button class="side-menu-link" type="button" onclick="window.open('https://www.tiktok.com/','_blank')">
+            <div class="side-menu-link-left">
+              <div class="side-menu-link-icon">♫</div>
+              <div class="side-menu-link-text">
+                <strong>TikTok</strong>
+                <span>Veja os vídeos</span>
+              </div>
+            </div>
+            <div class="side-menu-arrow">↗</div>
+          </button>
         </div>
       </div>
     </div>
@@ -1422,22 +1615,6 @@
 
     function saveReviews(reviews) {
       localStorage.setItem('reviews', JSON.stringify(reviews));
-    }
-
-    function openBuyModal(adItem) {
-      modalImg.src = adItem.dataset.img;
-      modalTitle.textContent = `${adItem.dataset.title} — ${adItem.dataset.price}`;
-      modalDesc.textContent = adItem.dataset.desc || 'Descrição do produto não disponível.';
-
-      const products = JSON.parse(adItem.dataset.products || '[]');
-      modalProductList.innerHTML = products.length
-        ? `<strong>O que está incluso:</strong><ul>${products.map(item => `<li>${item}</li>`).join('')}</ul>`
-        : 'Nenhum detalhe adicional informado.';
-
-      chatBox.style.display = 'none';
-      chatToggleBtn.textContent = 'Atendimento';
-      modal.style.display = 'block';
-      modal.setAttribute('aria-hidden', 'false');
     }
 
     function closeBuyModal() {
