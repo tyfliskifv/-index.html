@@ -50,6 +50,40 @@
       backdrop-filter: blur(8px);
     }
 
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .menu-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      box-shadow: 0 0 10px rgba(255, 235, 59, 0.12);
+    }
+
+    .menu-btn:hover {
+      background: var(--primary);
+      color: #000;
+      transform: translateY(-1px);
+    }
+
+    .menu-btn svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
     .logo {
       font-weight: 900;
       font-size: 1.8rem;
@@ -211,6 +245,108 @@
       background: var(--card);
     }
 
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 90;
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 290px;
+      max-width: 85vw;
+      height: 100vh;
+      background: linear-gradient(180deg, #0a0a00 0%, #141400 100%);
+      border-right: 1px solid var(--border);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+      transform: translateX(-100%);
+      transition: transform 0.28s ease;
+      z-index: 100;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .sidebar.show {
+      transform: translateX(0);
+    }
+
+    .sidebar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 235, 59, 0.18);
+    }
+
+    .sidebar-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .sidebar-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--card);
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .sidebar-close:hover {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-link {
+      border: 1px solid rgba(255, 235, 59, 0.15);
+      background: var(--card);
+      color: var(--text);
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .sidebar-link:hover {
+      background: var(--primary);
+      color: #000;
+      transform: translateX(3px);
+    }
+
+    .sidebar-info {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 235, 59, 0.18);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
     main {
       max-width: 1100px;
       margin: 36px auto;
@@ -362,12 +498,6 @@
       flex: 1;
       white-space: pre-wrap;
       word-break: break-word;
-    }
-
-    .price-tag {
-      font-weight: 800;
-      margin-bottom: 12px;
-      color: #fff59d;
     }
 
     .buy-btn,
@@ -825,6 +955,11 @@
         padding: 16px;
       }
 
+      .header-left {
+        width: 100%;
+        justify-content: center;
+      }
+
       nav {
         order: 2;
         width: 100%;
@@ -865,24 +1000,59 @@
       #chatForm button {
         width: 100%;
       }
+
+      .sidebar {
+        width: 260px;
+      }
     }
   </style>
 </head>
 <body>
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-title">Menu</div>
+      <button id="closeSidebarBtn" class="sidebar-close" type="button">&times;</button>
+    </div>
+
+    <div class="sidebar-links">
+      <button class="sidebar-link" type="button" data-target-tab="home">Início</button>
+      <button class="sidebar-link" type="button" data-target-tab="reviews">Avaliações</button>
+      <a class="sidebar-link" href="https://discord.gg/fBbTfc7f" target="_blank" rel="noopener noreferrer">Discord</a>
+      <a class="sidebar-link" href="https://www.instagram.com/tyfblox/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="sidebar-link" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok</a>
+    </div>
+
+    <div class="sidebar-info">
+      TyF Blox<br>
+      Navegação rápida do site
+    </div>
+  </aside>
+
   <header>
-    <div class="logo">TyF Blox</div>
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn" type="button" title="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
+        </svg>
+      </button>
+
+      <div class="logo">TyF Blox</div>
+    </div>
 
     <nav>
       <ul class="tabs">
         <li class="active" data-tab="home">Início</li>
-        <li data-tab="games">Jogos</li>
         <li data-tab="reviews">Avaliações</li>
       </ul>
     </nav>
 
     <div class="header-actions">
       <form class="search-bar" id="searchForm">
-        <input type="text" id="searchInput" placeholder="Pesquisar jogo ou item..." />
+        <input type="text" id="searchInput" placeholder="Pesquisar item..." />
         <button type="submit">Buscar</button>
       </form>
 
@@ -919,1065 +1089,4 @@
           <a href="https://discord.gg/fBbTfc7f" target="_blank" rel="noopener noreferrer" class="social-card">
             <span class="social-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.444.864-.608 1.249a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.105 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.04.106c.36.698.772 1.363 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .031-.055c.5-5.177-.838-9.674-3.548-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.211 0 2.166 1.094 2.157 2.418 0 1.334-.955 2.419-2.157 2.419Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.211 0 2.166 1.094 2.157 2.418 0 1.334-.946 2.419-2.157 2.419Z"/>
-              </svg>
-            </span>
-            <div>
-              <strong>Discord</strong>
-              <p>Entre no nosso servidor</p>
-            </div>
-          </a>
-
-          <a href="https://www.instagram.com/tyfblox/" target="_blank" rel="noopener noreferrer" class="social-card">
-            <span class="social-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM17.5 6.25a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5Z"/>
-              </svg>
-            </span>
-            <div>
-              <strong>Instagram</strong>
-              <p>Acompanhe nossos posts</p>
-            </div>
-          </a>
-
-          <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" class="social-card">
-            <span class="social-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-1.877V15.36a6.79 6.79 0 1 1-6.79-6.79c.193 0 .383.018.572.05v3.344a3.45 3.45 0 1 0 2.88 3.396V2h3.2a4.8 4.8 0 0 0 3.908 4.715v-.029c.11 0 .22.001.33 0Z"/>
-              </svg>
-            </span>
-            <div>
-              <strong>TikTok</strong>
-              <p>Veja nossos vídeos</p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section id="games" class="tab-content hidden">
-      <div class="hero">
-        <h1>Jogos</h1>
-        <p>
-          Explore os principais jogos em destaque da plataforma e encontre contas, itens e vantagens para cada um deles.
-        </p>
-      </div>
-
-      <div class="ads-container">
-        <h2 class="ads-title">Jogos Disponíveis</h2>
-        <div class="ads-list" id="adsList">
-          <div class="ad-item" data-title="Conta Inicial Blox Fruits" data-desc="Conta ideal para quem quer começar com vantagem, com itens básicos e progressão inicial pronta." data-img="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" data-price="R$ 39,90" data-products='["Conta verificada","Acesso imediato","Suporte pós-venda"]'>
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" alt="Conta Inicial Blox Fruits" />
-            <h3>Conta Inicial Blox Fruits</h3>
-            <p>Boa opção para iniciantes que querem economizar tempo.</p>
-            <div class="price-tag">R$ 39,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
-
-          <div class="ad-item" data-title="Kit Pets Adopt Me" data-desc="Pacote promocional com pets populares para troca, coleção ou evolução da conta." data-img="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" data-price="R$ 24,90" data-products='["Entrega rápida","Itens selecionados","Atendimento via chat"]'>
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" alt="Kit Pets Adopt Me" />
-            <h3>Kit Pets Adopt Me</h3>
-            <p>Pacote com pets para aumentar seu inventário e melhorar trocas.</p>
-            <div class="price-tag">R$ 24,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
-
-          <div class="ad-item" data-title="Upgrade Brookhaven VIP" data-desc="Acesso a benefícios extras para aproveitar melhor sua experiência no Brookhaven." data-img="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" data-price="R$ 19,90" data-products='["Entrega digital","Ativação simples","Suporte em horário comercial"]'>
-            <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80" alt="Upgrade Brookhaven VIP" />
-            <h3>Upgrade Brookhaven VIP</h3>
-            <p>Mais vantagens e personalização para sua gameplay.</p>
-            <div class="price-tag">R$ 19,90</div>
-            <button class="buy-btn" type="button">Comprar</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="reviews" class="tab-content hidden">
-      <div class="hero">
-        <h1>Avaliações</h1>
-        <p>
-          Veja as avaliações publicadas pelos usuários da TyF Blox. Qualquer visitante pode visualizar, mas apenas usuários logados podem publicar, editar ou excluir a própria avaliação.
-        </p>
-      </div>
-
-      <div class="ads-container">
-        <div class="review-summary">
-          <div id="averageValue" class="review-summary-value">0.0</div>
-          <div id="averageStars" class="review-summary-stars">☆☆☆☆☆</div>
-          <div id="averageText" class="review-summary-text">0 avaliações até o momento</div>
-        </div>
-
-        <div class="review-form-box">
-          <div id="reviewEditBadge" class="review-edit-badge hidden">Editando sua avaliação</div>
-
-          <h3 id="reviewFormTitle">Deixe sua avaliação</h3>
-          <p class="review-help">As avaliações publicadas ficam visíveis na categoria Avaliações. Faça login para enviar, editar ou excluir a sua avaliação.</p>
-
-          <div
-            id="starSelector"
-            class="star-selector"
-            role="radiogroup"
-            aria-label="Selecione uma nota de 1 a 5 estrelas"
-          ></div>
-          <div id="starSelectorLabel" class="star-selector-label">Nenhuma nota selecionada</div>
-
-          <textarea
-            id="reviewText"
-            rows="4"
-            placeholder="Escreva sua avaliação sobre a TyF Blox..."
-          ></textarea>
-
-          <input type="file" id="reviewImageInput" accept="image/*" />
-
-          <div id="reviewPreviewBox" class="review-preview-box">
-            <img id="reviewPreviewImage" src="" alt="Prévia da imagem da avaliação" />
-            <button id="removePreviewImageBtn" type="button" class="danger-btn">Remover imagem</button>
-          </div>
-
-          <div class="review-form-actions">
-            <button id="submitReview" class="primary-btn" type="button">Enviar avaliação</button>
-            <button id="cancelEditReview" class="secondary-btn hidden" type="button">Cancelar edição</button>
-          </div>
-
-          <p id="reviewMessage" class="message"></p>
-        </div>
-
-        <h2 class="ads-title">Avaliações dos Clientes</h2>
-        <div class="ads-list" id="reviewsList"></div>
-      </div>
-    </section>
-  </main>
-
-  <div id="buyModal" class="modal" aria-hidden="true">
-    <div class="modal-content">
-      <span class="close-btn" id="closeModal">&times;</span>
-      <img id="modalImg" src="" alt="Imagem do produto" />
-      <h3 id="modalTitle"></h3>
-      <p id="modalDesc"></p>
-
-      <button id="chatToggleBtn" type="button" class="primary-btn">Atendimento</button>
-
-      <div id="chatBox">
-        <div id="chatMessages">
-          <p><strong>Atendente:</strong> Olá! Como posso ajudar você hoje?</p>
-        </div>
-        <form id="chatForm">
-          <input type="text" id="chatInput" placeholder="Digite sua dúvida..." required />
-          <button type="submit">Enviar</button>
-        </form>
-      </div>
-
-      <div class="product-list" id="modalProductList"></div>
-    </div>
-  </div>
-
-  <div id="authModal" class="modal" aria-hidden="true">
-    <div class="modal-content auth-modal-box">
-      <span class="close-btn" id="closeAuthModal">&times;</span>
-
-      <div class="accounts-tabs">
-        <button id="showLogin" class="active" type="button">Login</button>
-        <button id="showRegister" type="button">Registrar</button>
-        <button id="showProfile" type="button" class="hidden">Perfil</button>
-      </div>
-
-      <form id="loginForm" class="accounts-form" autocomplete="on">
-        <label for="loginUsername">Usuário</label>
-        <input type="text" id="loginUsername" name="username" required autocomplete="username" />
-
-        <label for="loginPassword">Senha</label>
-        <input type="password" id="loginPassword" name="password" required autocomplete="current-password" />
-
-        <button type="submit">Entrar</button>
-        <p id="loginMessage" class="message"></p>
-      </form>
-
-      <form id="registerForm" class="accounts-form hidden" autocomplete="on">
-        <div style="background:#1b1b00; border:1px solid rgba(255,235,59,0.35); border-radius:10px; padding:12px; margin-bottom:14px; color:#f5f5f5;">
-          <strong style="color:#ffeb3b; display:block; margin-bottom:6px;">Requisitos para cadastro</strong>
-          <div style="font-size:0.95rem; color:#d8d8d8;">
-            • Usuário com pelo menos 3 caracteres<br>
-            • Senha com no mínimo 8 caracteres<br>
-            • Informe um e-mail válido<br>
-            • Não use dados de outra pessoa
-          </div>
-        </div>
-
-        <label for="registerUsername">Usuário</label>
-        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Escolha um nome único para entrar na sua conta.</small>
-        <input type="text" id="registerUsername" name="username" required minlength="3" autocomplete="username" />
-
-        <label for="registerPassword">Senha</label>
-        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Use uma senha forte com letras e números para mais segurança.</small>
-        <input type="password" id="registerPassword" name="password" required minlength="8" autocomplete="new-password" />
-
-        <label for="registerEmail">E-mail</label>
-        <small style="display:block; margin-bottom:8px; color:#d8d8d8;">Esse e-mail será usado para identificação da conta.</small>
-        <input type="email" id="registerEmail" name="email" required autocomplete="email" />
-
-        <button type="submit">Registrar</button>
-        <p id="registerMessage" class="message"></p>
-      </form>
-
-      <div id="profileView" class="hidden">
-        <h3>Bem-vindo, <span id="profileUsername"></span>!</h3>
-        <p><strong>E-mail:</strong> <span id="profileEmail"></span></p>
-        <br />
-        <button id="logoutBtn" type="button">Sair</button>
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    &copy; 2026 TyF Blox — Todos os direitos reservados.
-  </footer>
-
-  <script>
-    const tabs = document.querySelectorAll('.tabs li');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    const modal = document.getElementById('buyModal');
-    const modalImg = document.getElementById('modalImg');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDesc');
-    const modalProductList = document.getElementById('modalProductList');
-    const closeModalBtn = document.getElementById('closeModal');
-
-    const chatToggleBtn = document.getElementById('chatToggleBtn');
-    const chatBox = document.getElementById('chatBox');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatForm = document.getElementById('chatForm');
-    const chatInput = document.getElementById('chatInput');
-
-    const authModal = document.getElementById('authModal');
-    const closeAuthModal = document.getElementById('closeAuthModal');
-
-    const avatarBtn = document.getElementById('avatarBtn');
-    const avatarDropdown = document.getElementById('avatarDropdown');
-
-    const dropdownUserInfo = document.getElementById('dropdownUserInfo');
-    const dropdownUsername = document.getElementById('dropdownUsername');
-    const dropdownEmail = document.getElementById('dropdownEmail');
-    const dropdownLogin = document.getElementById('dropdownLogin');
-    const dropdownRegister = document.getElementById('dropdownRegister');
-    const dropdownProfile = document.getElementById('dropdownProfile');
-    const dropdownLogout = document.getElementById('dropdownLogout');
-
-    const showLoginBtn = document.getElementById('showLogin');
-    const showRegisterBtn = document.getElementById('showRegister');
-    const showProfileBtn = document.getElementById('showProfile');
-
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const profileView = document.getElementById('profileView');
-    const loginMessage = document.getElementById('loginMessage');
-    const registerMessage = document.getElementById('registerMessage');
-    const profileUsername = document.getElementById('profileUsername');
-    const profileEmail = document.getElementById('profileEmail');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
-    const adItems = document.querySelectorAll('.ad-item[data-title]');
-
-    let selectedStars = 0;
-    let hoverStars = 0;
-    let editingReviewId = null;
-    let currentReviewImageData = '';
-
-    const starSelector = document.getElementById('starSelector');
-    const starSelectorLabel = document.getElementById('starSelectorLabel');
-    const reviewText = document.getElementById('reviewText');
-    const submitReview = document.getElementById('submitReview');
-    const cancelEditReview = document.getElementById('cancelEditReview');
-    const reviewsList = document.getElementById('reviewsList');
-    const averageValue = document.getElementById('averageValue');
-    const averageStars = document.getElementById('averageStars');
-    const averageText = document.getElementById('averageText');
-    const reviewMessage = document.getElementById('reviewMessage');
-    const reviewImageInput = document.getElementById('reviewImageInput');
-    const reviewPreviewBox = document.getElementById('reviewPreviewBox');
-    const reviewPreviewImage = document.getElementById('reviewPreviewImage');
-    const removePreviewImageBtn = document.getElementById('removePreviewImageBtn');
-    const reviewFormTitle = document.getElementById('reviewFormTitle');
-    const reviewEditBadge = document.getElementById('reviewEditBadge');
-
-    function getUsers() {
-      try {
-        return JSON.parse(localStorage.getItem('tyfUsers') || '[]');
-      } catch {
-        localStorage.removeItem('tyfUsers');
-        return [];
-      }
-    }
-
-    function saveUsers(users) {
-      localStorage.setItem('tyfUsers', JSON.stringify(users));
-    }
-
-    function getSession() {
-      try {
-        return JSON.parse(localStorage.getItem('loggedInUser') || 'null');
-      } catch {
-        localStorage.removeItem('loggedInUser');
-        return null;
-      }
-    }
-
-    function setSession(user) {
-      localStorage.setItem('loggedInUser', JSON.stringify(user));
-    }
-
-    function clearSession() {
-      localStorage.removeItem('loggedInUser');
-    }
-
-    function getReviews() {
-      try {
-        return JSON.parse(localStorage.getItem('reviews') || '[]');
-      } catch {
-        localStorage.removeItem('reviews');
-        return [];
-      }
-    }
-
-    function saveReviews(reviews) {
-      localStorage.setItem('reviews', JSON.stringify(reviews));
-    }
-
-    function openBuyModal(adItem) {
-      modalImg.src = adItem.dataset.img;
-      modalTitle.textContent = `${adItem.dataset.title} — ${adItem.dataset.price}`;
-      modalDesc.textContent = adItem.dataset.desc || 'Descrição do produto não disponível.';
-
-      const products = JSON.parse(adItem.dataset.products || '[]');
-      modalProductList.innerHTML = products.length
-        ? `<strong>O que está incluso:</strong><ul>${products.map(item => `<li>${item}</li>`).join('')}</ul>`
-        : 'Nenhum detalhe adicional informado.';
-
-      chatBox.style.display = 'none';
-      chatToggleBtn.textContent = 'Atendimento';
-      modal.style.display = 'block';
-      modal.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeBuyModal() {
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden', 'true');
-    }
-
-    function openAuthModal() {
-      authModal.style.display = 'block';
-      authModal.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeAuthModalFn() {
-      authModal.style.display = 'none';
-      authModal.setAttribute('aria-hidden', 'true');
-    }
-
-    function setMessage(target, text, type) {
-      target.textContent = text;
-      target.style.color =
-        type === 'success'
-          ? 'var(--success)'
-          : type === 'info'
-          ? 'var(--info)'
-          : 'var(--danger)';
-    }
-
-    function clearMessages() {
-      loginMessage.textContent = '';
-      registerMessage.textContent = '';
-    }
-
-    function showSection(section) {
-      loginForm.classList.add('hidden');
-      registerForm.classList.add('hidden');
-      profileView.classList.add('hidden');
-
-      showLoginBtn.classList.remove('active');
-      showRegisterBtn.classList.remove('active');
-      showProfileBtn.classList.remove('active');
-
-      if (section === 'login') {
-        loginForm.classList.remove('hidden');
-        showLoginBtn.classList.add('active');
-      } else if (section === 'register') {
-        registerForm.classList.remove('hidden');
-        showRegisterBtn.classList.add('active');
-      } else if (section === 'profile') {
-        profileView.classList.remove('hidden');
-        showProfileBtn.classList.add('active');
-      }
-
-      clearMessages();
-    }
-
-    function updateProfileView(user) {
-      if (!user) return;
-
-      profileUsername.textContent = user.username || '';
-      profileEmail.textContent = user.email || '';
-      dropdownUsername.textContent = user.username || '';
-      dropdownEmail.textContent = user.email || '';
-
-      const initial = (user.username || 'C').charAt(0).toUpperCase();
-      avatarBtn.textContent = initial;
-      avatarBtn.title = `Conta de ${user.username || 'usuário'}`;
-    }
-
-    function updateUIForLoggedIn(loggedIn, user = null) {
-      if (loggedIn && user) {
-        dropdownUserInfo.classList.remove('hidden');
-        dropdownLogin.classList.add('hidden');
-        dropdownRegister.classList.add('hidden');
-        dropdownProfile.classList.remove('hidden');
-        dropdownLogout.classList.remove('hidden');
-
-        showProfileBtn.classList.remove('hidden');
-        showLoginBtn.classList.add('hidden');
-        showRegisterBtn.classList.add('hidden');
-
-        updateProfileView(user);
-      } else {
-        dropdownUserInfo.classList.add('hidden');
-        dropdownLogin.classList.remove('hidden');
-        dropdownRegister.classList.remove('hidden');
-        dropdownProfile.classList.add('hidden');
-        dropdownLogout.classList.add('hidden');
-
-        showProfileBtn.classList.add('hidden');
-        showLoginBtn.classList.remove('hidden');
-        showRegisterBtn.classList.remove('hidden');
-
-        avatarBtn.textContent = 'C';
-        avatarBtn.title = 'Conta';
-        profileUsername.textContent = '';
-        profileEmail.textContent = '';
-      }
-    }
-
-    function getRatingLabel(rating) {
-      const labels = {
-        0: 'Nenhuma nota selecionada',
-        1: '1 estrela - Muito ruim',
-        2: '2 estrelas - Ruim',
-        3: '3 estrelas - Regular',
-        4: '4 estrelas - Muito bom',
-        5: '5 estrelas - Excelente'
-      };
-      return labels[rating] || 'Nenhuma nota selecionada';
-    }
-
-    function renderStarSelector(rating = 0, hover = 0) {
-      const displayRating = hover || rating;
-      starSelector.innerHTML = '';
-
-      for (let i = 1; i <= 5; i++) {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'star-btn';
-        button.innerHTML = i <= displayRating ? '★' : '☆';
-        button.setAttribute('data-value', i);
-        button.setAttribute('role', 'radio');
-        button.setAttribute('aria-checked', String(i === rating));
-        button.setAttribute('aria-label', `${i} estrela${i > 1 ? 's' : ''}`);
-        button.setAttribute('title', `${i} estrela${i > 1 ? 's' : ''}`);
-        button.tabIndex = i === (rating || 1) ? 0 : -1;
-
-        if (i <= rating) button.classList.add('active');
-        if (hover && i <= hover) button.classList.add('hovered');
-
-        button.addEventListener('mouseenter', () => {
-          hoverStars = i;
-          renderStarSelector(selectedStars, hoverStars);
-        });
-
-        button.addEventListener('click', () => {
-          selectedStars = i;
-          hoverStars = 0;
-          renderStarSelector(selectedStars, 0);
-        });
-
-        button.addEventListener('focus', () => {
-          hoverStars = i;
-          renderStarSelector(selectedStars, hoverStars);
-        });
-
-        button.addEventListener('touchstart', () => {
-          hoverStars = i;
-          selectedStars = i;
-          renderStarSelector(selectedStars, 0);
-        }, { passive: true });
-
-        starSelector.appendChild(button);
-      }
-
-      starSelectorLabel.textContent = getRatingLabel(displayRating || rating);
-    }
-
-    function formatReviewDate(dateString) {
-      if (!dateString) return 'Agora mesmo';
-      const date = new Date(dateString);
-      if (Number.isNaN(date.getTime())) return 'Agora mesmo';
-      return date.toLocaleDateString('pt-BR');
-    }
-
-    function updateReviewPreview(imageData) {
-      if (imageData) {
-        reviewPreviewImage.src = imageData;
-        reviewPreviewBox.classList.add('show');
-      } else {
-        reviewPreviewImage.src = '';
-        reviewPreviewBox.classList.remove('show');
-      }
-    }
-
-    function resetReviewForm(options = {}) {
-      const { keepMessage = false } = options;
-      editingReviewId = null;
-      selectedStars = 0;
-      hoverStars = 0;
-      currentReviewImageData = '';
-
-      renderStarSelector(0, 0);
-      reviewText.value = '';
-      reviewImageInput.value = '';
-      updateReviewPreview('');
-      submitReview.textContent = 'Enviar avaliação';
-      cancelEditReview.classList.add('hidden');
-      reviewFormTitle.textContent = 'Deixe sua avaliação';
-      reviewEditBadge.classList.add('hidden');
-
-      if (!keepMessage) {
-        reviewMessage.textContent = '';
-      }
-    }
-
-    function enterEditMode(review) {
-      editingReviewId = review.id;
-      selectedStars = review.stars;
-      hoverStars = 0;
-      currentReviewImageData = review.image || '';
-
-      renderStarSelector(selectedStars, 0);
-      reviewText.value = review.text || '';
-      reviewImageInput.value = '';
-      updateReviewPreview(currentReviewImageData);
-      submitReview.textContent = 'Salvar alterações';
-      cancelEditReview.classList.remove('hidden');
-      reviewFormTitle.textContent = 'Edite sua avaliação';
-      reviewEditBadge.classList.remove('hidden');
-      reviewMessage.textContent = '';
-    }
-
-    function syncReviewFormWithUser() {
-      const user = getSession();
-      const reviews = getReviews();
-
-      if (!user) {
-        resetReviewForm({ keepMessage: true });
-        reviewMessage.textContent = 'As avaliações são públicas. Faça login para publicar a sua.';
-        reviewMessage.style.color = 'var(--info)';
-        return;
-      }
-
-      const ownReviews = reviews.filter(review => review.user === user.username);
-
-      if (!editingReviewId) {
-        resetReviewForm({ keepMessage: true });
-        reviewMessage.textContent = ownReviews.length > 0
-          ? 'Você já possui avaliações publicadas. Pode adicionar mais, editar ou excluir as suas.'
-          : 'Você está logado e pode publicar sua avaliação.';
-        reviewMessage.style.color = ownReviews.length > 0 ? 'var(--info)' : 'var(--success)';
-      }
-    }
-
-    function renderReviews() {
-      const reviews = getReviews();
-      const currentUser = getSession();
-      reviewsList.innerHTML = '';
-
-      if (reviews.length === 0) {
-        averageValue.textContent = '0.0';
-        averageStars.textContent = '☆☆☆☆☆';
-        averageText.textContent = '0 avaliações até o momento';
-        reviewsList.innerHTML = `
-          <div class="ad-item">
-            <h3>Sem avaliações ainda</h3>
-            <p>As avaliações publicadas pelos usuários aparecerão aqui na categoria Avaliações.</p>
-          </div>
-        `;
-        return;
-      }
-
-      let total = 0;
-
-      reviews.forEach(review => {
-        total += Number(review.stars) || 0;
-        const reviewCard = document.createElement('div');
-        reviewCard.className = 'ad-item';
-
-        const isOwner = currentUser && currentUser.username === review.user;
-
-        reviewCard.innerHTML = `
-          <div class="review-card-header">
-            <div class="review-card-name">${review.user}</div>
-            <div class="review-card-stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
-          </div>
-          ${review.image ? `<img class="review-image" src="${review.image}" alt="Imagem da avaliação de ${review.user}" />` : ''}
-          <p>${review.text}</p>
-          <div class="review-meta">
-            Publicado em ${formatReviewDate(review.createdAt)}
-            ${review.updatedAt ? ` • Editado em ${formatReviewDate(review.updatedAt)}` : ''}
-          </div>
-          ${isOwner ? `
-            <div class="review-actions">
-              <button type="button" class="secondary-btn review-edit-btn" data-review-id="${review.id}">Editar</button>
-              <button type="button" class="danger-btn review-delete-btn" data-review-id="${review.id}">Excluir</button>
-            </div>
-          ` : ''}
-        `;
-
-        reviewsList.appendChild(reviewCard);
-      });
-
-      const avg = total / reviews.length;
-      const rounded = Math.round(avg);
-      averageValue.textContent = avg.toFixed(1);
-      averageStars.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
-      averageText.textContent = `${reviews.length} avaliação${reviews.length > 1 ? 'ões' : ''} publicada${reviews.length > 1 ? 's' : ''}`;
-
-      reviewsList.querySelectorAll('.review-edit-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const reviewId = button.getAttribute('data-review-id');
-          const review = getReviews().find(item => item.id === reviewId);
-          if (review) enterEditMode(review);
-        });
-      });
-
-      reviewsList.querySelectorAll('.review-delete-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const reviewId = button.getAttribute('data-review-id');
-          const user = getSession();
-
-          if (!user) {
-            reviewMessage.textContent = 'Você precisa estar logado para excluir sua avaliação.';
-            reviewMessage.style.color = 'var(--danger)';
-            return;
-          }
-
-          const reviews = getReviews();
-          const reviewToDelete = reviews.find(review => review.id === reviewId);
-
-          if (!reviewToDelete || reviewToDelete.user !== user.username) {
-            reviewMessage.textContent = 'Você só pode excluir a sua própria avaliação.';
-            reviewMessage.style.color = 'var(--danger)';
-            return;
-          }
-
-          const updatedReviews = reviews.filter(review => review.id !== reviewId);
-          saveReviews(updatedReviews);
-
-          if (editingReviewId === reviewId) {
-            resetReviewForm();
-          }
-
-          reviewMessage.textContent = 'Avaliação excluída com sucesso.';
-          reviewMessage.style.color = 'var(--success)';
-          renderReviews();
-          syncReviewFormWithUser();
-        });
-      });
-    }
-
-    function filterAds(term) {
-      const normalizedTerm = term.trim().toLowerCase();
-      adItems.forEach(item => {
-        const title = item.dataset.title.toLowerCase();
-        const desc = item.dataset.desc.toLowerCase();
-        const visible = !normalizedTerm || title.includes(normalizedTerm) || desc.includes(normalizedTerm);
-        item.style.display = visible ? 'flex' : 'none';
-      });
-    }
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(tc => tc.classList.add('hidden'));
-        tab.classList.add('active');
-        const tabId = tab.getAttribute('data-tab');
-        const target = document.getElementById(tabId);
-        if (target) target.classList.remove('hidden');
-
-        if (tabId === 'reviews') {
-          renderReviews();
-          syncReviewFormWithUser();
-        }
-      });
-    });
-
-    closeModalBtn.addEventListener('click', closeBuyModal);
-    closeAuthModal.addEventListener('click', closeAuthModalFn);
-
-    document.querySelectorAll('.buy-btn').forEach(button => {
-      button.addEventListener('click', e => {
-        const adItem = e.target.closest('.ad-item');
-        if (adItem) openBuyModal(adItem);
-      });
-    });
-
-    chatToggleBtn.addEventListener('click', () => {
-      if (chatBox.style.display === 'none' || chatBox.style.display === '') {
-        chatBox.style.display = 'flex';
-        chatToggleBtn.textContent = 'Fechar atendimento';
-      } else {
-        chatBox.style.display = 'none';
-        chatToggleBtn.textContent = 'Atendimento';
-      }
-    });
-
-    chatForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const userMessage = chatInput.value.trim();
-      if (!userMessage) return;
-
-      const userMsgElem = document.createElement('p');
-      userMsgElem.innerHTML = `<strong>Você:</strong> ${userMessage}`;
-      chatMessages.appendChild(userMsgElem);
-      chatInput.value = '';
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      setTimeout(() => {
-        const botMsgElem = document.createElement('p');
-        botMsgElem.innerHTML = `<strong>Atendente:</strong> Recebemos sua mensagem. Vamos te responder o mais rápido possível.`;
-        chatMessages.appendChild(botMsgElem);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 700);
-    });
-
-    avatarBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      avatarDropdown.classList.toggle('show');
-    });
-
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.avatar-wrapper')) {
-        avatarDropdown.classList.remove('show');
-      }
-    });
-
-    dropdownLogin.addEventListener('click', () => {
-      avatarDropdown.classList.remove('show');
-      openAuthModal();
-      showSection('login');
-    });
-
-    dropdownRegister.addEventListener('click', () => {
-      avatarDropdown.classList.remove('show');
-      openAuthModal();
-      showSection('register');
-    });
-
-    dropdownProfile.addEventListener('click', () => {
-      avatarDropdown.classList.remove('show');
-      openAuthModal();
-      showSection('profile');
-    });
-
-    showLoginBtn.addEventListener('click', () => showSection('login'));
-    showRegisterBtn.addEventListener('click', () => showSection('register'));
-    showProfileBtn.addEventListener('click', () => showSection('profile'));
-
-    registerForm.addEventListener('submit', e => {
-      e.preventDefault();
-
-      const username = document.getElementById('registerUsername').value.trim();
-      const password = document.getElementById('registerPassword').value.trim();
-      const email = document.getElementById('registerEmail').value.trim().toLowerCase();
-
-      if (!username || !password || !email) {
-        setMessage(registerMessage, 'Preencha todos os campos.', 'error');
-        return;
-      }
-
-      if (username.length < 3) {
-        setMessage(registerMessage, 'O usuário deve ter pelo menos 3 caracteres.', 'error');
-        return;
-      }
-
-      if (password.length < 8) {
-        setMessage(registerMessage, 'A senha deve ter pelo menos 8 caracteres.', 'error');
-        return;
-      }
-
-      const users = getUsers();
-
-      const usernameExists = users.some(user => user.username.toLowerCase() === username.toLowerCase());
-      if (usernameExists) {
-        setMessage(registerMessage, 'Esse nome de usuário já está em uso.', 'error');
-        return;
-      }
-
-      const emailExists = users.some(user => user.email.toLowerCase() === email);
-      if (emailExists) {
-        setMessage(registerMessage, 'Esse e-mail já está cadastrado.', 'error');
-        return;
-      }
-
-      users.push({
-        id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        username,
-        email,
-        password
-      });
-
-      saveUsers(users);
-      setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
-      registerForm.reset();
-
-      setTimeout(() => {
-        showSection('login');
-      }, 500);
-    });
-
-    loginForm.addEventListener('submit', e => {
-      e.preventDefault();
-
-      const username = document.getElementById('loginUsername').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-
-      if (!username || !password) {
-        setMessage(loginMessage, 'Preencha usuário e senha.', 'error');
-        return;
-      }
-
-      const users = getUsers();
-      const foundUser = users.find(
-        user =>
-          user.username.toLowerCase() === username.toLowerCase() &&
-          user.password === password
-      );
-
-      if (!foundUser) {
-        setMessage(loginMessage, 'Usuário ou senha inválidos.', 'error');
-        return;
-      }
-
-      const sessionUser = {
-        id: foundUser.id,
-        username: foundUser.username,
-        email: foundUser.email
-      };
-
-      setSession(sessionUser);
-      updateUIForLoggedIn(true, sessionUser);
-      setMessage(loginMessage, `Bem-vindo, ${sessionUser.username}!`, 'success');
-      loginForm.reset();
-      showSection('profile');
-      renderReviews();
-      syncReviewFormWithUser();
-    });
-
-    async function performLogout() {
-      clearSession();
-      updateUIForLoggedIn(false);
-      closeAuthModalFn();
-      showSection('login');
-      resetReviewForm();
-      renderReviews();
-      syncReviewFormWithUser();
-    }
-
-    logoutBtn.addEventListener('click', performLogout);
-    dropdownLogout.addEventListener('click', async () => {
-      avatarDropdown.classList.remove('show');
-      await performLogout();
-    });
-
-    searchForm.addEventListener('submit', e => {
-      e.preventDefault();
-      tabs.forEach(t => t.classList.remove('active'));
-      tabContents.forEach(tc => tc.classList.add('hidden'));
-      document.querySelector('[data-tab="games"]').classList.add('active');
-      document.getElementById('games').classList.remove('hidden');
-      filterAds(searchInput.value);
-    });
-
-    searchInput.addEventListener('input', () => {
-      if (!document.getElementById('games').classList.contains('hidden')) {
-        filterAds(searchInput.value);
-      }
-    });
-
-    reviewImageInput.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      if (!file.type.startsWith('image/')) {
-        reviewMessage.textContent = 'Escolha um arquivo de imagem válido.';
-        reviewMessage.style.color = 'var(--danger)';
-        reviewImageInput.value = '';
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        reviewMessage.textContent = 'A imagem deve ter no máximo 5MB.';
-        reviewMessage.style.color = 'var(--danger)';
-        reviewImageInput.value = '';
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        currentReviewImageData = reader.result;
-        updateReviewPreview(currentReviewImageData);
-        reviewMessage.textContent = 'Imagem carregada com sucesso.';
-        reviewMessage.style.color = 'var(--success)';
-      };
-      reader.onerror = () => {
-        reviewMessage.textContent = 'Não foi possível carregar a imagem.';
-        reviewMessage.style.color = 'var(--danger)';
-      };
-      reader.readAsDataURL(file);
-    });
-
-    removePreviewImageBtn.addEventListener('click', () => {
-      currentReviewImageData = '';
-      reviewImageInput.value = '';
-      updateReviewPreview('');
-      reviewMessage.textContent = 'Imagem removida da avaliação.';
-      reviewMessage.style.color = 'var(--info)';
-    });
-
-    cancelEditReview.addEventListener('click', () => {
-      resetReviewForm();
-      syncReviewFormWithUser();
-    });
-
-    submitReview.addEventListener('click', () => {
-      const user = getSession();
-
-      if (!user) {
-        reviewMessage.textContent = 'Você precisa estar logado para enviar uma avaliação.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      if (selectedStars === 0) {
-        reviewMessage.textContent = 'Selecione uma nota de 1 a 5 estrelas.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      if (!reviewText.value.trim()) {
-        reviewMessage.textContent = 'Escreva sua avaliação antes de enviar.';
-        reviewMessage.style.color = 'var(--danger)';
-        return;
-      }
-
-      const reviews = getReviews();
-
-      if (editingReviewId) {
-        const reviewIndex = reviews.findIndex(review => review.id === editingReviewId);
-
-        if (reviewIndex === -1 || reviews[reviewIndex].user !== user.username) {
-          reviewMessage.textContent = 'Você só pode editar a sua própria avaliação.';
-          reviewMessage.style.color = 'var(--danger)';
-          return;
-        }
-
-        reviews[reviewIndex] = {
-          ...reviews[reviewIndex],
-          stars: selectedStars,
-          text: reviewText.value.trim(),
-          image: currentReviewImageData || '',
-          updatedAt: new Date().toISOString()
-        };
-
-        saveReviews(reviews);
-        resetReviewForm();
-        reviewMessage.textContent = 'Avaliação atualizada com sucesso!';
-        reviewMessage.style.color = 'var(--success)';
-        renderReviews();
-        syncReviewFormWithUser();
-        return;
-      }
-
-      reviews.unshift({
-        id: `review_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        user: user.username,
-        stars: selectedStars,
-        text: reviewText.value.trim(),
-        image: currentReviewImageData || '',
-        createdAt: new Date().toISOString(),
-        updatedAt: ''
-      });
-
-      saveReviews(reviews);
-      resetReviewForm();
-      reviewMessage.textContent = 'Avaliação publicada com sucesso na categoria Avaliações!';
-      reviewMessage.style.color = 'var(--success)';
-      renderReviews();
-      syncReviewFormWithUser();
-    });
-
-    starSelector.addEventListener('mouseleave', () => {
-      hoverStars = 0;
-      renderStarSelector(selectedStars, 0);
-    });
-
-    starSelector.addEventListener('keydown', e => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        selectedStars = Math.min(5, selectedStars + 1 || 1);
-        hoverStars = 0;
-        renderStarSelector(selectedStars, 0);
-      }
-
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        selectedStars = Math.max(1, selectedStars - 1 || 1);
-        hoverStars = 0;
-        renderStarSelector(selectedStars, 0);
-      }
-
-      if (e.key === 'Home') {
-        e.preventDefault();
-        selectedStars = 1;
-        hoverStars = 0;
-        renderStarSelector(selectedStars, 0);
-      }
-
-      if (e.key === 'End') {
-        e.preventDefault();
-        selectedStars = 5;
-        hoverStars = 0;
-        renderStarSelector(selectedStars, 0);
-      }
-    });
-
-    window.addEventListener('click', event => {
-      if (event.target === modal) closeBuyModal();
-      if (event.target === authModal) closeAuthModalFn();
-    });
-
-    window.addEventListener('load', () => {
-      const user = getSession();
-      if (user) {
-        updateUIForLoggedIn(true, user);
-        showSection('profile');
-      } else {
-        updateUIForLoggedIn(false);
-        showSection('login');
-      }
-
-      renderStarSelector(0, 0);
-      renderReviews();
-      syncReviewFormWithUser();
-    });
-  </script>
-</body>
-</html>
+                <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.444.864-.608 1.249a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.105 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.04.106c.36.698.772 1.363 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .031-.055c.5-5.177-.838-9.674-3.548-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.211 0 2.166 1.094 2.157 2.418 0 1.334-.955 2.419-2.157 2.419Zm7.975 0c-1.183 0-
