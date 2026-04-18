@@ -997,7 +997,7 @@
       <div class="hero">
         <h1>Avaliações</h1>
         <p>
-          Veja a opinião real dos usuários sobre a TyF Blox e compartilhe também sua experiência.
+          Veja avaliações públicas da TyF Blox. Qualquer visitante pode visualizar, mas apenas usuários logados podem publicar, editar ou excluir a própria avaliação.
         </p>
       </div>
 
@@ -1012,7 +1012,7 @@
           <div id="reviewEditBadge" class="review-edit-badge hidden">Editando sua avaliação</div>
 
           <h3 id="reviewFormTitle">Deixe sua avaliação</h3>
-          <p class="review-help">Faça login para enviar, editar ou excluir a sua avaliação.</p>
+          <p class="review-help">As avaliações publicadas ficam visíveis para todos. Faça login para enviar, editar ou excluir a sua avaliação.</p>
 
           <div
             id="starSelector"
@@ -1795,8 +1795,8 @@
       if (!user) {
         resetReviewForm({ keepMessage: true });
         if (currentTab === 'reviews') {
-          reviewMessage.textContent = 'Faça login para enviar sua avaliação.';
-          reviewMessage.style.color = 'var(--danger)';
+          reviewMessage.textContent = 'As avaliações já publicadas são públicas. Faça login para enviar a sua.';
+          reviewMessage.style.color = 'var(--info)';
         }
         return;
       }
@@ -1810,8 +1810,8 @@
       if (!editingReviewId) {
         resetReviewForm({ keepMessage: true });
         reviewMessage.textContent = existingReview
-          ? 'Você já possui uma avaliação. Pode editar ou excluir a qualquer momento.'
-          : 'Você está logado e pode enviar sua avaliação.';
+          ? 'Sua avaliação é pública e visível para todos. Você pode editar ou excluir a qualquer momento.'
+          : 'Você está logado. A avaliação que publicar ficará visível para todos.';
         reviewMessage.style.color = existingReview ? 'var(--info)' : 'var(--success)';
       }
     }
@@ -1829,7 +1829,7 @@
         reviewsList.innerHTML = `
           <div class="ad-item">
             <h3>Sem avaliações ainda</h3>
-            <p>Seja o primeiro a compartilhar sua experiência com a TyF Blox.</p>
+            <p>As avaliações publicadas aparecerão aqui para qualquer visitante.</p>
           </div>
         `;
         return;
@@ -1876,7 +1876,7 @@
 
       averageValue.textContent = avg.toFixed(1);
       averageStars.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
-      averageText.textContent = `${reviews.length} avaliação${reviews.length > 1 ? 'ões' : ''} recebida${reviews.length > 1 ? 's' : ''}`;
+      averageText.textContent = `${reviews.length} avaliação${reviews.length > 1 ? 'ões' : ''} pública${reviews.length > 1 ? 's' : ''}`;
 
       reviewsList.querySelectorAll('.review-edit-btn').forEach(button => {
         button.addEventListener('click', () => {
@@ -2021,7 +2021,7 @@
 
         saveReviews(reviews);
         resetReviewForm();
-        reviewMessage.textContent = 'Avaliação atualizada com sucesso!';
+        reviewMessage.textContent = 'Avaliação atualizada com sucesso! Agora ela continua pública para todos.';
         reviewMessage.style.color = 'var(--success)';
         renderReviews();
         syncReviewFormWithUser();
@@ -2047,7 +2047,7 @@
       saveReviews(reviews);
 
       resetReviewForm();
-      reviewMessage.textContent = 'Avaliação enviada com sucesso!';
+      reviewMessage.textContent = 'Avaliação enviada com sucesso! Ela agora está visível para todos os visitantes deste navegador.';
       reviewMessage.style.color = 'var(--success)';
       renderReviews();
       syncReviewFormWithUser();
