@@ -1270,7 +1270,12 @@
 
     function setMessage(target, text, type) {
       target.textContent = text;
-      target.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
+      target.style.color =
+        type === 'success'
+          ? 'var(--success)'
+          : type === 'info'
+          ? 'var(--info)'
+          : 'var(--danger)';
     }
 
     function clearMessages() {
@@ -1299,6 +1304,19 @@
       }
 
       clearMessages();
+    }
+
+    function getUsers() {
+      try {
+        return JSON.parse(localStorage.getItem('tyfUsers') || '[]');
+      } catch {
+        localStorage.removeItem('tyfUsers');
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem('tyfUsers', JSON.stringify(users));
     }
 
     function setSession(user) {
@@ -1366,40 +1384,6 @@
       }
     }
 
-    async function apiRequest(url, method, body = null) {
-      const options = {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-      };
-
-      if (body) {
-        options.body = JSON.stringify(body);
-      }
-
-      let response;
-      try {
-        response = await fetch(url, options);
-      } catch {
-        throw new Error('Não foi possível conectar ao servidor.');
-      }
-
-      let data = {};
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro na requisição.');
-      }
-
-      return data;
-    }
-
     avatarBtn.addEventListener('click', e => {
       e.stopPropagation();
       avatarDropdown.classList.toggle('show');
@@ -1433,12 +1417,12 @@
     showRegisterBtn.addEventListener('click', () => showSection('register'));
     showProfileBtn.addEventListener('click', () => showSection('profile'));
 
-    registerForm.addEventListener('submit', async e => {
+    registerForm.addEventListener('submit', e => {
       e.preventDefault();
 
       const username = document.getElementById('registerUsername').value.trim();
       const password = document.getElementById('registerPassword').value.trim();
-      const email = document.getElementById('registerEmail').value.trim();
+      const email = document.getElementById('registerEmail').value.trim().toLowerCase();
 
       if (!username || !password || !email) {
         setMessage(registerMessage, 'Preencha todos os campos.', 'error');
@@ -1455,17 +1439,37 @@
         return;
       }
 
-      try {
-        await apiRequest('/api/register', 'POST', { username, email, password });
-        setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
-        registerForm.reset();
-        setTimeout(() => showSection('login'), 500);
-      } catch (error) {
-        setMessage(registerMessage, error.message, 'error');
+      const users = getUsers();
+
+      const usernameExists = users.some(user => user.username.toLowerCase() === username.toLowerCase());
+      if (usernameExists) {
+        setMessage(registerMessage, 'Esse nome de usuário já está em uso.', 'error');
+        return;
       }
+
+      const emailExists = users.some(user => user.email.toLowerCase() === email);
+      if (emailExists) {
+        setMessage(registerMessage, 'Esse e-mail já está cadastrado.', 'error');
+        return;
+      }
+
+      users.push({
+        id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        username,
+        email,
+        password
+      });
+
+      saveUsers(users);
+      setMessage(registerMessage, 'Conta criada com sucesso! Agora faça login.', 'success');
+      registerForm.reset();
+
+      setTimeout(() => {
+        showSection('login');
+      }, 500);
     });
 
-    loginForm.addEventListener('submit', async e => {
+    loginForm.addEventListener('submit', e => {
       e.preventDefault();
 
       const username = document.getElementById('loginUsername').value.trim();
@@ -1476,35 +1480,34 @@
         return;
       }
 
-      try {
-        const data = await apiRequest('/api/login', 'POST', { username, password });
+      const users = getUsers();
+      const foundUser = users.find(
+        user =>
+          user.username.toLowerCase() === username.toLowerCase() &&
+          user.password === password
+      );
 
-        if (!data.user) {
-          throw new Error('Resposta do servidor inválida.');
-        }
-
-        setSession(data.user);
-        updateUIForLoggedIn(true, data.user);
-        setMessage(loginMessage, `Bem-vindo, ${data.user.username}!`, 'success');
-        loginForm.reset();
-        showSection('profile');
-        syncReviewFormWithUser();
-        renderReviews();
-      } catch (error) {
-        setMessage(loginMessage, error.message, 'error');
+      if (!foundUser) {
+        setMessage(loginMessage, 'Usuário ou senha inválidos.', 'error');
+        return;
       }
+
+      const sessionUser = {
+        id: foundUser.id,
+        username: foundUser.username,
+        email: foundUser.email
+      };
+
+      setSession(sessionUser);
+      updateUIForLoggedIn(true, sessionUser);
+      setMessage(loginMessage, `Bem-vindo, ${sessionUser.username}!`, 'success');
+      loginForm.reset();
+      showSection('profile');
+      syncReviewFormWithUser();
+      renderReviews();
     });
 
-    async function performLogout() {
-      try {
-        await fetch('/api/logout', {
-          method: 'POST',
-          credentials: 'include'
-        });
-      } catch (error) {
-        console.error('Erro ao sair:', error);
-      }
-
+    function performLogout() {
       clearSession();
       updateUIForLoggedIn(false);
       closeAuthModalFn();
@@ -1516,26 +1519,18 @@
 
     logoutBtn.addEventListener('click', performLogout);
 
-    dropdownLogout.addEventListener('click', async () => {
+    dropdownLogout.addEventListener('click', () => {
       avatarDropdown.classList.remove('show');
-      await performLogout();
+      performLogout();
     });
 
-    async function loadUserFromServer() {
-      try {
-        const data = await apiRequest('/api/me', 'GET');
-        if (!data.user) throw new Error('Sessão inválida');
-
-        setSession(data.user);
-        updateUIForLoggedIn(true, data.user);
-      } catch {
-        const localUser = getSession();
-        if (localUser) {
-          updateUIForLoggedIn(true, localUser);
-        } else {
-          clearSession();
-          updateUIForLoggedIn(false);
-        }
+    function loadUserFromStorage() {
+      const localUser = getSession();
+      if (localUser) {
+        updateUIForLoggedIn(true, localUser);
+      } else {
+        clearSession();
+        updateUIForLoggedIn(false);
       }
     }
 
@@ -1544,8 +1539,8 @@
       if (event.target === authModal) closeAuthModalFn();
     });
 
-    window.addEventListener('load', async () => {
-      await loadUserFromServer();
+    window.addEventListener('load', () => {
+      loadUserFromStorage();
       showSection(getSession() ? 'profile' : 'login');
       renderStarSelector(0, 0);
       renderReviews();
@@ -1584,7 +1579,6 @@
       }
     });
 
-    // ===== SISTEMA DE AVALIAÇÕES =====
     let selectedStars = 0;
     let hoverStars = 0;
     let editingReviewId = null;
